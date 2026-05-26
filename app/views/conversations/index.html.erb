@@ -1,0 +1,13 @@
+<h1>Mes conversations sur "<%= @poll.title_question %>"</h1>
+
+<%= button_to "Nouvelle conversation", poll_conversations_path(@poll), method: :post %>
+
+<% if @conversations.empty? %>
+  <p>Aucune conversation pour l'instant.</p>
+<% else %>
+  <% @conversations.each do |conversation| %>
+    <div>
+      <%= link_to "Conversation du #{conversation.created_at.strftime("%d/%m/%Y à %Hh%M")}", poll_conversation_path(@poll, conversation) %>
+    </div>
+  <% end %>
+<% end %>

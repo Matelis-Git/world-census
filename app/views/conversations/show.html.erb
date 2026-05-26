@@ -1,2 +1,27 @@
-<h1>Conversations#show</h1>
-<p>Find me in app/views/conversations/show.html.erb</p>
+<h1>Débat : "<%= @conversation.poll.title_question %>"</h1>
+
+<%= link_to "← Retour aux conversations", poll_conversations_path(@conversation.poll) %>
+
+<div id="messages">
+  <% @messages.where(role: ["user", "assistant"]).each do |message| %>
+    <div class="message <%= message.role %>">
+      <strong><%= message.role == "user" ? "Vous" : "DebatAI" %></strong>
+      <div class="message-content"><%= render_markdown(message.content) %></div>
+    </div>
+  <% end %>
+</div>
+
+<%= form_with model: [@conversation.poll, @conversation, @new_message],
+              url: poll_conversation_chat_messages_path(@conversation.poll, @conversation),
+              data: { turbo: false } do |f| %>
+  <%= f.text_area :content, placeholder: "Posez votre question sur ce débat...", rows: 3 %>
+  <%= f.submit "Envoyer" %>
+<% end %>
+
+<script>
+  document.querySelector("form").addEventListener("submit", function(e) {
+    const btn = this.querySelector("[type='submit']");
+    btn.disabled = true;
+    btn.value = "Envoi en cours...";
+  });
+</script>
