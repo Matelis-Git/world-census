@@ -1,13 +1,17 @@
 # app/controllers/polls_controller.rb
 class PollsController < ApplicationController
-   skip_before_action :authenticate_user!
+
   def index
     @polls = Poll.all
   end
 
+  def new
+    @poll = Poll.new
+  end
+
   def create
     @poll = Poll.new(poll_params)
-    @poll.user = current_user
+    # @poll.user = current_user
     if @poll.save
       redirect_to polls_path, notice: "Poll created!"
     else
@@ -18,6 +22,6 @@ class PollsController < ApplicationController
   private
 
   def poll_params
-    params.require(:poll).permit(:question, :category, :country)
+    params.require(:poll).permit(:title_question, :category, :country)
   end
 end
