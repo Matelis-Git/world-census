@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
-  resources :polls, only: [:index, :create] do
+  resources :polls, only: [:index, :new, :create] do
     resources :votes, only: [:create]
     resources :conversations, only: [:index, :show, :create] do
       resources :chat_messages, only: [:create]

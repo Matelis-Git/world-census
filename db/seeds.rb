@@ -7,3 +7,41 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+Vote.destroy_all
+Poll.destroy_all
+User.destroy_all
+
+usertest = User.create!(
+  email: "test@test.com",
+  password: "123456",
+)
+
+Poll.create!([
+  {
+    title_question: "Should france raise the miinimum wage?",
+    category: "economy",
+    country: "france",
+    user: usertest
+  },
+  {
+    title_question: "Is nuclear energy the future of gobal power",
+    category: "politics",
+    country: "global",
+    user: usertest
+  },
+  {
+    title_question: "Will PSG win the champions this year?",
+    category: "social",
+    country: "global",
+    user: usertest
+  },
+  {
+    title_question: "Should week-ends be 4 days long?",
+    category: "social",
+    country: "france",
+    user: usertest
+  },
+])
+
+p "Seeded #{Poll.count} polls and #{User.count} users"
+

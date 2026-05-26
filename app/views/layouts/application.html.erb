@@ -8,22 +8,46 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-
   <body>
-    <%= yield %>
+    <% if notice %>
+      <div class="alert alert-info alert-dismissible fade show m-2" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <%= notice %>
+      </div>
+    <% end %>
+    <% if alert %>
+      <div class="alert alert-warning alert-dismissible fade show m-2" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <div style="padding-bottom: 70px;">
+      <%= yield %>
+    </div>
+
+    <nav style="position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e0e0e0; display: flex; z-index: 999;">
+      <%= link_to polls_path, style: "flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px; text-decoration: none; color: #534AB7;" do %>
+        <i class="ti ti-chart-bar" style="font-size: 22px;"></i>
+        <span style="font-size: 10px;">Polls</span>
+      <% end %>
+      <%= link_to new_poll_path, style: "flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px; text-decoration: none; color: gray;" do %>
+        <i class="ti ti-plus" style="font-size: 22px;"></i>
+        <span style="font-size: 10px;">Add</span>
+      <% end %>
+      <%= link_to "#", style: "flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px; text-decoration: none; color: gray;" do %>
+        <i class="ti ti-message-circle" style="font-size: 22px;"></i>
+        <span style="font-size: 10px;">AI</span>
+      <% end %>
+    </nav>
   </body>
 </html>
+
+<%# conversation_path = # %>

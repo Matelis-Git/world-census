@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_26_142002) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_26_150529) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -123,7 +123,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_26_142002) do
     t.datetime "created_at", null: false
     t.string "title_question"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["user_id"], name: "index_polls_on_user_id"
   end
 
@@ -152,6 +152,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_26_142002) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "votes", force: :cascade do |t|
+    t.string "answer"
+    t.datetime "created_at", null: false
+    t.bigint "poll_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["poll_id"], name: "index_votes_on_poll_id"
+    t.index ["user_id"], name: "index_votes_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "chat_messages", "conversations"
@@ -163,4 +173,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_26_142002) do
   add_foreign_key "messages", "tool_calls"
   add_foreign_key "polls", "users"
   add_foreign_key "tool_calls", "messages"
+  add_foreign_key "votes", "polls"
+  add_foreign_key "votes", "users"
 end
