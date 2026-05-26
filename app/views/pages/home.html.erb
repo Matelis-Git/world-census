@@ -1,2 +1,43 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<div class="container text-center">
+  <h1>Explore polls</h1>
+</div>
+
+<div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779805376/image_1_v8uccs.png" width=600px height=400px class="mx-auto d-block" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779805330/image_2_ekcla9.png" width=600px height=400px class="mx-auto d-block" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779804998/image_edstto.png" width=600px height=400px class="mx-auto d-block" alt="...">
+    </div>
+        <div class="carousel-item">
+      <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779806241/image_1_rrrnri.png" width=600px height=400px class="mx-auto d-block" alt="...">
+    </div>
+        <div class="carousel-item">
+      <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779806341/image_amipna.png" width=600px height=400px class="mx-auto d-block" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<div class="position-relative py-2 px-4">
+  <button type="button" class="mx-auto btn btn-success position-absolute top-100 start-50 translate-middle mt-1">Next</button>
+</div>
+
+<div class="position-relative py-2 px-4" class="link-primary">
+  <% if user_signed_in? %>
+    <%= link_to "homepage", root_path %>
+  <% else %>
+    <%= link_to "Skip intro", new_user_session_path %>
+  <% end %>
+</div>
