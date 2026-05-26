@@ -6,9 +6,8 @@ Rails.application.routes.draw do
 
   resources :polls, only: [:index, :new, :create] do
     resources :votes, only: [:create]
-  end
-
-  resources :conversations, only: [:show, :create] do
-    resources :chat_messages, only: [:create]
+    resources :conversations, only: [:index, :show, :create] do
+      resources :chat_messages, only: [:create]
+    end
   end
 end

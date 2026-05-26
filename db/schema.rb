@@ -46,8 +46,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_26_150529) do
     t.text "content"
     t.bigint "conversation_id", null: false
     t.datetime "created_at", null: false
+    t.integer "input_tokens"
+    t.string "model_id"
+    t.integer "output_tokens"
     t.string "role"
     t.datetime "updated_at", null: false
+    t.index ["conversation_id", "created_at"], name: "index_chat_messages_on_conversation_id_and_created_at"
     t.index ["conversation_id"], name: "index_chat_messages_on_conversation_id"
   end
 
@@ -61,6 +65,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_26_150529) do
   create_table "conversations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "intent"
+    t.string "model_id"
     t.bigint "poll_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
