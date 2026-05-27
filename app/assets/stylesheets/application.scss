@@ -10,3 +10,87 @@
 // Your CSS partials
 @import "components/index";
 @import "pages/index";
+
+$bg: #000957;
+$card: #19376D;
+$accent: #FF204E;
+$nav: #222831;
+$green: #03C988;
+
+body {
+  background-color: $bg;
+  color: white;
+}
+.text-muted {
+  color: white !important;
+}
+.card {
+  overflow: hidden;
+  border-radius: 10px;
+  background: $card;
+  box-shadow: 0 4px 15px rgba(255, 32, 78, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  color: white;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(255, 32, 78, 0.6);
+  }
+}
+
+.badge {
+  background-color: $nav !important;
+}
+
+.btn-success {
+  background-color: $green !important;
+  border-color: $green !important;
+  color: white !important;
+}
+
+.btn-danger {
+  background-color: $accent !important;
+  border-color: $accent !important;
+  color: white !important;
+}
+
+.progress {
+  background-color: $bg;
+  border: 0.5px solid $nav;
+}
+
+nav {
+  background-color: $nav !important;
+
+  a, i, span {
+    color: white !important;
+  }
+}
+
+.btn-outline-primary {
+  border-color: $nav !important;
+  color: white !important;
+  background-color: $card !important;
+
+  &:hover {
+    background-color: $nav !important;
+    color: white !important;
+  }
+}
+
+.alert-info {
+  background-color: $card;
+  border-color: $nav;
+  color: white;
+}
+
+input, textarea, select {
+  background-color: $card !important;
+  border-color: $nav !important;
+  color: white !important;
+
+  &::placeholder {
+    color: #aaa !important;
+  }
+}

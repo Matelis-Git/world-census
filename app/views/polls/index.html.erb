@@ -1,28 +1,41 @@
 <div class="container my-4">
   <% @polls.each do |poll| %>
-    <div class="card mb-3" id="poll-<%= poll.id %>">
+    <div class="card mb-3">
       <div class="card-body">
-        <p class="fw-bold"><%= poll.title_question %></p>
-        <div class="d-flex gap-2 mb-3">
-          <span class="badge bg-secondary"><%= poll.category %></span>
-          <span class="badge bg-secondary"><%= poll.country %></span>
+
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <p class="fw-bold mb-0"><%= poll.title_question %></p>
+          <%= button_to poll_path(poll), method: :delete, class: "btn btn-sm p-0 border-0 bg-transparent text-danger ms-2" do %>
+            <i class="fas fa-trash"></i>
+          <% end %>
         </div>
+
         <div class="d-flex gap-2 mb-3">
-          <%= button_to "Yes", poll_votes_path(poll),
-              params: { answer: "yes" },
-              class: "btn btn-success btn-sm w-50 vote-btn",
-              data: { poll_id: poll.id } %>
-          <%= button_to "No", poll_votes_path(poll),
-              params: { answer: "no" },
-              class: "btn btn-danger btn-sm w-50 vote-btn",
-              data: { poll_id: poll.id } %>
+          <span class="badge"><%= poll.category %></span>
+          <span class="badge"><%= poll.country %></span>
         </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <%= button_to "Yes", poll_votes_path(poll),
+                params: { answer: "yes" },
+                class: "btn btn-success w-100 vote-btn",
+                data: { poll_id: poll.id } %>
+          </div>
+          <div class="col-6">
+            <%= button_to "No", poll_votes_path(poll),
+                params: { answer: "no" },
+                class: "btn btn-danger w-100 vote-btn",
+                data: { poll_id: poll.id } %>
+          </div>
+        </div>
+
         <% yes_count = poll.votes.where(answer: "yes").count %>
         <% no_count = poll.votes.where(answer: "no").count %>
         <% total = yes_count + no_count %>
         <% yes_pct = total > 0 ? (yes_count.to_f / total * 100).round : 0 %>
         <% no_pct = 100 - yes_pct %>
-        <div class="d-flex justify-content-between mb-1" style="font-size: 12px;">
+        <div class="d-flex justify-content-between mb-1 small">
           <span class="text-success">Yes <%= yes_pct %>%</span>
           <span class="text-danger">No <%= no_pct %>%</span>
         </div>
@@ -30,17 +43,16 @@
           <div class="progress-bar bg-success" style="width: <%= yes_pct %>%;"></div>
           <div class="progress-bar bg-danger" style="width: <%= no_pct %>%;"></div>
         </div>
+
       </div>
     </div>
   <% end %>
 </div>
 
 <script>
-  // const voted = {};
   window.votedPolls = window.votedPolls || {};
   document.querySelectorAll(".vote-btn").forEach(btn => {
     btn.addEventListener("click", function(e) {
-      console.log(e)
       const pollId = this.closest("form").action;
       if (window.votedPolls[pollId]) {
         e.preventDefault();
