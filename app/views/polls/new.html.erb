@@ -1,9 +1,9 @@
-<div class="container my-4">
+<div class="container my-4 polls-form">
   <h2 class="mb-4">Add a Poll</h2>
   <%= simple_form_for @poll do |f| %>
     <%= f.input :title_question, label: "Your question", placeholder: "Should France...?" %>
     <%= f.input :category, collection: ["economy", "politics", "social"], label: "Category" %>
     <%= f.input :country, collection: ["france", "global"], label: "Country" %>
-    <%= f.submit "Publish poll", class: "btn btn-primary w-100 mt-2" %>
+    <%= f.submit "Publish poll", class: "btn polls" %>
   <% end %>
 </div>
