@@ -1,27 +1,35 @@
-<h1>Débat : "<%= @conversation.poll.title_question %>"</h1>
+<div class="container my-4">
+  <h2 class="mb-3">Census AI</h2>
 
-<%= link_to "← Retour aux conversations", poll_conversations_path(@conversation.poll) %>
+  <div class="d-flex flex-column gap-3 mb-4">
+    <% if @messages.empty? %>
+      <div class="alert alert-info">Ask me anything about global topics.</div>
+    <% end %>
+    <% @messages.each do |message| %>
+      <% if message.role == "user" %>
+        <div class="d-flex justify-content-end">
+          <div class="p-3 rounded-3 text-white" style="background:#534AB7; max-width:80%;">
+            <%= message.content %>
+          </div>
+        </div>
+      <% else %>
+        <div class="d-flex justify-content-start">
+          <div class="p-3 rounded-3" style="background:#f0f0f0; max-width:80%;">
+            <%= message.content %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
 
-<div id="messages">
-  <% @messages.where(role: ["user", "assistant"]).each do |message| %>
-    <div class="message <%= message.role %>">
-      <strong><%= message.role == "user" ? "Vous" : "DebatAI" %></strong>
-      <div class="message-content"><%= render_markdown(message.content) %></div>
+  <%= form_with model: [@conversation, @new_message],
+        url: conversation_chat_messages_path(@conversation),
+        data: { turbo: false } do |f| %>
+    <div class="d-flex gap-2">
+      <%= f.text_area :content, placeholder: "Or type here...", rows: 2, class: "form-control" %>
+      <%= f.submit "Send", class: "btn btn-primary" %>
     </div>
   <% end %>
+
+  <%= link_to "← Back", new_conversation_path, class: "btn btn-link mt-3" %>
 </div>
-
-<%= form_with model: [@conversation.poll, @conversation, @new_message],
-              url: poll_conversation_chat_messages_path(@conversation.poll, @conversation),
-              data: { turbo: false } do |f| %>
-  <%= f.text_area :content, placeholder: "Posez votre question sur ce débat...", rows: 3 %>
-  <%= f.submit "Envoyer" %>
-<% end %>
-
-<script>
-  document.querySelector("form").addEventListener("submit", function(e) {
-    const btn = this.querySelector("[type='submit']");
-    btn.disabled = true;
-    btn.value = "Envoi en cours...";
-  });
-</script>
