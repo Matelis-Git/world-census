@@ -3,6 +3,8 @@ class PollsController < ApplicationController
 
   def index
     @polls = Poll.all
+    @polls = @polls.where(category: params[:category]) if params[:category].present?
+    @polls = @polls.where(country: params[:country]) if params[:country].present?
   end
 
   def new
