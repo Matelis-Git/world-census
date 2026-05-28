@@ -1,1 +1,164 @@
-// Specific CSS for your home-page
+// =============================================
+// LANDING / DEMO PAGE
+// =============================================
+
+.demo-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem 6rem;
+  text-align: center;
+
+  .demo-logo {
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .25rem;
+    text-transform: uppercase;
+    color: $brand-green;
+    margin-bottom: .5rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $brand-text;
+    margin-bottom: 2rem;
+  }
+}
+
+// =============================================
+// NEON CARD — effet néon circulant sur le bord
+// =============================================
+
+// Propriété CSS custom animable (Chrome 85+, Firefox 128+)
+@property --neon-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.neon-card {
+  position: relative;
+  border-radius: 16px;
+  background: $brand-card;
+  overflow: hidden;
+  z-index: 0;
+
+  // Halo statique discret par défaut
+  box-shadow: 0 4px 20px rgba(3, 201, 136, 0.1);
+  transition: box-shadow 0.3s ease;
+
+  // Pseudo-élément : le "rail" néon qui tourne
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--neon-angle),
+      transparent 0%,
+      transparent 60%,
+      $brand-green 75%,
+      rgba(3, 201, 136, 0.4) 85%,
+      transparent 100%
+    );
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    animation: neon-spin 2.5s linear infinite paused;
+  }
+
+  // Couche intérieure pour masquer le débordement du conic-gradient
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 14px;
+    background: $brand-card;
+    z-index: -1;
+  }
+
+  // Activation au hover ou sur la classe .active
+  &:hover,
+  &.active {
+    box-shadow: 0 0 25px rgba(3, 201, 136, 0.35);
+
+    &::before {
+      opacity: 1;
+      animation-play-state: running;
+    }
+  }
+}
+
+@keyframes neon-spin {
+  to { --neon-angle: 360deg; }
+}
+
+// =============================================
+// CAROUSEL STYLISÉ
+// =============================================
+
+.demo-carousel {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+
+  .carousel-item img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+}
+
+// Indicateurs du carousel (les dots)
+.carousel-indicators [data-bs-target] {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba($brand-green, 0.4);
+  border: none;
+
+  &.active {
+    background-color: $brand-green;
+    box-shadow: 0 0 8px $brand-green;
+  }
+}
+
+// =============================================
+// BOUTONS LANDING
+// =============================================
+
+.btn-neon {
+  background: $brand-green;
+  color: #00224D;
+  font-weight: 700;
+  border: none;
+  border-radius: 50px;
+  padding: .75rem 2.5rem;
+  font-size: 1rem;
+  box-shadow: 0 0 15px rgba(3, 201, 136, 0.5);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 0 28px rgba(3, 201, 136, 0.8);
+    transform: translateY(-2px);
+    color: #00224D;
+  }
+}
+
+.link-skip {
+  color: rgba($brand-text, 0.5);
+  font-size: .85rem;
+  text-decoration: none;
+  margin-top: .75rem;
+  display: inline-block;
+
+  &:hover {
+    color: $brand-text;
+  }
+}
