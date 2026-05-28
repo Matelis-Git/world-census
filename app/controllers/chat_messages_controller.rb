@@ -87,3 +87,5 @@ class ChatMessagesController < ApplicationController
     PROMPT
   end
 end
+
+# add static route -> call system prompt in new/cencuslanding
