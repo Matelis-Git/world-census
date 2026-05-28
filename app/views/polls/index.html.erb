@@ -16,8 +16,10 @@
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start mb-2">
           <p class="fw-bold mb-0"><%= poll.title_question %></p>
-          <%= button_to poll_path(poll), method: :delete, class: "btn btn-sm p-0 border-0 bg-transparent text-danger ms-2" do %>
-            <i class="fas fa-trash"></i>
+          <% if poll.user == current_user %>
+            <%= button_to poll_path(poll), method: :delete, class: "btn btn-sm p-0 border-0 bg-transparent text-danger ms-2" do %>
+              <i class="fas fa-trash"></i>
+            <% end %>
           <% end %>
         </div>
 
