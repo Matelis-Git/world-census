@@ -1,8 +1,7 @@
 <div class="demo-page">
   <p class="demo-logo">World Census</p>
-  <h1>Explore polls</h1>
+  <h1>Your global opinion platform</h1>
 
-  <%# Carousel avec dots et effet neon sur la card active %>
   <div class="neon-card active demo-carousel">
     <div id="demoCarousel" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-indicators">
@@ -14,43 +13,46 @@
       </div>
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779805376/image_1_v8uccs.png" alt="Slide 1">
+          <h5 class="carousel-title">Explore polls</h5>
+          <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779805376/image_1_v8uccs.png" alt="Explore polls">
         </div>
         <div class="carousel-item">
-          <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779805330/image_2_ekcla9.png" alt="Slide 2">
+          <h5 class="carousel-title">Vote instantly</h5>
+          <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779806341/image_amipna.png" alt="Vote instantly">
         </div>
         <div class="carousel-item">
-          <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779804998/image_edstto.png" alt="Slide 3">
+          <h5 class="carousel-title">Explore by category</h5>
+          <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779804998/image_edstto.png" alt="Explore by category">
         </div>
         <div class="carousel-item">
-          <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779806241/image_1_rrrnri.png" alt="Slide 4">
+          <h5 class="carousel-title">Compare your opinion</h5>
+          <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779806241/image_1_rrrnri.png" alt="Compare your opinion">
         </div>
         <div class="carousel-item">
-          <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779806341/image_amipna.png" alt="Slide 5">
+          <h5 class="carousel-title">AI assistant</h5>
+          <img src="https://res.cloudinary.com/dfz8f4vwe/image/upload/v1779805330/image_2_ekcla9.png" alt="AI assistant">
         </div>
       </div>
     </div>
   </div>
 
-  <%# Bouton principal %>
   <% if user_signed_in? %>
     <%= link_to polls_path, class: "btn btn-neon" do %>
-      Explorer &rarr;
+      Continue &rarr;
     <% end %>
   <% else %>
     <%= link_to new_user_registration_path, class: "btn btn-neon" do %>
-      Commencer &rarr;
+      Get started &rarr;
     <% end %>
   <% end %>
 
-  <%# Lien skip %>
   <% if user_signed_in? %>
     <%= link_to polls_path, class: "link-skip" do %>
-      Passer l'intro
+      Go to polls
     <% end %>
   <% else %>
     <%= link_to new_user_session_path, class: "link-skip" do %>
-      J'ai déjà un compte
+      Already have an account? Sign in
     <% end %>
   <% end %>
 </div>
