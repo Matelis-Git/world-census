@@ -71,7 +71,7 @@ class ChatMessagesController < ApplicationController
 
     <<~PROMPT
       You are Census AI, a global opinion assistant.
-      Keep all responses under 150 words. Be concise and direct.
+      Keep all responses under 50 words. Be concise and direct.
       Always respond with a short sentence followed by 2-4 options when possible.
 
       Your role depends on the user's intent: #{intent}
