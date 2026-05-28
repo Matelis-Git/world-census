@@ -7,16 +7,21 @@
 // General style
 $font-family-sans-serif: $body-font;
 $headings-font-family:   $headers-font;
-$body-bg:                $light-gray;
+$body-bg:                $brand-bg;
 $font-size-base:         1rem;
 
 // Colors
-$body-color: $gray;
-$primary:    $blue;
-$success:    $green;
+$body-color: $brand-text;
+$primary:    $brand-green;
+$success:    $brand-green;
 $info:       $yellow;
-$danger:     $red;
+$danger:     $brand-accent;
 $warning:    $orange;
+
+// Cards
+$card-bg:           $brand-card;
+$card-border-color: rgba(255, 255, 255, 0.08);
+$card-color:        $brand-text;
 
 // Buttons & inputs' radius
 $border-radius-sm:            .0625rem;
