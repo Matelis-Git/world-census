@@ -16,6 +16,9 @@
     <%= javascript_importmap_tags %>
   </head>
   <body>
+    <% unless current_page?(root_path) %>
+    <%= render "shared/topbar" %>
+    <% end %>
     <% if notice %>
       <div class="alert alert-info alert-dismissible fade show m-2" role="alert">
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -29,7 +32,7 @@
       </div>
     <% end %>
 
-    <div class="pb-5">
+    <div style="min-height: calc(100vh - 120px);">
       <%= yield %>
     </div>
 

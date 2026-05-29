@@ -43,7 +43,31 @@ class ConversationsController < ApplicationController
   end
 
   def create
-    @conversation = Conversation.create!(intent: params[:intent])
+    @conversation = Conversation.create!(intent: params[:intent] || "generate")
+
+    most_voted_poll = Poll.joins(:votes).group(:id).order('COUNT(votes.id) DESC').first
+    most_voted_text = most_voted_poll ? "'#{most_voted_poll.title_question}' (#{most_voted_poll.votes.count} votes)" : "no polls yet"
+
+    initial_message = case params[:intent]
+    when "trending"
+      "Show me what's trending. The most engaged poll on World Census right now is: #{most_voted_text}. Then show what's trending in the news across economy, politics and social topics. 150 words max."
+    when "explore"
+      "Help me explore a poll — explain what makes a good poll question and what kind of debates they spark."
+    when "guide"
+      "Guide me through the app options on World Census: browsing polls, voting, creating a poll, and using the AI assistant."
+    else
+      category = params.dig(:poll, :category).presence || "any topic"
+      country = params.dig(:poll, :country).presence || "global"
+      question = params.dig(:poll, :title_question).presence
+
+      if question.present?
+        "The user is writing a poll question: '#{question}' in the category '#{category}' for #{country}. Generate 3 improved or related poll question suggestions. Just give me 3 numbered questions, nothing else."
+      else
+        "Generate 3 poll question suggestions for the category '#{category}' focused on #{country}. Give me only 3 numbered questions, nothing else."
+      end
+    end
+
+    @conversation.ask(initial_message)
     redirect_to conversation_path(@conversation)
   end
 end
