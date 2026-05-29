@@ -2,21 +2,23 @@
   <h2 class="mb-2">Census AI</h2>
   <p class="text-muted mb-4">Your global poll assistant</p>
 
-  <div class="d-flex flex-column gap-3">
     <%= button_to "→ See what's trending", conversations_path,
         params: { intent: "trending" },
-        class: "btn btn-outline-primary text-start w-100" %>
+        class: "btn btn-outline-primary text-start w-100",
+        data: { turbo: false } %>
 
     <%= button_to "→ Help generate a poll", conversations_path,
         params: { intent: "generate" },
-        class: "btn btn-outline-primary text-start w-100" %>
+        class: "btn btn-outline-primary text-start w-100",
+        data: { turbo: false } %>
 
     <%= button_to "→ Help explore a poll", conversations_path,
         params: { intent: "explore" },
-        class: "btn btn-outline-primary text-start w-100" %>
+        class: "btn btn-outline-primary text-start w-100",
+        data: { turbo: false } %>
 
-    <%= button_to "→ Explore app options", conversations_path,
-        params: { intent: "guide" },
-        class: "btn btn-outline-primary text-start w-100" %>
+    <%= link_to root_path, class: "btn btn-outline-primary text-start w-100" do %>
+      → Explore app options
+    <% end %>
   </div>
 </div>

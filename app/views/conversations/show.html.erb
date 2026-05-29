@@ -1,20 +1,20 @@
 <div class="container my-4">
-  <h2 class="mb-3">Census AI</h2>
+  <h2 class="mb-1">Census AI</h2>
 
-  <div class="d-flex flex-column gap-3 mb-4">
-    <% if @messages.empty? %>
+  <div class="d-flex flex-column gap-3 mb-4" id="chat-messages">
+    <% if @messages.where(role: ["user", "assistant"]).empty? %>
       <div class="alert alert-info">Ask me anything about global topics.</div>
     <% end %>
-    <% @messages.each do |message| %>
+    <% @messages.where(role: ["user", "assistant"]).each do |message| %>
       <% if message.role == "user" %>
         <div class="d-flex justify-content-end">
-          <div class="p-3 rounded-3 text-white" style="background:#534AB7; max-width:80%;">
+          <div class="p-3 rounded-3 text-white" style="background:#4635B1; max-width:80%;">
             <%= message.content %>
           </div>
         </div>
       <% else %>
         <div class="d-flex justify-content-start">
-          <div class="p-3 rounded-3" style="background:#f0f0f0; max-width:80%;">
+          <div class="p-3 rounded-3 text-white" style="background:#FF3F7F; max-width:80%;">
             <%= message.content %>
           </div>
         </div>
@@ -27,9 +27,9 @@
         data: { turbo: false } do |f| %>
     <div class="d-flex gap-2">
       <%= f.text_area :content, placeholder: "Or type here...", rows: 2, class: "form-control" %>
-      <%= f.submit "Send", class: "btn btn-primary" %>
+      <%= f.submit "Send", class: "btn btn-neon" %>
     </div>
   <% end %>
 
-  <%= link_to "← Back", new_conversation_path, class: "btn btn-link mt-3" %>
+  <%= link_to "← Back", new_conversation_path, class: "btn btn-link mt-3 text-white" %>
 </div>
