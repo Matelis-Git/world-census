@@ -11,11 +11,6 @@ Vote.destroy_all
 Poll.destroy_all
 User.destroy_all
 
-usercam = User.create!(
-  email: "usercam@test.com",
-  password: "1234567",
-)
-
 usertest = User.create!(
   email: "test@test.com",
   password: "123456",
