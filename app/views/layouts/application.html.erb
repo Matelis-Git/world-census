@@ -36,15 +36,15 @@
 
     <nav class="fixed-bottom d-flex" style="background-color: #211951; z-index: 999;">
       <%= link_to polls_path, class: "flex-fill d-flex flex-column align-items-center py-2 text-decoration-none text-white" do %>
-        <i class="ti ti-chart-bar fs-5"></i>
+        <i class="fa-solid fa-square-poll-vertical fs-5"></i>
         <span style="font-size: 10px;">Polls</span>
       <% end %>
       <%= link_to new_poll_path, class: "flex-fill d-flex flex-column align-items-center py-2 text-decoration-none text-white" do %>
-        <i class="ti ti-plus fs-5"></i>
+        <i class="fa-solid fa-plus fs-5"></i>
         <span style="font-size: 10px;">Add</span>
       <% end %>
       <%= link_to new_conversation_path, class: "flex-fill d-flex flex-column align-items-center py-2 text-decoration-none text-white" do %>
-        <i class="ti ti-message-circle fs-5"></i>
+        <i class="fa-solid fa-robot fs-5"></i>
         <span style="font-size: 10px;">AI</span>
       <% end %>
     </nav>
