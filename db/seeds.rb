@@ -16,6 +16,11 @@ usertest = User.create!(
   password: "123456",
 )
 
+usertest2 = User.create!(
+  email: "user@test.com",
+  password: "123456",
+)
+
 Poll.create!([
   {
     title_question: "Should France raise the minimum wage?",
@@ -40,6 +45,12 @@ Poll.create!([
     category: "social",
     country: "france",
     user: usertest
+  },
+  {
+    title_question: "Should you leave the lights on in the dark?",
+    category: "social",
+    country: "global",
+    user: usertest2
   },
 ])
 
