@@ -11,10 +11,10 @@
 @import "components/index";
 @import "pages/index";
 
-$bg: #00224D;
+$bg: #020B18;
 $card: #19376D;
 $accent: #FF204E;
-$nav: #001735;
+$nav: #071E3D;
 $green: #03C988;
 
 body {
@@ -22,7 +22,7 @@ body {
   color: white;
 }
 .text-muted {
-  color: white !important;
+  color: white;
 }
 .card {
   overflow: hidden;
@@ -50,8 +50,8 @@ body {
 }
 
 .btn-danger {
-  background-color: $accent !important;
-  border-color: $accent !important;
+  background-color:#FF7A2F !important;
+  border-color:#FF7A2F !important;
   color: white !important;
 }
 
@@ -64,7 +64,7 @@ nav {
   background-color: $nav !important;
 
   a, i, span {
-    color: white !important;
+    color: white;
   }
 }
 
@@ -94,5 +94,3 @@ input, textarea, select {
     color: #aaa !important;
   }
 }
-
-
