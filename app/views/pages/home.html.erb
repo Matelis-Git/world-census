@@ -48,7 +48,7 @@
 
   <% if user_signed_in? %>
     <%= link_to polls_path, class: "link-skip" do %>
-      Go to polls
+      <span style="color: #22c55e; font-weight: bold;">Go to polls</span>
     <% end %>
   <% else %>
     <%= link_to new_user_session_path, class: "link-skip" do %>
