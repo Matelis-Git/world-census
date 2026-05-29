@@ -1,6 +1,5 @@
 # app/controllers/polls_controller.rb
 class PollsController < ApplicationController
-
   def index
     @polls = Poll.all
     @polls = @polls.where(category: params[:category]) if params[:category].present?
@@ -25,6 +24,10 @@ class PollsController < ApplicationController
     @poll = Poll.find(params[:id])
     @poll.destroy
     redirect_to polls_path
+  end
+
+  def show
+    @poll = current_user.polls.find(params[:id])
   end
 
   private
