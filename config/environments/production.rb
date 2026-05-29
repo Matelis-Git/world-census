@@ -50,7 +50,7 @@ Rails.application.configure do
   # config.cache_store = :solid_cache_store
 
   # # Replace the default in-process and non-durable queuing backend for Active Job.
-  # config.active_job.queue_adapter = :solid_queue
+  config.active_job.queue_adapter = :solid_queue
   # config.solid_queue.connects_to = { database: { writing: :queue } }
   config.cache_store = :memory_store
   config.active_job.queue_adapter = :async
@@ -79,6 +79,7 @@ Rails.application.configure do
 
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
+  config.solid_cache.enabled = false
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
