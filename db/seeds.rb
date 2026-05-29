@@ -18,19 +18,19 @@ usertest = User.create!(
 
 Poll.create!([
   {
-    title_question: "Should france raise the miinimum wage?",
+    title_question: "Should France raise the minimum wage?",
     category: "economy",
     country: "france",
     user: usertest
   },
   {
-    title_question: "Is nuclear energy the future of gobal power",
+    title_question: "Is nuclear energy the future of global power?",
     category: "politics",
     country: "global",
     user: usertest
   },
   {
-    title_question: "Will PSG win the champions this year?",
+    title_question: "Will PSG win the Champions this year?",
     category: "social",
     country: "global",
     user: usertest
@@ -44,4 +44,3 @@ Poll.create!([
 ])
 
 p "Seeded #{Poll.count} polls and #{User.count} users"
-
