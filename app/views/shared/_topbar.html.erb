@@ -1,0 +1,45 @@
+<nav class="d-flex align-items-center justify-content-between px-3 py-2" style="background-color: #000957; border-bottom: 1px solid rgba(3,201,136,0.2); position: sticky; top: 0; z-index: 998;">
+
+  <div class="d-flex align-items-center gap-2">
+    <span style="color: #03C988; font-weight: 700; font-size: 13px; letter-spacing: .1rem; text-transform: uppercase;">World Census</span>
+    <span class="badge" style="background-color: #03C988; color: #000957; font-size: 10px;">
+      <%= Poll.count %> polls
+    </span>
+  </div>
+
+  <% if user_signed_in? %>
+    <div class="dropdown">
+      <button class="btn p-0 border-0 rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 34px; height: 34px; background-color: #4635B1; color: white; font-weight: 700; font-size: 13px;"
+              data-bs-toggle="dropdown">
+        <%= current_user.email[0].upcase %>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" style="background-color: #19376D; border: 1px solid rgba(3,201,136,0.2); min-width: 180px;">
+        <li>
+          <div class="px-3 py-2 border-bottom" style="border-color: rgba(255,255,255,0.1) !important;">
+            <div style="color: #03C988; font-size: 11px; font-weight: 600;">Signed in as</div>
+            <div style="color: white; font-size: 12px; overflow: hidden; text-overflow: ellipsis;"><%= current_user.email %></div>
+          </div>
+        </li>
+        <li>
+          <%= link_to polls_path(user_id: current_user.id), class: "dropdown-item", style: "color: white; font-size: 13px;" do %>
+            <i class="fas fa-chart-bar me-2" style="color: #03C988;"></i> My Polls
+          <% end %>
+        </li>
+        <li>
+          <%= link_to "#", class: "dropdown-item", style: "color: white; font-size: 13px;" do %>
+            <i class="fas fa-user me-2" style="color: #03C988;"></i> Profile
+          <% end %>
+        </li>
+        <li><hr class="dropdown-divider" style="border-color: rgba(255,255,255,0.1);"></li>
+        <li>
+          <%= button_to destroy_user_session_path, method: :delete, class: "dropdown-item border-0 w-100 text-start", style: "background: none; color: #FF204E; font-size: 13px;" do %>
+            <i class="fas fa-sign-out-alt me-2"></i> Sign out
+          <% end %>
+        </li>
+      </ul>
+    </div>
+  <% else %>
+    <%= link_to "Sign in", new_user_session_path, style: "color: #03C988; font-size: 13px; text-decoration: none;" %>
+  <% end %>
+</nav>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="container my-4 polls-form">
   <h2 class="mb-4">Add a Poll</h2>
   <%= simple_form_for @poll do |f| %>
@@ -7,4 +8,31 @@
     <%= f.submit "Publish poll", class: "btn polls" %>
   <% end %>
   <%= link_to "Ask AI", new_conversation_path, class: "btn", role: "button" %>
+=======
+
+<div class="auth-wrapper">
+  <div class="auth-card-stack">
+    <div class="auth-card">
+      <h2 class="mb-4">Add a Poll</h2>
+      <%= simple_form_for @poll, html: { data: { controller: "poll-ai-helper" } } do |f| %>
+        <%= f.input :title_question, label: "Your question", placeholder: "Should France...?",
+            input_html: { data: { "poll-ai-helper-target": "question" } } %>
+        <%= f.input :category, collection: ["economy", "politics", "social"], label: "Category",
+            input_html: { data: { "poll-ai-helper-target": "category" } } %>
+        <%= f.input :country, collection: ["france", "global"], label: "Country",
+            input_html: { data: { "poll-ai-helper-target": "country" } } %>
+        <div class="row g-2 mt-2">
+          <div class="col-6">
+            <%= f.submit "Publish poll", class: "btn btn-form w-100", style: "background-color: #03C988; color: #000957;" %>
+          </div>
+          <div class="col-6">
+            <button class="btn btn-ai w-100" data-action="click->poll-ai-helper#generateWithAI">
+              <i class="fas fa-robot me-1"></i> AI help
+            </button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+>>>>>>> 029966b78663c2c3cbe9b0c8f70d4e8aa348b29e
 </div>
