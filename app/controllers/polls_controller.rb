@@ -26,8 +26,8 @@ class PollsController < ApplicationController
     redirect_to polls_path
   end
 
-  def show
-    @poll = current_user.polls.find(params[:id])
+  def my_polls
+    @polls = current_user.polls
   end
 
   private

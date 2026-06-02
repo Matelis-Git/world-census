@@ -102,9 +102,7 @@
 # #     <<: *primary_production
 # #     database: world_census_production_cable
 # #     migrations_paths: db/cable_migrate
-# production:
-#   <<: *default
-#   url: <%= ENV["DATABASE_URL"] %>
+
 default: &default
   adapter: postgresql
   encoding: unicode
@@ -119,5 +117,15 @@ test:
   database: world_census_test
 
 production:
-  <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
+  primary:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+  cache:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+  queue:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+  cable:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
