@@ -34,50 +34,35 @@
           </span>
         </div>
 
+        <% user_vote = @user_votes&.[](poll.id) %>
+        <% option_colors = ["#03C988", "#FF204E", "#534AB7", "#FFC193"] %>
         <div class="row g-2 mb-3">
-          <div class="col-6">
-            <%= button_to "Yes", poll_votes_path(poll),
-                params: { answer: "yes" },
-                class: "btn btn-success w-100 vote-btn",
-                data: { poll_id: poll.id } %>
-          </div>
-          <div class="col-6">
-            <%= button_to "No", poll_votes_path(poll),
-                params: { answer: "no" },
-                class: "btn btn-danger w-100 vote-btn",
-                data: { poll_id: poll.id } %>
-          </div>
+          <% poll.poll_options.each do |option| %>
+            <div class="col">
+              <% voted = user_vote&.poll_option_id == option.id %>
+              <%= button_to option.text, poll_votes_path(poll),
+                  params: { poll_option_id: option.id },
+                  class: "btn w-100#{voted ? ' disabled' : ''}",
+                  style: "background-color: #{voted ? '#3a3a5c' : '#1a1a2e'}; color: #{voted ? '#888' : 'white'}; border: 1px solid #{voted ? '#3a3a5c' : '#534AB7'}; cursor: #{voted ? 'default' : 'pointer'};",
+                  disabled: voted %>
+            </div>
+          <% end %>
         </div>
 
-        <% yes_count = poll.votes.where(answer: "yes").count %>
-        <% no_count = poll.votes.where(answer: "no").count %>
-        <% total = yes_count + no_count %>
-        <% yes_pct = total > 0 ? (yes_count.to_f / total * 100).round : 0 %>
-        <% no_pct = 100 - yes_pct %>
-        <div class="d-flex justify-content-between mb-1 small">
-          <span class="text-success">Yes <%= yes_pct %>%</span>
-          <span class="text-danger">No <%= no_pct %>%</span>
-        </div>
-        <div class="progress" style="height: 8px;">
-          <div class="progress-bar bg-success" style="width: <%= yes_pct %>%;"></div>
-          <div class="progress-bar bg-danger" style="width: <%= no_pct %>%;"></div>
-        </div>
+        <% votes_arr = poll.votes.to_a %>
+        <% total = votes_arr.size %>
+        <% poll.poll_options.each_with_index do |option, i| %>
+          <% count = votes_arr.count { |v| v.poll_option_id == option.id } %>
+          <% pct = total > 0 ? (count.to_f / total * 100).round : 0 %>
+          <div class="d-flex justify-content-between mb-1 small">
+            <span style="color: <%= option_colors[i] %>"><%= option.text %></span>
+            <span style="color: <%= option_colors[i] %>"><%= pct %>%</span>
+          </div>
+          <div class="progress mb-2" style="height: 6px;">
+            <div class="progress-bar" style="width: <%= pct %>%; background-color: <%= option_colors[i] %>;"></div>
+          </div>
+        <% end %>
       </div>
     </div>
   <% end %>
 </div>
-
-<script>
-  window.votedPolls = window.votedPolls || {};
-  document.querySelectorAll(".vote-btn").forEach(btn => {
-    btn.addEventListener("click", function(e) {
-      const pollId = this.closest("form").action;
-      if (window.votedPolls[pollId]) {
-        e.preventDefault();
-        alert("You already voted on this poll!");
-      } else {
-        window.votedPolls[pollId] = true;
-      }
-    });
-  });
-</script>

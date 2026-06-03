@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_01_133838) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_03_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -115,6 +115,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_01_133838) do
     t.index ["modalities"], name: "index_models_on_modalities", using: :gin
     t.index ["provider", "model_id"], name: "index_models_on_provider_and_model_id", unique: true
     t.index ["provider"], name: "index_models_on_provider"
+  end
+
+  create_table "poll_options", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "poll_id", null: false
+    t.string "text", null: false
+    t.datetime "updated_at", null: false
+    t.index ["poll_id"], name: "index_poll_options_on_poll_id"
   end
 
   create_table "polls", force: :cascade do |t|
@@ -295,12 +303,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_01_133838) do
   end
 
   create_table "votes", force: :cascade do |t|
-    t.string "answer"
     t.datetime "created_at", null: false
     t.bigint "poll_id", null: false
+    t.bigint "poll_option_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["poll_id", "user_id"], name: "index_votes_on_poll_id_and_user_id", unique: true
     t.index ["poll_id"], name: "index_votes_on_poll_id"
+    t.index ["poll_option_id"], name: "index_votes_on_poll_option_id"
     t.index ["user_id"], name: "index_votes_on_user_id"
   end
 
@@ -313,6 +323,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_01_133838) do
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "models"
   add_foreign_key "messages", "tool_calls"
+  add_foreign_key "poll_options", "polls"
   add_foreign_key "polls", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
@@ -321,6 +332,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_01_133838) do
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "tool_calls", "messages"
+  add_foreign_key "votes", "poll_options"
   add_foreign_key "votes", "polls"
   add_foreign_key "votes", "users"
 end

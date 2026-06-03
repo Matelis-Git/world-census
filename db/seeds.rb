@@ -8,6 +8,7 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 Vote.destroy_all
+PollOption.destroy_all
 Poll.destroy_all
 User.destroy_all
 
@@ -21,37 +22,32 @@ usertest2 = User.create!(
   password: "123456",
 )
 
-Poll.create!([
+polls_with_options = [
   {
-    title_question: "Should France raise the minimum wage?",
-    category: "economy",
-    country: "france",
-    user: usertest
+    poll: { title_question: "Should France raise the minimum wage?", category: "economy", country: "france", user: usertest },
+    options: ["Yes, significantly", "Yes, but gradually", "No, keep it as is", "No, it should be lowered"]
   },
   {
-    title_question: "Is nuclear energy the future of global power?",
-    category: "politics",
-    country: "global",
-    user: usertest
+    poll: { title_question: "Is nuclear energy the future of global power?", category: "politics", country: "global", user: usertest },
+    options: ["Yes, it's our best option", "Only as a transition energy", "No, renewables are enough"]
   },
   {
-    title_question: "Will PSG win the Champions this year?",
-    category: "social",
-    country: "global",
-    user: usertest
+    poll: { title_question: "Will PSG win the Champions League this year?", category: "social", country: "global", user: usertest },
+    options: ["Definitely yes", "Maybe, it's possible", "Unlikely", "No chance"]
   },
   {
-    title_question: "Should week-ends be 4 days long?",
-    category: "social",
-    country: "france",
-    user: usertest
+    poll: { title_question: "Should weekends be 4 days long?", category: "social", country: "france", user: usertest },
+    options: ["Yes, absolutely", "Yes, but only some workers", "No, 2 days is fine"]
   },
   {
-    title_question: "Should you leave the lights on in the dark?",
-    category: "social",
-    country: "global",
-    user: usertest2
+    poll: { title_question: "Should you leave the lights on in the dark?", category: "social", country: "global", user: usertest2 },
+    options: ["Yes, always", "Only in certain rooms", "No, save electricity"]
   },
-])
+]
 
-p "Seeded #{Poll.count} polls and #{User.count} users"
+polls_with_options.each do |entry|
+  poll = Poll.create!(entry[:poll])
+  entry[:options].each { |text| poll.poll_options.create!(text: text) }
+end
+
+p "Seeded #{Poll.count} polls, #{PollOption.count} options, and #{User.count} users"
