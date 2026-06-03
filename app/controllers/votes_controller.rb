@@ -7,9 +7,6 @@ class VotesController < ApplicationController
     @vote = Vote.find_or_initialize_by(poll: @poll, user: current_user)
     @vote.poll_option_id = params[:poll_option_id]
     @vote.save
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to polls_path }
-    end
+    redirect_back fallback_location: polls_path
   end
 end
