@@ -16,7 +16,7 @@ export default class extends Controller {
     const html = `
       <div class="d-flex gap-2 mb-2 poll-option-item">
         <input type="text" name="poll[poll_options_attributes][${index}][text]"
-               class="form-control" placeholder="Option ${count}" />
+               class="form-control" placeholder="Option ${count}" maxlength="50" />
         <button class="btn btn-outline-danger btn-sm align-self-center"
                 data-action="click->poll-options#remove" type="button">✕</button>
       </div>
