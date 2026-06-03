@@ -38,12 +38,12 @@
         <% option_colors = ["#03C988", "#FF204E", "#534AB7", "#FFC193"] %>
         <div class="row g-2 mb-3">
           <% poll.poll_options.each do |option| %>
-            <div class="col">
+            <div class="col-6 col-sm">
               <% voted = user_vote&.poll_option_id == option.id %>
               <%= button_to option.text, poll_votes_path(poll),
                   params: { poll_option_id: option.id },
-                  class: "btn w-100#{voted ? ' disabled' : ''}",
-                  style: "background-color: #{voted ? '#3a3a5c' : '#1a1a2e'}; color: #{voted ? '#888' : 'white'}; border: 1px solid #{voted ? '#3a3a5c' : '#534AB7'}; cursor: #{voted ? 'default' : 'pointer'};",
+                  class: "btn w-100",
+                  style: "background-color: #{voted ? '#3a3a5c' : '#1a1a2e'}; color: #{voted ? '#888' : 'white'}; border: 1px solid #{voted ? '#3a3a5c' : '#534AB7'};",
                   disabled: voted %>
             </div>
           <% end %>
