@@ -8,8 +8,7 @@
             input_html: { data: { "poll-ai-helper-target": "question" } } %>
         <%= f.input :category, collection: ["economy", "politics", "social"], label: "Category",
             input_html: { data: { "poll-ai-helper-target": "category" } } %>
-        <%= f.input :country, collection: ["france", "global"], label: "Country",
-            input_html: { data: { "poll-ai-helper-target": "country" } } %>
+         <%= f.input :country, collection: [["Global", "global"]] + ISO3166::Country.all.map { |c| [c.iso_short_name, c.alpha2] }, label: "Country", input_html: { data: { "poll-ai-helper-target": "country" } } %>
 
         <div class="mb-3">
           <label class="form-label fw-semibold">Answer options (2–4)</label>

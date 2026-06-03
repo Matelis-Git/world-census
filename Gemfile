@@ -75,3 +75,4 @@ end
 gem "devise", "~> 5.0"
 
 gem "ruby_llm", "~> 1.15"
+gem "countries", require: "countries"
