@@ -9,6 +9,11 @@ class PollsController < ApplicationController
     end
   end
 
+  def show
+    @poll = Poll.includes(:poll_options, :votes).find(params[:id])
+    @user_vote = Vote.find_by(poll: @poll, user: current_user) if user_signed_in?
+  end
+
   def new
     @poll = Poll.new
     2.times { @poll.poll_options.build }
