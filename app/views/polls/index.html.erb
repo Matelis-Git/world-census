@@ -6,26 +6,57 @@
     <%= link_to "All", polls_path, class: "badge text-decoration-none", style: "background-color: #{params[:category].nil? && params[:country].nil? ? '#534AB7' : '#1a1a2e'}; color: white; border: 1px solid #534AB7;" %>
     <%= link_to "Economy", polls_path(category: "economy"), class: "badge text-decoration-none", style: "background-color: #{params[:category] == 'economy' ? '#03C988' : '#1a1a2e'}; color: #{params[:category] == 'economy' ? '#000957' : 'white'}; border: 1px solid #03C988;" %>
     <%= link_to "Politics", polls_path(category: "politics"), class: "badge text-decoration-none", style: "background-color: #{params[:category] == 'politics' ? '#FF204E' : '#1a1a2e'}; color: white; border: 1px solid #FF204E;" %>
-    <%= link_to "Law", polls_path(category: "law"), class: "badge text-decoration-none", style: "background-color:
-  #{params[:category] == 'law' ? '#FFA500' : '#1a1a2e'}; color: white; border: 1px solid #FFA500;" %>
+    <%= link_to "Law", polls_path(category: "law"), class: "badge text-decoration-none", style: "background-color: #{params[:category] == 'law' ? '#FFA500' : '#1a1a2e'}; color: white; border: 1px solid #FFA500;" %>
     <%= link_to "Social", polls_path(category: "social"), class: "badge text-decoration-none", style: "background-color: #{params[:category] == 'social' ? '#FFC193' : '#1a1a2e'}; color: #{params[:category] == 'social' ? '#000957' : 'white'}; border: 1px solid #FFC193;" %>
-    <%= link_to "Global", polls_path(country: "global"), class: "badge text-decoration-none", style: "background-color: #{params[:country] == 'global' ? '#4635B1' : '#1a1a2e'}; color: white; border: 1px solid 
-     #4635B1;" %>
+    <%= link_to "Global", polls_path(country: "global"), class: "badge text-decoration-none", style: "background-color: #{params[:country] == 'global' ? '#4635B1' : '#1a1a2e'}; color: white; border: 1px solid #4635B1;" %>
   </div>
-    <div class="dropdown mb-2 w-auto">
+
+  <div class="dropdown mb-2 w-auto">
     <button class="badge dropdown-toggle text-decoration-none border-0 w-auto"
             data-bs-toggle="dropdown"
             style="background-color: <%= params[:country].present? && params[:country] != 'global' ? '#0055A4' : '#1a1a2e' %>; color: white; border: 1px solid #0055A4 !important;">
       <%= params[:country].present? && params[:country] != 'global' ? ISO3166::Country[params[:country]]&.iso_short_name : "Country" %>
     </button>
-    <ul class="dropdown-menu" style="max-height: 300px; overflow-y: auto; background-color: #1a1a2e; width: 200px">
-      <%= content_tag :li, link_to("All countries", polls_path(category: params[:category]), class: "dropdown-item text-white") %>
-      <% ISO3166::Country.all.sort_by(&:iso_short_name).each do |c| %>
-        <%= content_tag :li, link_to(c.iso_short_name, polls_path(country: c.alpha2, category: params[:category]), class: "dropdown-item text-white") %>
+<ul class="dropdown-menu" style="max-height: 300px; overflow-y: auto; background-color: #1a1a2e; width: 200px">
+  <%= content_tag :li, link_to("All countries", polls_path(category: params[:category]), class: "dropdown-item text-white") %>
+
+  <%# ✅ Remplace l'ancienne boucle par celle-ci : %>
+  <% ISO3166::Country.all.sort_by(&:iso_short_name).each do |c| %>
+    <li class="d-flex align-items-center justify-content-between px-2">
+      <%= link_to c.iso_short_name, polls_path(country: c.alpha2, category: params[:category]),
+          class: "dropdown-item text-white flex-grow-1" %>
+      <% if user_signed_in? %>
+        <% already_saved = current_user.user_countries.exists?(country_code: c.alpha2) %>
+        <%= button_to already_saved ? "★" : "☆",
+            already_saved ? user_country_path(current_user.user_countries.find_by(country_code: c.alpha2)) : user_countries_path,
+            method: already_saved ? :delete : :post,
+            params: { country_code: c.alpha2 },
+            class: "btn btn-sm p-0 border-0 bg-transparent",
+            style: "color: #{already_saved ? '#FFC193' : '#888'};" %>
       <% end %>
-    </ul>
+    </li>
+  <% end %>
+</ul>
   </div>
 
+  <%# ✅ My countries — en dehors du dropdown %>
+  <% if user_signed_in? && current_user.user_countries.any? %>
+    <div class="d-flex gap-2 mb-3 flex-wrap align-items-center">
+      <span style="color: #888; font-size: 12px;">⭐ My countries</span>
+      <% current_user.user_countries.each do |uc| %>
+        <div class="d-flex align-items-center gap-1">
+          <%= link_to ISO3166::Country[uc.country_code]&.iso_short_name,
+              polls_path(country: uc.country_code),
+              class: "badge text-decoration-none",
+              style: "background-color: #{params[:country] == uc.country_code ? '#0055A4' : '#1a1a2e'}; color: white; border: 1px solid #0055A4;" %>
+          <%= button_to "✕", user_country_path(uc),
+              method: :delete,
+              class: "btn btn-sm p-0 border-0 bg-transparent",
+              style: "color: #888; font-size: 10px;" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 
   <% @polls.each do |poll| %>
     <%= render "poll", poll: poll, user_vote: @user_votes&.[](poll.id) %>
