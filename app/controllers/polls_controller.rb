@@ -35,6 +35,10 @@ class PollsController < ApplicationController
     @user_votes = Vote.where(poll: @polls, user: current_user).index_by(&:poll_id)
   end
 
+  def my_votes
+    @votes = current_user.votes.includes(poll: [:poll_options, :votes])
+  end
+
   private
 
   def poll_params
