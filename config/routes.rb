@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
+  root "globe#index"
   devise_for :users
-  root to: "pages#home"
+  get "/globe", to: "globe#index"
 
   get "up" => "rails/health#show", as: :rails_health_check
   resources :polls, only: [:index, :new, :create, :destroy, :show] do
