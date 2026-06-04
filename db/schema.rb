@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_03_141850) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_04_150312) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -290,6 +290,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_141850) do
     t.index ["tool_call_id"], name: "index_tool_calls_on_tool_call_id", unique: true
   end
 
+  create_table "user_countries", force: :cascade do |t|
+    t.string "country_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_user_countries_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "country"
     t.datetime "created_at", null: false
@@ -333,6 +341,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_141850) do
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "tool_calls", "messages"
+  add_foreign_key "user_countries", "users"
   add_foreign_key "votes", "poll_options"
   add_foreign_key "votes", "polls"
   add_foreign_key "votes", "users"
