@@ -1,6 +1,7 @@
 <nav class="d-flex align-items-center justify-content-between px-3 py-2" style="background-color: #071E3D; border-bottom: 1px solid rgba(3,201,136,0.2); position: sticky; top: 0; z-index: 998;">
 
   <div class="d-flex align-items-center gap-2">
+    <%= image_tag 'favicon.ico', alt: 'World Census logo', style: 'height: 13px; width: auto; position: relative; top: 1px;' %>
     <span style="color: #03C988; font-weight: 700; font-size: 13px; letter-spacing: .1rem; text-transform: uppercase;">World Census</span>
     <span class="badge" style="background-color: #FF3F7F; color: #000957; font-size: 10px;">
       <%= Poll.count %> polls
@@ -22,12 +23,17 @@
           </div>
         </li>
         <li>
-          <%= link_to polls_path, class: "dropdown-item", style: "color: white; font-size: 13px;" do %>
+          <%= link_to my_polls_polls_path, class: "dropdown-item", style: "color: white; font-size: 13px;" do %>
             <i class="fas fa-chart-bar me-2" style="color: #03C988;"></i> My Polls
           <% end %>
         </li>
         <li>
-          <%= link_to "#", class: "dropdown-item", style: "color: white; font-size: 13px;" do %>
+          <%= link_to my_votes_polls_path, class: "dropdown-item", style: "color: white; font-size: 13px;" do %>
+            <i class="fas fa-vote-yea me-2" style="color: #534AB7;"></i> My Votes
+          <% end %>
+        </li>
+        <li>
+          <%= link_to profile_path, class: "dropdown-item", style: "color: white; font-size: 13px;" do %>
             <i class="fas fa-user me-2" style="color: #03C988;"></i> Profile
           <% end %>
         </li>

@@ -1,0 +1,16 @@
+<div class="container my-4">
+  <h6 class="fw-bold mb-4" style="color: #534AB7;">My Votes</h6>
+
+  <% if @votes.empty? %>
+    <div class="card">
+      <div class="card-body text-center py-5" style="color: rgba(255,255,255,0.35); font-size: 0.85rem;">
+        You haven't voted on any polls yet.
+        <%= link_to "Browse polls", polls_path, style: "color: #03C988;" %>
+      </div>
+    </div>
+  <% else %>
+    <% @votes.each do |vote| %>
+      <%= render "polls/voted_poll", vote: vote %>
+    <% end %>
+  <% end %>
+</div>

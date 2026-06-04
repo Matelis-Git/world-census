@@ -1,0 +1,84 @@
+<div class="container my-4">
+
+  <%# User header %>
+  <div class="card mb-3">
+    <div class="card-body d-flex align-items-center gap-3 py-3">
+      <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+           style="width: 56px; height: 56px; background-color: #4635B1; color: white; font-size: 1.4rem; font-weight: 700;">
+        <%= current_user.email[0].upcase %>
+      </div>
+      <div class="min-width-0">
+        <div style="color: white; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><%= current_user.email %></div>
+        <div style="color: rgba(255,255,255,0.45); font-size: 0.78rem;">Member since <%= current_user.created_at.strftime("%B %Y") %></div>
+      </div>
+    </div>
+  </div>
+
+  <%# Stats %>
+  <div class="row g-3 mb-3">
+    <div class="col-6">
+      <div class="card text-center py-3">
+        <div style="font-size: 1.5rem; font-weight: 700; color: #03C988;"><%= @my_polls.size %></div>
+        <div style="font-size: 0.78rem; color: rgba(255,255,255,0.5);">Polls created</div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="card text-center py-3">
+        <div style="font-size: 1.5rem; font-weight: 700; color: #534AB7;"><%= @votes.size %></div>
+        <div style="font-size: 0.78rem; color: rgba(255,255,255,0.5);">Votes cast</div>
+      </div>
+    </div>
+  </div>
+
+  <%# Country card %>
+  <% user_country = current_user.country.present? ? ISO3166::Country[current_user.country] : nil %>
+  <div class="card mb-4">
+    <div class="card-body d-flex align-items-center gap-3 py-3">
+      <% if user_country %>
+        <span class="fi fi-<%= current_user.country.downcase %>"
+              style="width: 2.6rem; height: 1.95rem; display: block; flex-shrink: 0; border-radius: 3px;"></span>
+        <div>
+          <div style="color: white; font-weight: 600;"><%= user_country.iso_short_name %></div>
+          <div style="color: rgba(255,255,255,0.45); font-size: 0.78rem;">Represented country</div>
+        </div>
+      <% else %>
+        <div class="d-flex align-items-center justify-content-center flex-shrink-0"
+             style="width: 44px; height: 44px; background-color: #1a1a2e; border-radius: 8px; color: rgba(255,255,255,0.3); font-size: 1.3rem;">
+          <i class="fas fa-globe"></i>
+        </div>
+        <div>
+          <div style="color: rgba(255,255,255,0.4); font-size: 0.85rem;">Stay anonymous</div>
+          <div style="color: rgba(255,255,255,0.3); font-size: 0.75rem;">Represented country</div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# My Polls %>
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h6 class="mb-0 fw-bold" style="color: #03C988;">My Polls</h6>
+    <%= link_to my_polls_polls_path, style: "font-size: 0.78rem; color: rgba(255,255,255,0.4); text-decoration: none;" do %>
+      See all <i class="fas fa-chevron-right ms-1" style="font-size: 10px;"></i>
+    <% end %>
+  </div>
+
+  <% if @my_polls.empty? %>
+    <div class="card mb-4">
+      <div class="card-body text-center py-4" style="color: rgba(255,255,255,0.35); font-size: 0.85rem;">
+        No polls yet. <%= link_to "Create one", new_poll_path, style: "color: #03C988;" %>
+      </div>
+    </div>
+  <% else %>
+    <% @my_polls.first(2).each do |poll| %>
+      <%= render "polls/poll", poll: poll, user_vote: @user_votes[poll.id] %>
+    <% end %>
+    <% if @my_polls.size > 2 %>
+      <div class="text-center mb-4">
+        <%= link_to my_polls_polls_path, class: "btn btn-sm", style: "background-color: #1a1a2e; color: rgba(255,255,255,0.5); border: 1px solid #2a2a4a; font-size: 0.8rem;" do %>
+          View all <%= @my_polls.size %> polls
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+</div>

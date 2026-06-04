@@ -1,2 +1,115 @@
-resources :polls, only: [:index, :new, :create, :destroy, :show] do
-  resources :votes, only: [:create] do
+<% category_colors = { "economy" => "#03C988", "politics" => "#FF7A2F", "law" => "#FFA500", "social" => "#FFEB00" } %>
+<% country_colors = { "france" => "#0055A4", "global" => "#4635B1" } %>
+<% option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"] %>
+
+<div class="container my-4" style="max-width: 600px;">
+
+  <%# BACK BUTTON %>
+  <%= link_to polls_path, class: "text-decoration-none d-inline-flex align-items-center gap-1 mb-4", style: "color: rgba(255,255,255,0.5); font-size: 0.85rem;" do %>
+    <i class="fas fa-arrow-left"></i> Back
+  <% end %>
+
+  <%# POLL HEADER %>
+  <h4 class="fw-bold mb-3"><%= @poll.title_question %></h4>
+
+  <div class="d-flex gap-2 mb-2 flex-wrap">
+    <% if category_colors[@poll.category] %>
+      <span class="badge" style="background-color: <%= category_colors[@poll.category] %> !important; color: #0d0d1a;">
+        <%= @poll.category %>
+      </span>
+    <% end %>
+    <% if country_colors[@poll.country] %>
+      <span class="badge" style="background-color: <%= country_colors[@poll.country] %> !important; color: white;">
+        <%= @poll.country %>
+      </span>
+    <% end %>
+  </div>
+
+  <p class="mb-4" style="font-size: 0.8rem; color: rgba(255,255,255,0.4);">
+    Asked by <%= @poll.user&.email&.split("@")&.first || "anonymous" %>
+    &middot; <%= time_ago_in_words(@poll.created_at) %> ago
+    &middot; <%= @poll.votes.size %> vote<%= @poll.votes.size == 1 ? "" : "s" %>
+  </p>
+
+  <%# OVERALL RESULTS CARD %>
+  <% votes_arr = @poll.votes.to_a %>
+  <% total = votes_arr.size %>
+  <% has_voted = @user_vote.present? %>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">Overall Results</p>
+
+      <% if has_voted %>
+        <% @poll.poll_options.each_with_index do |option, i| %>
+          <% count = votes_arr.count { |v| v.poll_option_id == option.id } %>
+          <% pct = total > 0 ? (count.to_f / total * 100).round : 0 %>
+          <% selected = @user_vote.poll_option_id == option.id %>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span style="font-size: 0.85rem; color: <%= selected ? option_colors[i] : 'rgba(255,255,255,0.5)' %>; font-weight: <%= selected ? '600' : '400' %>;">
+                <%= option.text %>
+                <% if selected %><i class="fas fa-check ms-1" style="font-size: 9px;"></i><% end %>
+              </span>
+              <span style="font-size: 0.8rem; color: <%= option_colors[i] %>; font-weight: 600;"><%= pct %>%</span>
+            </div>
+            <div class="progress" style="height: 6px; background-color: #0d0d1a;">
+              <div class="progress-bar" style="width: <%= pct %>%; background-color: <%= option_colors[i] %>; opacity: <%= selected ? '1' : '0.35' %>;"></div>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="row g-2">
+          <% @poll.poll_options.each_with_index do |option, i| %>
+            <div class="col-12">
+              <%= button_to option.text, poll_votes_path(@poll),
+                  params: { poll_option_id: option.id },
+                  class: "btn w-100",
+                  style: "background-color: #1a1a2e; color: white; border: 1px solid #06B6D4; cursor: pointer;" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# MAP PLACEHOLDER CARD %>
+  <div class="card mb-3">
+    <div class="card-body">
+      <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">How countries voted</p>
+      <%# MAPBOX PLACEHOLDER - DO NOT REMOVE %>
+      <div id="world-map" style="height: 200px; background-color: #0d0d1a; border-radius: 6px;"></div>
+      <p class="mt-2 mb-0 text-center" style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">Country data coming soon</p>
+    </div>
+  </div>
+
+  <%# TABS %>
+  <div class="card">
+    <div class="card-body">
+      <ul class="nav nav-tabs mb-3" style="border-bottom-color: rgba(255,255,255,0.1);">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#tab-discussion" style="font-size: 0.85rem;">Discussion</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#tab-ai" style="font-size: 0.85rem;">AI Summary</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#tab-related" style="font-size: 0.85rem;">Related Polls</a>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab-discussion">
+          <textarea class="form-control" rows="3" placeholder="Share your thoughts..." style="background-color: #0d0d1a; color: white; border-color: rgba(255,255,255,0.1); font-size: 0.85rem; resize: none;"></textarea>
+        </div>
+        <div class="tab-pane fade" id="tab-ai">
+          <p style="font-size: 0.85rem; color: rgba(255,255,255,0.35);">AI summary coming soon.</p>
+        </div>
+        <div class="tab-pane fade" id="tab-related">
+          <p style="font-size: 0.85rem; color: rgba(255,255,255,0.35);">Related polls coming soon.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

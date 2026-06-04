@@ -1,18 +1,27 @@
 # app/controllers/polls_controller.rb
 class PollsController < ApplicationController
   def index
-    @polls = Poll.all
+    @polls = Poll.includes(:poll_options, :votes).all
     @polls = @polls.where(category: params[:category]) if params[:category].present?
     @polls = @polls.where(country: params[:country]) if params[:country].present?
+    if user_signed_in?
+      @user_votes = Vote.where(poll: @polls, user: current_user).index_by(&:poll_id)
+    end
+  end
+
+  def show
+    @poll = Poll.includes(:poll_options, :votes).find(params[:id])
+    @user_vote = Vote.find_by(poll: @poll, user: current_user) if user_signed_in?
   end
 
   def new
     @poll = Poll.new
+    2.times { @poll.poll_options.build }
   end
 
   def create
     @poll = Poll.new(poll_params)
-    # @poll.user = current_user
+    @poll.user = current_user if user_signed_in?
     if @poll.save
       redirect_to polls_path, notice: "Poll created!"
     else
@@ -26,13 +35,18 @@ class PollsController < ApplicationController
     redirect_to polls_path
   end
 
-  def show
-    @poll = current_user.polls.find(params[:id])
+  def my_polls
+    @polls = current_user.polls.includes(:poll_options, :votes)
+    @user_votes = Vote.where(poll: @polls, user: current_user).index_by(&:poll_id)
+  end
+
+  def my_votes
+    @votes = current_user.votes.includes(poll: [:poll_options, :votes])
   end
 
   private
 
   def poll_params
-    params.require(:poll).permit(:title_question, :category, :country)
+    params.require(:poll).permit(:title_question, :category, :country, poll_options_attributes: [:id, :text, :_destroy])
   end
 end

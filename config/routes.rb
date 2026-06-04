@@ -4,8 +4,14 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
   resources :polls, only: [:index, :new, :create, :destroy, :show] do
-    resources :votes, only: [:create]
+    collection do
+      get :my_polls
+      get :my_votes
+    end
+    resources :votes, only: [:create, :destroy]
   end
+
+  resource :profile, only: [:show]
 
   resources :conversations, only: [:new, :show, :create] do
     resources :chat_messages, only: [:create]
