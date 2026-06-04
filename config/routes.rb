@@ -8,7 +8,7 @@ Rails.application.routes.draw do
       get :my_polls
       get :my_votes
     end
-    resources :votes, only: [:create]
+    resources :votes, only: [:create, :destroy]
   end
 
   resource :profile, only: [:show]
