@@ -14,4 +14,9 @@ class Poll < ApplicationRecord
 
     errors.add(:poll_options, "must be For, Against, Abstention for law category")
   end
+
+  def to_globe_json
+    { id: id, lat: lat, lon: lon, city: city, country: country,
+      q: question, cat: category, votes: votes.count, isPoll: true }
+  end
 end
