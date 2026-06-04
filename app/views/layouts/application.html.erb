@@ -43,26 +43,28 @@
 
 
     <nav class="fixed-bottom d-flex" style="background-color: #211951; z-index: 999;">
-      <%= link_to polls_path, class: "flex-fill d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white" do %>
+      <%= link_to polls_path, class: "d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white", style: "width: 20%;" do %>
         <i class="fa-solid fa-square-poll-vertical" style="font-size: 1.3125rem;"></i>
         <span style="font-size: 9px;">Home</span>
       <% end %>
-      <%= link_to "#", class: "flex-fill d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white" do %>
+      <%= link_to "#", class: "d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white", style: "width: 20%;" do %>
         <i class="fa-solid fa-magnifying-glass" style="font-size: 1.3125rem;"></i>
         <span style="font-size: 9px;">Explore</span>
       <% end %>
-      <%= link_to new_poll_path, class: "flex-fill d-flex flex-column align-items-center justify-content-end pt-3 pb-2 text-decoration-none text-white position-relative" do %>
-        <div class="position-absolute start-50 translate-middle-x rounded-circle d-flex align-items-center justify-content-center"
-          style="width: 48px; height: 48px; top: -10px; background-color: #03C988;">
-          <i class="fa-solid fa-plus text-white" style="font-size: 1.3125rem;"></i>
+      <%= link_to new_poll_path, class: "d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white position-relative", style: "width: 20%;" do %>
+        <div style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%);">
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 48px; height: 48px; background-color: #03C988;">
+            <i class="fa-solid fa-plus text-white" style="font-size: 1.3125rem;"></i>
+          </div>
         </div>
         <span style="font-size: 9px;">Add</span>
       <% end %>
-      <%= link_to "#", class: "flex-fill d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white" do %>
+      <%= link_to "#", class: "d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white", style: "width: 20%;" do %>
         <i class="fa-regular fa-bell" style="font-size: 1.3125rem;"></i>
         <span style="font-size: 9px;">Notifications</span>
       <% end %>
-      <%= link_to new_conversation_path, class: "flex-fill d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white" do %>
+      <%= link_to new_conversation_path, class: "d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white", style: "width: 20%;" do %>
         <i class="fa-solid fa-robot" style="font-size: 1.3125rem;"></i>
         <span style="font-size: 9px;">AI</span>
       <% end %>
