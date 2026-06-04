@@ -21,6 +21,8 @@
     <%= favicon_link_tag %>
   </head>
   <body>
+    <%= render "layouts/globe_bg" %>
+    <div style="position:relative;z-index:1;">
     <% unless current_page?(root_path) %>
     <%= render "shared/topbar" %>
     <% end %>
@@ -67,5 +69,6 @@
         <span style="font-size: 9px;">AI</span>
       <% end %>
     </nav>
+    </div>
   </body>
 </html>

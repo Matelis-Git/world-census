@@ -7,4 +7,10 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:country])
   end
+
+  before_action :load_globe_polls
+
+  def load_globe_polls
+    @globe_polls = Poll.where.not(lat: nil, lon: nil).includes(:votes) rescue []
+  end
 end

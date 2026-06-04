@@ -94,3 +94,18 @@ input, textarea, select {
     color: #aaa !important;
   }
 }
+
+/* Globe background — pages transparentes */
+body {
+  background: transparent !important;
+}
+
+.poll-card, .card {
+  background: rgba(5, 44, 101, 0.85) !important;
+  backdrop-filter: blur(4px);
+}
+
+body, html {
+  background-color: transparent !important;
+  background: transparent !important;
+}
