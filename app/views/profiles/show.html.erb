@@ -35,8 +35,8 @@
   <div class="card mb-4">
     <div class="card-body d-flex align-items-center gap-3 py-3">
       <% if user_country %>
-        <% flag = current_user.country.upcase.chars.map { |c| (0x1F1E6 + (c.ord - 65)).chr(Encoding::UTF_8) }.join %>
-        <div style="font-size: 2.2rem; line-height: 1; flex-shrink: 0;"><%= flag %></div>
+        <span class="fi fi-<%= current_user.country.downcase %>"
+              style="width: 2.6rem; height: 1.95rem; display: block; flex-shrink: 0; border-radius: 3px;"></span>
         <div>
           <div style="color: white; font-weight: 600;"><%= user_country.iso_short_name %></div>
           <div style="color: rgba(255,255,255,0.45); font-size: 0.78rem;">Represented country</div>
@@ -47,7 +47,7 @@
           <i class="fas fa-globe"></i>
         </div>
         <div>
-          <div style="color: rgba(255,255,255,0.4); font-size: 0.85rem;">No country set</div>
+          <div style="color: rgba(255,255,255,0.4); font-size: 0.85rem;">Stay anonymous</div>
           <div style="color: rgba(255,255,255,0.3); font-size: 0.75rem;">Represented country</div>
         </div>
       <% end %>
