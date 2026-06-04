@@ -15,8 +15,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%= favicon_link_tag %>
   </head>
   <body>
     <% unless current_page?(root_path) %>
@@ -41,17 +43,28 @@
 
 
     <nav class="fixed-bottom d-flex" style="background-color: #211951; z-index: 999;">
-      <%= link_to polls_path, class: "flex-fill d-flex flex-column align-items-center py-2 text-decoration-none text-white" do %>
-        <i class="fa-solid fa-square-poll-vertical fs-5"></i>
-        <span style="font-size: 10px;">Polls</span>
+      <%= link_to polls_path, class: "flex-fill d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white" do %>
+        <i class="fa-solid fa-square-poll-vertical" style="font-size: 1.3125rem;"></i>
+        <span style="font-size: 9px;">Home</span>
       <% end %>
-      <%= link_to new_poll_path, class: "flex-fill d-flex flex-column align-items-center py-2 text-decoration-none text-white" do %>
-        <i class="fa-solid fa-plus fs-5"></i>
-        <span style="font-size: 10px;">Add</span>
+      <%= link_to "#", class: "flex-fill d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white" do %>
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 1.3125rem;"></i>
+        <span style="font-size: 9px;">Explore</span>
       <% end %>
-      <%= link_to new_conversation_path, class: "flex-fill d-flex flex-column align-items-center py-2 text-decoration-none text-white" do %>
-        <i class="fa-solid fa-robot fs-5"></i>
-        <span style="font-size: 10px;">AI</span>
+      <%= link_to new_poll_path, class: "flex-fill d-flex flex-column align-items-center justify-content-end pt-3 pb-2 text-decoration-none text-white position-relative" do %>
+        <div class="position-absolute start-50 translate-middle-x rounded-circle d-flex align-items-center justify-content-center"
+          style="width: 48px; height: 48px; top: -10px; background-color: #03C988;">
+          <i class="fa-solid fa-plus text-white" style="font-size: 1.3125rem;"></i>
+        </div>
+        <span style="font-size: 9px;">Add</span>
+      <% end %>
+      <%= link_to "#", class: "flex-fill d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white" do %>
+        <i class="fa-regular fa-bell" style="font-size: 1.3125rem;"></i>
+        <span style="font-size: 9px;">Notifications</span>
+      <% end %>
+      <%= link_to new_conversation_path, class: "flex-fill d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-2 text-decoration-none text-white" do %>
+        <i class="fa-solid fa-robot" style="font-size: 1.3125rem;"></i>
+        <span style="font-size: 9px;">AI</span>
       <% end %>
     </nav>
   </body>
