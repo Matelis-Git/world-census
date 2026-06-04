@@ -44,6 +44,28 @@ class PollsController < ApplicationController
     @votes = current_user.votes.includes(poll: [:poll_options, :votes])
   end
 
+  def country_votes
+    @poll = Poll.includes(:poll_options, :votes).find(params[:id])
+    option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"]
+    option_ids = @poll.poll_options.map(&:id)
+
+    # Count votes per [country, option] pair
+    tallies = @poll.votes.where.not(country: nil)
+                   .group(:country, :poll_option_id)
+                   .count
+
+    # For each country pick the option with the most votes
+    winners = {}
+    tallies.each do |(country, option_id), count|
+      if winners[country].nil? || count > winners[country][:count]
+        idx = option_ids.index(option_id)
+        winners[country] = { count: count, color: option_colors[idx] } if idx
+      end
+    end
+
+    render json: winners.transform_values { |v| v[:color] }
+  end
+
   private
 
   def poll_params

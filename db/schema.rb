@@ -312,6 +312,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_04_150312) do
   end
 
   create_table "votes", force: :cascade do |t|
+    t.string "country"
     t.datetime "created_at", null: false
     t.bigint "poll_id", null: false
     t.bigint "poll_option_id"

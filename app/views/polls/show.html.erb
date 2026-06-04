@@ -78,8 +78,8 @@
     <div class="card-body">
       <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">How countries voted</p>
       <%# MAPBOX PLACEHOLDER - DO NOT REMOVE %>
-      <div id="world-map" style="height: 200px; background-color: #0d0d1a; border-radius: 6px;"></div>
-      <p class="mt-2 mb-0 text-center" style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">Country data coming soon</p>
+      <div id="world-map" style="height: 300px; border-radius: 8px; overflow: hidden; background-color: #1a1a2e;"></div>
+      <p class="mt-2 mb-0 text-center" style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">Map loading...</p>
     </div>
   </div>
 
@@ -113,3 +113,66 @@
   </div>
 
 </div>
+
+<% content_for :scripts do %>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWF0ZWxpcy03NyIsImEiOiJjbXAxMXBwcGgwMGdyMnFxcmhuc2l4ZW5uIn0.AfR4OvHysFYS8qbum0ZWcg';
+
+    const map = new mapboxgl.Map({
+      container: 'world-map',
+      style: 'mapbox://styles/mapbox/dark-v11',
+      center: [0, 20],
+      zoom: 1.2,
+      projection: 'naturalEarth'
+    });
+
+    map.on('load', () => {
+      fetch('/polls/<%= @poll.id %>/country_votes')
+        .then(r => r.json())
+        .then(data => {
+          console.log('country votes data:', data);
+
+          const matchExpression = ['match', ['get', 'iso_3166_1_alpha_2']];
+
+          Object.entries(data).forEach(([country, color]) => {
+            matchExpression.push(country);
+            matchExpression.push(color);
+          });
+
+          matchExpression.push('rgba(255,255,255,0.05)');
+
+          map.addSource('country-votes', {
+            type: 'vector',
+            url: 'mapbox://mapbox.country-boundaries-v1'
+          });
+
+          map.addLayer({
+            id: 'country-fills',
+            type: 'fill',
+            source: 'country-votes',
+            'source-layer': 'country_boundaries',
+            paint: {
+              'fill-color': matchExpression,
+              'fill-opacity': 0.75
+            }
+          });
+
+          map.setPaintProperty('country-label', 'text-color', 'rgba(255,255,255,0.6)');
+
+          map.addLayer({
+            id: 'country-borders',
+            type: 'line',
+            source: 'country-votes',
+            'source-layer': 'country_boundaries',
+            paint: {
+              'line-color': 'rgba(255,255,255,0.1)',
+              'line-width': 0.5
+            }
+          });
+        })
+        .catch(err => console.log('fetch error:', err));
+    });
+  </script>
+<% end %>

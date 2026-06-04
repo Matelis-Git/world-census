@@ -4,6 +4,9 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
   resources :polls, only: [:index, :new, :create, :destroy, :show] do
+    member do
+      get :country_votes
+    end
     collection do
       get :my_polls
       get :my_votes
