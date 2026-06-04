@@ -6,13 +6,13 @@
       <%= simple_form_for @poll, html: { data: { controller: "poll-ai-helper poll-options" } } do |f| %>
         <%= f.input :title_question, label: "Your question", placeholder: "Should France...?",
             input_html: { data: { "poll-ai-helper-target": "question" } } %>
-        <%= f.input :category, collection: ["economy", "politics", "social"], label: "Category",
-            input_html: { data: { "poll-ai-helper-target": "category" } } %>
+        <%= f.input :category, collection: ["economy", "politics", "social", "law"], label: "Category",
+      input_html: { data: { "poll-ai-helper-target": "category" }, onchange: "handleCategoryChange(this.value)" } %>
          <%= f.input :country, collection: [["Global", "global"]] + ISO3166::Country.all.map { |c| [c.iso_short_name, c.alpha2] }, label: "Country", input_html: { data: { "poll-ai-helper-target": "country" } } %>
 
         <div class="mb-3">
-          <label class="form-label fw-semibold">Answer options (2–4)</label>
-          <div data-poll-options-target="optionsList">
+          <label class="form-label fw-semibold">Answer options</label>
+            <div data-poll-options-target="optionsList" data-poll-ai-helper-target="optionsList">
             <%= f.simple_fields_for :poll_options do |o| %>
               <div class="d-flex gap-2 mb-2 poll-option-item">
                 <%= o.input :text, label: false, placeholder: "Option",
@@ -23,11 +23,13 @@
               </div>
             <% end %>
           </div>
-          <button type="button" class="btn btn-outline-secondary btn-sm mt-1"
-                  data-action="click->poll-options#add"
-                  data-poll-options-target="addButton">
-            + Add option
-          </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm mt-1"
+                data-action="click->poll-options#add"
+                data-poll-options-target="addButton"
+                id="add-option-btn">
+              + Add option
+            </button>
+
         </div>
 
         <div class="row g-2 mt-2">
@@ -44,3 +46,31 @@
     </div>
   </div>
 </div>
+  <script>
+    function handleCategoryChange(value) {
+      const optionsList = document.querySelector('[data-poll-ai-helper-target="optionsList"]')
+      const addBtn = document.getElementById("add-option-btn")
+      if (!optionsList) return
+  
+      if (value === "law") {
+  optionsList.innerHTML = `
+    <div class="d-flex gap-2 mb-2 poll-option-item">
+      <input type="text" name="poll[poll_options_attributes][0][text]" class="form-control" value="For" readonly style="pointer-events: none; cursor: default;" 
+  />
+    </div>  
+    <div class="d-flex gap-2 mb-2 poll-option-item">
+      <input type="text" name="poll[poll_options_attributes][1][text]" class="form-control" value="Against" readonly style="pointer-events: none; cursor: 
+  default;" />
+    </div>  
+    <div class="d-flex gap-2 mb-2 poll-option-item">
+      <input type="text" name="poll[poll_options_attributes][2][text]" class="form-control" value="Abstain" readonly style="pointer-events: none; cursor: 
+  default;" />
+    </div>  
+  `
+  
+        if (addBtn) addBtn.style.display = "none"
+      } else {
+        if (addBtn) addBtn.style.display = ""
+      }
+    }
+  </script>

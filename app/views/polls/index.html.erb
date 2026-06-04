@@ -1,6 +1,6 @@
 <div class="container my-4">
 
-  <% filter_colors = { "economy" => "#03C988", "politics" => "#FF204E", "social" => "#FFC193", "france" => "#0055A4", "global" => "#4635B1" } %>
+  <% filter_colors = { "economy" => "#03C988", "politics" => "#FF204E", "social" => "#FFC193", "france" => "#0055A4", "law" => "#FFA500", "global" => "#4635B1" } %>
   <div class="dropdown mb-2">
     <button class="badge dropdown-toggle text-decoration-none border-0"
             data-bs-toggle="dropdown"
@@ -19,6 +19,8 @@
     <%= link_to "All", polls_path, class: "badge text-decoration-none", style: "background-color: #{params[:category].nil? && params[:country].nil? ? '#534AB7' : '#1a1a2e'}; color: white; border: 1px solid #534AB7;" %>
     <%= link_to "Economy", polls_path(category: "economy"), class: "badge text-decoration-none", style: "background-color: #{params[:category] == 'economy' ? '#03C988' : '#1a1a2e'}; color: #{params[:category] == 'economy' ? '#000957' : 'white'}; border: 1px solid #03C988;" %>
     <%= link_to "Politics", polls_path(category: "politics"), class: "badge text-decoration-none", style: "background-color: #{params[:category] == 'politics' ? '#FF204E' : '#1a1a2e'}; color: white; border: 1px solid #FF204E;" %>
+    <%= link_to "Law", polls_path(category: "law"), class: "badge text-decoration-none", style: "background-color:
+  #{params[:category] == 'law' ? '#FFA500' : '#1a1a2e'}; color: white; border: 1px solid #FFA500;" %>
     <%= link_to "Social", polls_path(category: "social"), class: "badge text-decoration-none", style: "background-color: #{params[:category] == 'social' ? '#FFC193' : '#1a1a2e'}; color: #{params[:category] == 'social' ? '#000957' : 'white'}; border: 1px solid #FFC193;" %>
     <%= link_to "Global", polls_path(country: "global"), class: "badge text-decoration-none", style: "background-color: #{params[:country] == 'global' ? '#4635B1' : '#1a1a2e'}; color: white; border: 1px solid 
      #4635B1;" %>
