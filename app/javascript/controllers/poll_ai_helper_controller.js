@@ -1,7 +1,7 @@
   import { Controller } from "@hotwired/stimulus"
   
   export default class extends Controller {
-    static targets = ["question", "category", "country", "optionsList"]
+    static targets = ["question", "category", "country", "optionsList", "countryButton"]
 
   connect() {
     this.categoryTarget.addEventListener('change', (event) => {
@@ -19,7 +19,14 @@
       `
     })
   }
-
+  
+selectCountry(event) {
+  event.preventDefault()
+  const value = event.currentTarget.dataset.value
+  const label = event.currentTarget.textContent.trim()
+  this.countryTarget.value = value
+  this.countryButtonTarget.textContent = label
+}
 
     generateWithAI(event) {
       event.preventDefault()
