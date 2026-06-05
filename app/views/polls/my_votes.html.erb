@@ -1,5 +1,11 @@
 <div class="container my-4">
-  <h6 class="fw-bold mb-4" style="color: #534AB7;">My Votes</h6>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h6 class="fw-bold mb-0" style="color: #534AB7;">My Votes</h6>
+
+    <%= link_to my_polls_polls_path, style: "font-size: 0.78rem; color: #534AB7; text-decoration: none;" do %>
+      See my polls <i class="fas fa-chevron-right ms-1" style="font-size: 10px;"></i>
+    <% end %>
+  </div>
 
   <% if @votes.empty? %>
     <div class="card">
