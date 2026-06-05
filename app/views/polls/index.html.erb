@@ -1,33 +1,351 @@
-<div class="container my-4">
+<%# ============================================================
+    app/views/polls/index.html.erb
+    Design Spotify — grille 2 colonnes, image carrée dominante
+    ============================================================ %>
 
-  <% filter_colors = { "economy" => "#03C988", "politics" => "#FF204E", "social" => "#FFC193", "france" => "#0055A4", "law" => "#FFA500", "global" => "#4635B1" } %>
+<style>
+  .polls-page {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0 0 100px;
+  }
 
-  <div class="d-flex gap-2 mb-2 flex-wrap">
-    <%= link_to "All", polls_path, class: "badge text-decoration-none", style: "background-color: #{params[:category].nil? && params[:country].nil? ? '#534AB7' : '#1a1a2e'}; color: white; border: 1px solid #534AB7;" %>
-    <%= link_to "Economy", polls_path(category: "economy"), class: "badge text-decoration-none", style: "background-color: #{params[:category] == 'economy' ? '#03C988' : '#1a1a2e'}; color: #{params[:category] == 'economy' ? '#000957' : 'white'}; border: 1px solid #03C988;" %>
-    <%= link_to "Politics", polls_path(category: "politics"), class: "badge text-decoration-none", style: "background-color: #{params[:category] == 'politics' ? '#FF204E' : '#1a1a2e'}; color: white; border: 1px solid #FF204E;" %>
-    <%= link_to "Law", polls_path(category: "law"), class: "badge text-decoration-none", style: "background-color:
-  #{params[:category] == 'law' ? '#FFA500' : '#1a1a2e'}; color: white; border: 1px solid #FFA500;" %>
-    <%= link_to "Social", polls_path(category: "social"), class: "badge text-decoration-none", style: "background-color: #{params[:category] == 'social' ? '#FFC193' : '#1a1a2e'}; color: #{params[:category] == 'social' ? '#000957' : 'white'}; border: 1px solid #FFC193;" %>
-    <%= link_to "Global", polls_path(country: "global"), class: "badge text-decoration-none", style: "background-color: #{params[:country] == 'global' ? '#4635B1' : '#1a1a2e'}; color: white; border: 1px solid 
-     #4635B1;" %>
+  /* ── Filtres ── */
+  .filters {
+    display: flex;
+    gap: 6px;
+    padding: 12px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+
+  .filter-pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 0.5px solid rgba(255,255,255,0.1);
+    color: rgba(207,226,255,0.45);
+    white-space: nowrap;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .filter-pill.active {
+    background: #0d6efd;
+    color: #fff;
+    border-color: #0d6efd;
+  }
+
+  /* ── Section title ── */
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #cfe2ff;
+    padding: 8px 16px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ── Featured (top trending) ── */
+  .featured {
+    position: relative;
+    margin: 0 16px 20px;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 140px;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+
+  .featured__img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .featured__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(3,18,37,0.97) 0%, rgba(3,18,37,0.4) 50%, transparent 100%);
+  }
+
+  .featured__badge {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: #0d6efd;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .featured__body {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 14px 14px 16px;
+  }
+
+  .featured__cat {
+    font-size: 10px;
+    color: rgba(158,197,254,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 5px;
+  }
+
+  .featured__question {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .featured__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .featured__votes {
+    font-size: 11px;
+    color: rgba(207,226,255,0.45);
+  }
+
+  .featured__btn {
+    margin-left: auto;
+    background: #03C988;
+    color: #00224D;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    border: none;
+  }
+
+  /* ── Carousel horizontal trending ── */
+  .carousel {
+    display: flex;
+    gap: 10px;
+    padding: 0 0 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .mini-card:first-child { margin-left: 16px; }
+  .mini-card:last-child { margin-right: 40px; }
+
+  .mini-card {
+    background: rgba(255,255,255,0.07);
+    border: 0.5px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    width: 52vw; max-width: 185px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+
+  .mini-card__img {
+    border-radius: 0;
+    width: 52vw; max-width: 185px;
+    height: 56vw; max-height: 140px;
+    border-radius: 10px;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 7px;
+    background: #031633;
+  }
+
+  .mini-card__rank {
+    font-size: 8px;
+    color: #ff6b6b;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .mini-card__question {
+    font-size: 11px;
+    font-weight: 500;
+    color: #cfe2ff;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 3px;
+  }
+
+  .mini-card__votes {
+    font-size: 10px;
+    color: rgba(207,226,255,0.35);
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 0.5px;
+    background: rgba(61,139,253,0.1);
+    margin: 0 16px 20px;
+  }
+
+  /* ── Grille 2 colonnes Spotify ── */
+  .polls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 16px;
+  }
+
+  .poll-tile {
+    background: rgba(255,255,255,0.07);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 0.5px solid rgba(255,255,255,0.12);
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+
+  .poll-tile__img {
+    border-radius: 0;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 7px;
+    background: #031633;
+  }
+
+  .poll-tile__cat {
+    padding: 0 8px;
+    font-size: 9px;
+    color: #6ea8fe;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 3px;
+  }
+
+  .poll-tile__question {
+    padding: 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #cfe2ff;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+
+  .poll-tile__footer {
+    padding: 0 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .poll-tile__votes {
+    font-size: 10px;
+    color: rgba(207,226,255,0.35);
+  }
+
+  .poll-tile__dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #03C988;
+    flex-shrink: 0;
+  }
+
+  .poll-tile__dot.voted {
+    background: #6ea8fe;
+  }
+</style>
+
+<div class="polls-page">
+
+  <%# ── Filtres ── %>
+  <div class="filters">
+    <a href="<%= polls_path %>" class="filter-pill <%= 'active' if params[:category].nil? && params[:country].nil? %>">All</a>
+    <a href="<%= polls_path(category: 'economy') %>"  class="filter-pill <%= 'active' if params[:category] == 'economy' %>">Economy</a>
+    <a href="<%= polls_path(category: 'politics') %>" class="filter-pill <%= 'active' if params[:category] == 'politics' %>">Politics</a>
+    <a href="<%= polls_path(category: 'social') %>"   class="filter-pill <%= 'active' if params[:category] == 'social' %>">Social</a>
+    <a href="<%= polls_path(category: 'global') %>"   class="filter-pill <%= 'active' if params[:category] == 'global' %>">Global</a>
+    <a href="<%= polls_path(category: 'law') %>"      class="filter-pill <%= 'active' if params[:category] == 'law' %>">Law</a>
   </div>
-    <div class="dropdown mb-2 w-auto">
-    <button class="badge dropdown-toggle text-decoration-none border-0 w-auto"
-            data-bs-toggle="dropdown"
-            style="background-color: <%= params[:country].present? && params[:country] != 'global' ? '#0055A4' : '#1a1a2e' %>; color: white; border: 1px solid #0055A4 !important;">
-      <%= params[:country].present? && params[:country] != 'global' ? ISO3166::Country[params[:country]]&.iso_short_name : "Country" %>
-    </button>
-    <ul class="dropdown-menu" style="max-height: 300px; overflow-y: auto; background-color: #1a1a2e; width: 200px">
-      <%= content_tag :li, link_to("All countries", polls_path(category: params[:category]), class: "dropdown-item text-white") %>
-      <% ISO3166::Country.all.sort_by(&:iso_short_name).each do |c| %>
-        <%= content_tag :li, link_to(c.iso_short_name, polls_path(country: c.alpha2, category: params[:category]), class: "dropdown-item text-white") %>
-      <% end %>
-    </ul>
-  </div>
 
+  <% sorted = @polls.sort_by { |p| -p.votes.size } %>
+  <% top    = sorted.first %>
+  <% rest   = sorted.drop(1) %>
 
-  <% @polls.each do |poll| %>
-    <%= render "poll", poll: poll, user_vote: @user_votes&.[](poll.id) %>
+  <%# ── Featured — poll #1 ── %>
+  <% if top %>
+    <% img_q = [top.category, top.country].compact.map { |t| CGI.escape(t) }.join(',') %>
+    <% img   = top.image_url.presence || "https://picsum.photos/seed/featured/800/400" %>
+    <a href="<%= poll_path(top) %>" class="featured">
+      <img src="<%= img %>" alt="<%= top.title_question %>" class="featured__img">
+      <div class="featured__overlay"></div>
+      <span class="featured__badge">🔥 Trending #1</span>
+      <div class="featured__body">
+        <p class="featured__cat"><%= top.category %><%= " · #{top.country}" if top.country.present? %></p>
+        <p class="featured__question"><%= top.title_question.to_s.truncate(72) %></p>
+        <div class="featured__meta">
+          <span class="featured__votes"><%= top.votes.size %> votes</span>
+          <span class="featured__btn">Vote →</span>
+        </div>
+      </div>
+    </a>
   <% end %>
+
+  <%# ── Carousel trending (2→4) ── %>
+  <% trending = rest.first(4) %>
+  <% if trending.any? %>
+  
+    <div class="carousel">
+      <% trending.each_with_index do |poll, i| %>
+        <% img_q = [poll.category, poll.country].compact.map { |t| CGI.escape(t) }.join(',') %>
+        <% img   = poll.image_url.presence || "https://picsum.photos/seed/#{poll.id}/300/300" %>
+        <a href="<%= poll_path(poll) %>" class="mini-card">
+          <img src="<%= img %>" alt="<%= poll.title_question %>" class="mini-card__img">
+          <p class="mini-card__rank">🔥 #<%= i + 2 %></p>
+          <p class="mini-card__question"><%= poll.title_question %></p>
+          <span class="mini-card__votes"><%= poll.votes.size %> votes</span>
+        </a>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="divider"></div>
+
+  <%# ── Grille 2 colonnes — tous les polls ── %>
+  <p class="section-title">All polls</p>
+  <div class="polls-grid">
+    <% @polls.each do |poll| %>
+      <% voted  = user_signed_in? && @user_votes&.[](poll.id).present? %>
+      <% img_q  = [poll.category, poll.country].compact.map { |t| CGI.escape(t) }.join(',') %>
+      <% img    = poll.image_url.presence || "https://picsum.photos/seed/#{poll.id}/300/300" %>
+      <a href="<%= poll_path(poll) %>" class="poll-tile">
+        <img src="<%= img %>" alt="<%= poll.title_question %>" class="poll-tile__img">
+        <p class="poll-tile__cat"><%= poll.category %></p>
+        <p class="poll-tile__question"><%= poll.title_question %></p>
+        <div class="poll-tile__footer">
+          <span class="poll-tile__votes"><%= poll.votes.size %> votes</span>
+          <span class="poll-tile__dot <%= 'voted' if voted %>"></span>
+        </div>
+      </a>
+    <% end %>
+  </div>
+
 </div>

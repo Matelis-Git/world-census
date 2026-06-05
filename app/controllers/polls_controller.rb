@@ -1,16 +1,19 @@
-# app/controllers/polls_controller.rb
 class PollsController < ApplicationController
+
   def index
-    @polls = Poll.includes(:poll_options, :votes).all
-    @polls = @polls.where(category: params[:category]) if params[:category].present?
-    @polls = @polls.where(country: params[:country]) if params[:country].present?
+    @polls = Poll.includes(:poll_options, :votes)
+                 .all
+                 .sort_by { |p| -p.votes.count }
+    @polls = @polls.select { |p| p.category == params[:category] } if params[:category].present?
+    @polls = @polls.select { |p| p.country  == params[:country]  } if params[:country].present?
+    @trending = @polls.first(4)
     if user_signed_in?
       @user_votes = Vote.where(poll: @polls, user: current_user).index_by(&:poll_id)
     end
   end
 
   def show
-    @poll = Poll.includes(:poll_options, :votes).find(params[:id])
+    @poll      = Poll.includes(:poll_options, :votes).find(params[:id])
     @user_vote = Vote.find_by(poll: @poll, user: current_user) if user_signed_in?
   end
 
@@ -20,10 +23,10 @@ class PollsController < ApplicationController
   end
 
   def create
-    @poll = Poll.new(poll_params)
+    @poll      = Poll.new(poll_params)
     @poll.user = current_user if user_signed_in?
     if @poll.save
-      redirect_to polls_path, notice: "Poll created!"
+      redirect_to polls_path, notice: 'Poll created!'
     else
       render :new, status: :unprocessable_entity
     end
@@ -36,7 +39,7 @@ class PollsController < ApplicationController
   end
 
   def my_polls
-    @polls = current_user.polls.includes(:poll_options, :votes)
+    @polls      = current_user.polls.includes(:poll_options, :votes)
     @user_votes = Vote.where(poll: @polls, user: current_user).index_by(&:poll_id)
   end
 
@@ -47,6 +50,10 @@ class PollsController < ApplicationController
   private
 
   def poll_params
-    params.require(:poll).permit(:title_question, :category, :country, poll_options_attributes: [:id, :text, :_destroy])
+    params.require(:poll).permit(
+      :title_question, :category, :country, :image_url,
+      poll_options_attributes: [:id, :text, :_destroy]
+    )
   end
+
 end
