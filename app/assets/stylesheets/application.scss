@@ -12,7 +12,7 @@
 @import "pages/index";
 
 $bg: #020B18;
-$card: #212826;
+$card: #19376D;
 $accent: #FF204E;
 $nav: #071E3D;
 $green: #03C988;
@@ -105,3 +105,19 @@ input, textarea, select {
 //     </div>
 //   </div>
 // </div>
+// .poll-card {
+//   overflow: hidden;
+//   border-radius: 14px;
+//   background: rgba(255, 255, 255, 0.04);
+//   backdrop-filter: blur(18px);
+//   -webkit-backdrop-filter: blur(18px);
+//   border: 1px solid rgba(255, 255, 255, 0.08);
+//   color: white;
+//   transition: transform 0.2s, background 0.2s, border-color 0.2s;
+
+//   &:hover {
+//     transform: translateY(-4px);
+//     background: rgba(255, 255, 255, 0.08);
+//     border-color: rgba(255, 255, 255, 0.15);
+// //   }
+// }
