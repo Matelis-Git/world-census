@@ -47,12 +47,16 @@
     <% poll.poll_options.each_with_index do |option, i| %>
       <% count = votes_arr.count { |v| v.poll_option_id == option.id } %>
       <% pct = total > 0 ? (count.to_f / total * 100).round : 0 %>
-      <div class="d-flex justify-content-between mb-1 small">
-        <span style="color: <%= option_colors[i] %>"><%= option.text %></span>
-        <span style="color: <%= option_colors[i] %>"><%= pct %>%</span>
-      </div>
-      <div class="progress mb-2" style="height: 6px;">
-        <div class="progress-bar" style="width: <%= pct %>%; background-color: <%= option_colors[i] %>;"></div>
+      <% color = option_colors[i % option_colors.length] %>
+      <% selected = user_vote&.poll_option_id == option.id %>
+      <div class="mb-2 position-relative" style="height: 28px; border-radius: 50px; background-color: rgba(255,255,255,0.07); overflow: hidden;">
+        <div style="position: absolute; left: 0; top: 0; height: 100%; width: <%= pct %>%; background-color: <%= color %>;"></div>
+        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
+          <span style="font-size: 0.8rem; color: white; font-weight: <%= selected ? '600' : '400' %>; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78%;">
+            <%= option.text %><% if selected %> <i class="fas fa-check" style="font-size: 9px;"></i><% end %>
+          </span>
+          <span style="font-size: 0.75rem; color: white; font-weight: 600; flex-shrink: 0; margin-left: 8px;"><%= pct %>%</span>
+        </div>
       </div>
     <% end %>
   </div>
