@@ -21,7 +21,7 @@
     <%= favicon_link_tag %>
   </head>
   <body>
-    <% unless current_page?(root_path) %>
+    <% if !current_page?(root_path) || user_signed_in? %>
     <%= render "shared/topbar" %>
     <% end %>
     <% if notice %>
