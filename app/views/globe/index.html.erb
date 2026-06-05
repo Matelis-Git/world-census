@@ -9,17 +9,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 
-<div style="display:flex;flex-direction:column;width:100%;height:calc(100vh - 60px);background:#00224D;overflow:hidden;">
+  <div style="display:flex;flex-direction:column;width:100%;height:calc(100vh - 60px);background:#00224D;overflow:hidden;">
 
-  <%# ── Header ─────────────────────────────────────────────── %>
-  <div style="display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-shrink:0;">
-    <span style="background:#3d8bfd;width:7px;height:7px;border-radius:50%;display:inline-block;"></span>
-    <span style="color:#cfe2ff;font-size:11px;font-weight:600;letter-spacing:0.1em;font-family:'Work Sans','Helvetica',sans-serif;">WORLD CENSUS</span>
-    <span style="background:#0d6efd;color:#cfe2ff;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:700;font-family:'Work Sans','Helvetica',sans-serif;letter-spacing:0.05em;">LIVE</span>
+  <div style="position:absolute;top:6rem;left:0;right:0;text-align:center;z-index:10;pointer-events:none;display:flex;align-items:center;justify-content:
+  center;gap:8px;">
+    <%= image_tag 'favicon.ico', alt: 'World Census logo', style: 'height:1.5rem;width:auto;' %>
+    <span style="color:#03C988;font-weight:700;font-size:1.5rem;letter-spacing:.25rem;text-transform:uppercase;font-family:'Raleway',sans-serif;">World
+  Census</span>
   </div>
-
   <%# ── Globe ──────────────────────────────────────────────── %>
-  <div id="gc" style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;cursor:grab;user-select:none;overflow:hidden;">
+  <div id="gc" style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;cursor:grab;user-select:none;overflow:hidden;margin-top:-3.5rem">
     <svg id="gs"></svg>
     <svg id="pins-svg" style="position:absolute;top:0;left:0;pointer-events:none;overflow:visible;"></svg>
 
@@ -42,22 +41,17 @@
     <%# ── CTA Auth — visible uniquement aux visiteurs non connectés ── %>
     <% unless user_signed_in? %>
       <div style="
-        position:absolute;bottom:0;left:0;right:0;
+        position:absolute;bottom:1.5rem;left:0;right:0;
         display:flex;flex-direction:column;align-items:center;
         padding:2rem 1.5rem 2.5rem;
         background:linear-gradient(to top, rgba(0,34,77,0.95) 0%, rgba(0,34,77,0.7) 60%, transparent 100%);
         pointer-events:none;
       ">
-        <p style="
-          font-size:.7rem;font-weight:700;letter-spacing:.3rem;
-          text-transform:uppercase;color:#03C988;
-          margin:0 0 .5rem;font-family:'Work Sans','Helvetica',sans-serif;
-        ">Explore the world's polls</p>
         <h2 style="
           font-size:1.4rem;font-weight:700;color:#E8EDF5;
-          text-align:center;margin:0 0 1.5rem;
+          text-align:center;margin:0 0 2.5rem;
           font-family:'Work Sans','Helvetica',sans-serif;
-        ">Your voice, every country</h2>
+        ">Your global opinion platform</h2>
         <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem;pointer-events:all;">
           <%= link_to new_user_registration_path,
             style: "background:#03C988;color:#00224D;font-weight:700;border-radius:50px;
@@ -75,34 +69,7 @@
         </div>
       </div>
     <% end %>
-
-    <%# ── CTA utilisateur connecté ────────────────────────── %>
-    <% if user_signed_in? %>
-      <div style="
-        position:absolute;top:16px;right:16px;pointer-events:all;
-      ">
-        <%= link_to polls_path,
-          style: "background:rgba(3,201,136,0.15);color:#03C988;font-weight:600;
-                  border:1px solid rgba(3,201,136,0.4);border-radius:50px;
-                  padding:.5rem 1.2rem;font-size:.85rem;text-decoration:none;
-                  font-family:'Work Sans','Helvetica',sans-serif;" do %>
-          Explorer les polls &rarr;
-        <% end %>
-      </div>
-    <% end %>
-
   </div>
-
-  <%# ── Poll card ───────────────────────────────────────────── %>
-  <div style="padding:0 20px 16px;flex-shrink:0;">
-    <div id="poll-card" style="
-      background:#052c65;border:1px solid #084298;border-radius:10px;
-      padding:11px 16px;font-family:'Work Sans','Helvetica',sans-serif;
-      min-height:48px;display:flex;align-items:center;">
-      <span style="color:#084298;font-size:12px;">Hover a country or city pin</span>
-    </div>
-  </div>
-
 </div>
 
 <%# Tooltip global %>
@@ -248,7 +215,7 @@
     const gc = document.getElementById('gc');
     const W  = gc.clientWidth  || 800;
     const H  = gc.clientHeight || 600;
-    const R  = Math.min(W, H) * 0.43;
+    const R  = Math.min(W, H) * 0.45;
 
     const proj = d3.geoOrthographic()
       .scale(R).translate([W/2, H/2])
@@ -307,9 +274,9 @@
         .clipAngle(90).rotate(proj.rotate())([lon, lat]);
     }
 
-    function drawPins() {
-      const psvg = d3.select('#pins-svg').attr('width', W).attr('height', H);
-      psvg.selectAll('*').remove();
+  function drawPins() {
+    return;
+          psvg.selectAll('*').remove();
 
       ALL.forEach((p, i) => {
         if (!isVisible(p.lat, p.lon)) return;
@@ -394,9 +361,6 @@
             redrawCountries();
             drawPins();
           })
-          .on('click', function() {
-            if (p.isPoll) window.location.href = '/polls?city=' + encodeURIComponent(p.city);
-          });
       });
     }
 
@@ -445,7 +409,6 @@
             const name = COUNTRY_NAMES[selCountry] || ('Region ' + selCountry);
             countryLabel.textContent = '📍 ' + name;
             countryLabel.style.display = 'block';
-            window.location.href = '/polls?country=' + encodeURIComponent(selCountry);
           });
 
         borderPath.datum(borders).attr('d', gpath);
@@ -458,7 +421,7 @@
       if (rotating && lastT) {
         const dt = t - lastT;
         const r  = proj.rotate();
-        proj.rotate([r[0] + dt * 0.018, r[1], r[2]]);
+        proj.rotate([r[0] + dt * 0.006, r[1], r[2]]);
         redraw();
       }
       lastT = t;
