@@ -12,6 +12,7 @@ class PollsController < ApplicationController
   def show
     @poll = Poll.includes(:poll_options, :votes).find(params[:id])
     @user_vote = Vote.find_by(poll: @poll, user: current_user) if user_signed_in?
+    @votes_by_country = country_vote_data(@poll).filter_map { |k, v| [k, v[:color]] if v[:color] }.to_h
   end
 
   def new
@@ -46,27 +47,34 @@ class PollsController < ApplicationController
 
   def country_votes
     @poll = Poll.includes(:poll_options, :votes).find(params[:id])
-    option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"]
-    option_ids = @poll.poll_options.map(&:id)
-
-    # Count votes per [country, option] pair
-    tallies = @poll.votes.where.not(country: nil)
-                   .group(:country, :poll_option_id)
-                   .count
-
-    # For each country pick the option with the most votes
-    winners = {}
-    tallies.each do |(country, option_id), count|
-      if winners[country].nil? || count > winners[country][:count]
-        idx = option_ids.index(option_id)
-        winners[country] = { count: count, color: option_colors[idx] } if idx
-      end
-    end
-
-    render json: winners.transform_values { |v| v[:color] }
+    render json: country_vote_data(@poll).transform_values { |v| v[:color] }
   end
 
   private
+
+  OPTION_COLORS = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"].freeze
+
+  def country_vote_data(poll)
+    option_ids = poll.poll_options.map(&:id)
+    tallies = poll.votes.where.not(country: nil)
+                  .group(:country, :poll_option_id)
+                  .count
+
+    result = {}
+    tallies.each do |(country, option_id), count|
+      result[country] ||= { total: 0, winner_count: 0, color: nil }
+      result[country][:total] += count
+      if count > result[country][:winner_count]
+        idx = option_ids.index(option_id)
+        if idx
+          result[country][:winner_count] = count
+          result[country][:color] = OPTION_COLORS[idx]
+        end
+      end
+    end
+
+    result.transform_values { |v| { color: v[:color], total: v[:total] } }
+  end
 
   def poll_params
     params.require(:poll).permit(:title_question, :category, :country, :expires_at,
