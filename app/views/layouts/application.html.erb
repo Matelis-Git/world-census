@@ -70,20 +70,5 @@
       <% end %>
     </nav>
     <%= yield :scripts %>
-    <script>
-      function animateBars() {
-        document.querySelectorAll('.bar-fill:not([data-animated])').forEach(function(bar) {
-          bar.dataset.animated = 'true';
-          requestAnimationFrame(function() {
-            requestAnimationFrame(function() {
-              bar.style.width = bar.dataset.pct + '%';
-            });
-          });
-        });
-      }
-      document.addEventListener('DOMContentLoaded', animateBars);
-      document.addEventListener('turbo:render', animateBars);
-      document.addEventListener('turbo:load', animateBars);
-    </script>
   </body>
 </html>
