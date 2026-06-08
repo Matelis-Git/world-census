@@ -1,4 +1,5 @@
-<% category_colors = { "economy" => "#03C988", "politics" => "#FF7A2F", "law" => "#FFA500", "social" => "#FFEB00" } %>
+  <% category_colors = { "economy" => "#03C988", "politics" => "#FF204E", "social" => "#FFC193", "law" => "#FFA500" } %>
+
 <% country_colors = { "france" => "#0055A4", "global" => "#4635B1" } %>
 <% option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"] %>
 
@@ -36,7 +37,7 @@
   <% total = votes_arr.size %>
   <% has_voted = @user_vote.present? %>
 
-  <div class="card mb-3">
+  <div class="card mb-3" data-controller="bar-chart">
     <div class="card-body">
       <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">Overall Results</p>
 
@@ -47,7 +48,7 @@
           <% selected = @user_vote.poll_option_id == option.id %>
           <% color = option_colors[i % option_colors.length] %>
           <div class="mb-2 position-relative" style="height: 28px; border-radius: 50px; background-color: rgba(255,255,255,0.07); overflow: hidden;">
-            <div class="bar-fill" data-pct="<%= pct %>" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background-color: <%= color %>; overflow: hidden; transition: width 0.7s cubic-bezier(0.4,0,0.2,1);">
+            <div class="bar-fill" data-bar-chart-target="bar" data-pct="<%= pct %>" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background-color: <%= color %>; overflow: hidden; transition: width 0.7s cubic-bezier(0.4,0,0.2,1);">
               <div style="position:absolute; top:-6px; right:-18px; width:36px; height:40px; border-radius:40%; background:<%= color %>; opacity:0.5; animation:waveAnim 1.2s infinite linear;"></div>
               <div style="position:absolute; top:-4px; right:-22px; width:36px; height:36px; border-radius:40%; background:<%= color %>; opacity:0.35; animation:waveAnim 1.8s infinite linear reverse;"></div>
             </div>
@@ -74,13 +75,14 @@
     </div>
   </div>
 
-  <%# MAP PLACEHOLDER CARD %>
+  <%# MAP CARD %>
   <div class="card mb-3">
     <div class="card-body">
       <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">How countries voted</p>
-      <%# MAPBOX PLACEHOLDER - DO NOT REMOVE %>
-      <div id="world-map" style="height: 300px; border-radius: 8px; overflow: hidden; background-color: #1a1a2e;"></div>
-      <p class="mt-2 mb-0 text-center" style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">Map loading...</p>
+      <div data-controller="choropleth-map"
+           data-choropleth-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
+           data-choropleth-map-votes-value="<%= @votes_by_country.to_json %>"
+           style="height: 300px; border-radius: 8px;"></div>
     </div>
   </div>
 
@@ -115,65 +117,3 @@
 
 </div>
 
-<% content_for :scripts do %>
-  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
-  <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
-  <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWF0ZWxpcy03NyIsImEiOiJjbXAxMXBwcGgwMGdyMnFxcmhuc2l4ZW5uIn0.AfR4OvHysFYS8qbum0ZWcg';
-
-    const map = new mapboxgl.Map({
-      container: 'world-map',
-      style: 'mapbox://styles/mapbox/dark-v11',
-      center: [0, 20],
-      zoom: 1.2,
-      projection: 'naturalEarth'
-    });
-
-    map.on('load', () => {
-      fetch('/polls/<%= @poll.id %>/country_votes')
-        .then(r => r.json())
-        .then(data => {
-          console.log('country votes data:', data);
-
-          const matchExpression = ['match', ['get', 'iso_3166_1_alpha_2']];
-
-          Object.entries(data).forEach(([country, color]) => {
-            matchExpression.push(country);
-            matchExpression.push(color);
-          });
-
-          matchExpression.push('rgba(255,255,255,0.05)');
-
-          map.addSource('country-votes', {
-            type: 'vector',
-            url: 'mapbox://mapbox.country-boundaries-v1'
-          });
-
-          map.addLayer({
-            id: 'country-fills',
-            type: 'fill',
-            source: 'country-votes',
-            'source-layer': 'country_boundaries',
-            paint: {
-              'fill-color': matchExpression,
-              'fill-opacity': 0.75
-            }
-          });
-
-          map.setPaintProperty('country-label', 'text-color', 'rgba(255,255,255,0.6)');
-
-          map.addLayer({
-            id: 'country-borders',
-            type: 'line',
-            source: 'country-votes',
-            'source-layer': 'country_boundaries',
-            paint: {
-              'line-color': 'rgba(255,255,255,0.1)',
-              'line-width': 0.5
-            }
-          });
-        })
-        .catch(err => console.log('fetch error:', err));
-    });
-  </script>
-<% end %>

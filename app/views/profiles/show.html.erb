@@ -17,16 +17,20 @@
   <%# Stats %>
   <div class="row g-3 mb-3">
     <div class="col-6">
-      <div class="card text-center py-3">
-        <div style="font-size: 1.5rem; font-weight: 700; color: #03C988;"><%= @my_polls.size %></div>
-        <div style="font-size: 0.78rem; color: rgba(255,255,255,0.5);">Polls created</div>
-      </div>
+      <%= link_to my_polls_polls_path, class: "text-decoration-none" do %>
+        <div class="card text-center py-3">
+          <div style="font-size: 1.5rem; font-weight: 700; color: #03C988;"><%= @my_polls.size %></div>
+          <div style="font-size: 0.78rem; color: rgba(255,255,255,0.5);">Polls created</div>
+        </div>
+      <% end %>
     </div>
     <div class="col-6">
-      <div class="card text-center py-3">
-        <div style="font-size: 1.5rem; font-weight: 700; color: #534AB7;"><%= @votes.size %></div>
-        <div style="font-size: 0.78rem; color: rgba(255,255,255,0.5);">Votes cast</div>
-      </div>
+      <%= link_to my_votes_polls_path, class: "text-decoration-none" do %>
+        <div class="card text-center py-3">
+          <div style="font-size: 1.5rem; font-weight: 700; color: #534AB7;"><%= @votes.size %></div>
+          <div style="font-size: 0.78rem; color: rgba(255,255,255,0.5);">Votes cast</div>
+        </div>
+      <% end %>
     </div>
   </div>
 
