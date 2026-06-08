@@ -30,19 +30,11 @@ export default class extends Controller {
     if (entries.length === 0) {
       fillColor = "rgba(0,0,0,0.04)"
     } else {
-      const matchExpr = [
+      fillColor = [
         "match",
         ["coalesce", ["get", "iso_3166_1"], ""],
-        ...entries.flatMap(([code, count]) => [code, count]),
-        0
-      ]
-      fillColor = [
-        "interpolate", ["linear"], matchExpr,
-        0,   "rgba(0,0,0,0.04)",
-        1,   "#818cf8",
-        10,  "#4f46e5",
-        50,  "#312e81",
-        100, "#1e1b4b"
+        ...entries.flatMap(([code, color]) => [code, color]),
+        "rgba(0,0,0,0.04)"
       ]
     }
 

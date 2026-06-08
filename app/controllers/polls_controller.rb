@@ -12,7 +12,7 @@ class PollsController < ApplicationController
   def show
     @poll = Poll.includes(:poll_options, :votes).find(params[:id])
     @user_vote = Vote.find_by(poll: @poll, user: current_user) if user_signed_in?
-    @votes_by_country = @poll.votes.where.not(country: nil).group(:country).count
+    @votes_by_country = country_vote_data(@poll).filter_map { |k, v| [k, v[:color]] if v[:color] }.to_h
   end
 
   def new
