@@ -4,9 +4,9 @@ class PollsController < ApplicationController
     @polls = Poll.includes(:poll_options, :votes).order(created_at: :desc)
     @polls = @polls.where(category: params[:category]) if params[:category].present?
     @polls = @polls.where(country: params[:country]) if params[:country].present?
-    if user_signed_in?
-      @user_votes = Vote.where(poll: @polls, user: current_user).index_by(&:poll_id)
-    end
+    return unless user_signed_in?
+
+    @user_votes = Vote.where(poll: @polls, user: current_user).index_by(&:poll_id)
   end
 
   def show
@@ -42,7 +42,7 @@ class PollsController < ApplicationController
   end
 
   def my_votes
-    @votes = current_user.votes.includes(poll: [:poll_options, :votes])
+    @votes = current_user.votes.includes(poll: %i[poll_options votes])
   end
 
   def country_votes
@@ -77,6 +77,7 @@ class PollsController < ApplicationController
   end
 
   def poll_params
-    params.require(:poll).permit(:title_question, :category, :country, poll_options_attributes: [:id, :text, :_destroy])
+    params.require(:poll).permit(:title_question, :category, :country, :expires_at,
+                                 poll_options_attributes: %i[id text _destroy])
   end
 end

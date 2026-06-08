@@ -1,3 +1,12 @@
+<div class="card mb-3" id="poll-<%= poll.id %>">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <%= link_to poll.title_question, poll_path(poll), class: "fw-bold mb-0 text-decoration-none text-white" %>
+        <% if poll.user == current_user %>
+          <%= button_to poll_path(poll), method: :delete, class: "btn btn-sm p-0 border-0 bg-transparent ms-2", style: "color:
+  #FF204E;" do %>
+            <i class="fas fa-trash"></i>
+          <% end %>
 <div class="card mb-3" id="poll-<%= poll.id %>" data-controller="bar-chart">
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-start mb-2">
@@ -6,42 +15,33 @@
         <%= button_to poll_path(poll), method: :delete, class: "btn btn-sm p-0 border-0 bg-transparent ms-2", style: "color: #FF204E;" do %>
           <i class="fas fa-trash"></i>
         <% end %>
-      <% end %>
-    </div>
+      </div>
 
       <% category_colors = { "economy" => "#03C988", "politics" => "#FF204E", "social" => "#FFC193", "law" => "#FFA500" } %>
       <% country_colors = { "FR" => "#0055A4", "global" => "#4635B1", "DE" => "#FFCC00", "BR" => "#009C3B", "AR" => "#74ACDF", "CO" =>
-      "#FCD116" } %>    <div class="d-flex gap-2 mb-3">
-      <span class="badge" style="background-color: <%= category_colors[poll.category] %> !important; color: white;">
-        <%= poll.category %>
-      </span>
-      <span class="badge" style="background-color: <%= country_colors[poll.country] %> !important; color: white;">
-        <%= poll.country %>
-      </span>
-    </div>
+  "#FCD116" } %>
+      <div class="d-flex gap-2 mb-3">
+        <span class="badge" style="background-color: <%= category_colors[poll.category] %> !important; color: white;">
+          <%= poll.category %>
+        </span>
+        <span class="badge" style="background-color: <%= country_colors[poll.country] %> !important; color: white;">
+          <%= poll.country == "global" ? "Global" : (ISO3166::Country[poll.country]&.iso_short_name || poll.country) %>
+        </span>
+      </div>
 
-    <% option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"] %>
-    <% has_voted = user_vote.present? %>
-    <div class="row g-2 mb-3">
-      <% poll.poll_options.each_with_index do |option, i| %>
-        <div class="col-12">
-          <% voted = user_vote&.poll_option_id == option.id %>
-          <% if voted
-               btn_style = "background-color: #1a1a2e; color: white; border: 2px solid #{option_colors[i]}; cursor: default;"
-             elsif has_voted
-               btn_style = "background-color: #111120; color: #444; border: 1px solid #222; cursor: default;"
-             else
-               btn_style = "background-color: #1a1a2e; color: white; border: 1px solid #06B6D4; cursor: pointer;"
-             end %>
-          <%= button_to option.text, poll_votes_path(poll),
-              params: { poll_option_id: option.id },
-              class: "btn w-100",
-              style: btn_style,
-              disabled: voted %>
+      <% if poll.expires_at.present? %>
+        <% days_left = ((poll.expires_at - Time.current) / 1.day).ceil %>
+        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 8px;">
+          <%= poll.expired? ? "🔒 Poll closed" : "⏱ #{days_left} day#{'s' if days_left > 1} left" %>
         </div>
       <% end %>
-    </div>
 
+      <% option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"] %>
+      <% has_voted = user_vote.present? %>
+
+      <% if poll.expired? %>
+        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.3); text-align: center; padding: 1rem 0;">
+          Voting is closed for this poll.
     <% if user_vote.present? %>
       <% votes_arr = poll.votes.to_a %>
       <% total = votes_arr.size %>
@@ -62,7 +62,55 @@
             <span style="font-size: 0.75rem; color: white; font-weight: 600; flex-shrink: 0; margin-left: 8px;"><%= pct %>%</span>
           </div>
         </div>
+      <% else %>
+        <div class="row g-2 mb-3">
+          <% poll.poll_options.each_with_index do |option, i| %>
+            <div class="col-12">
+              <% voted = user_vote&.poll_option_id == option.id %>
+              <% if voted
+                   btn_style = "background-color: #1a1a2e; color: white; border: 2px solid #{option_colors[i]}; cursor: default;"
+                 elsif has_voted
+                   btn_style = "background-color: #111120; color: #444; border: 1px solid #222; cursor: default;"
+                 else
+                   btn_style = "background-color: #1a1a2e; color: white; border: 1px solid #06B6D4; cursor: pointer;"
+                 end %>
+              <%= button_to option.text, poll_votes_path(poll),
+                  params: { poll_option_id: option.id },
+                  class: "btn w-100",
+                  style: btn_style,
+                  disabled: voted %>
+            </div>
+          <% end %>
+        </div>
       <% end %>
-    <% end %>
+
+      <% if user_vote.present? || poll.expired? %>
+        <% votes_arr = poll.votes.to_a %>
+        <% total = votes_arr.size %>
+        <% poll.poll_options.each_with_index do |option, i| %>
+          <% count = votes_arr.count { |v| v.poll_option_id == option.id } %>
+          <% pct = total > 0 ? (count.to_f / total * 100).round : 0 %>
+          <% color = option_colors[i % option_colors.length] %>
+          <% selected = user_vote&.poll_option_id == option.id %>
+          <div class="mb-2 position-relative" style="height: 28px; border-radius: 50px; background-color: rgba(255,255,255,0.07);
+  overflow: hidden;">
+            <div class="bar-fill" data-pct="<%= pct %>" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%;
+  background-color: <%= color %>; overflow: hidden; transition: width 0.7s cubic-bezier(0.4,0,0.2,1);">
+              <div style="position:absolute; top:-6px; right:-18px; width:36px; height:40px; border-radius:40%; background:<%= color
+  %>; opacity:0.5; animation:waveAnim 1.2s infinite linear;"></div>
+              <div style="position:absolute; top:-4px; right:-22px; width:36px; height:36px; border-radius:40%; background:<%= color
+  %>; opacity:0.35; animation:waveAnim 1.8s infinite linear reverse;"></div>
+            </div>
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0
+  14px;">
+              <span style="font-size: 0.8rem; color: white; font-weight: <%= selected ? '600' : '400' %>; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; max-width: 78%;">
+                <%= option.text %><% if selected %> <i class="fas fa-check" style="font-size: 9px;"></i><% end %>
+              </span>
+              <span style="font-size: 0.75rem; color: white; font-weight: 600; flex-shrink: 0; margin-left: 8px;"><%= pct %>%</span>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
   </div>
-</div>
