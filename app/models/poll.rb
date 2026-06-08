@@ -17,6 +17,6 @@ class Poll < ApplicationRecord
 
   def to_globe_json
     { id: id, lat: lat, lon: lon, city: city, country: country,
-      q: question, cat: category, votes: votes.count, isPoll: true }
+      q: title_question, cat: category, votes: votes.count, isPoll: true }
   end
 end

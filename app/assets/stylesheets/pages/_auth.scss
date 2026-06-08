@@ -45,40 +45,32 @@
   position: relative;
   width: 100%;
   max-width: 340px;
-  border-radius: 18px;
-  overflow: hidden;
-  z-index: 0;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    border-radius: inherit;
-    background: conic-gradient(
-      from var(--neon-angle),
-      transparent 0%,
-      transparent 60%,
-      #03C988 75%,
-      rgba(3, 201, 136, 0.4) 85%,
-      transparent 100%
-    );
-    z-index: 0;
-    animation: neon-spin 2.5s linear infinite;
-  }
 
   .auth-card {
     position: relative;
     z-index: 1;
-    margin: 2px;
-    background: rgba(8, 16, 32, 0.75);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    /* Balanced 3D glass — lighter but still dark */
+    background: rgba(25, 40, 70, 0.55); /* slightly lighter tint, more contrast */
+    backdrop-filter: blur(24px) brightness(1.08) contrast(1.12);
+    -webkit-backdrop-filter: blur(24px) brightness(1.08) contrast(1.12);
+
+    /* Glass thickness + depth */
+    box-shadow:
+      inset 0 0 14px rgba(255, 255, 255, 0.07), /* subtle inner glow for 3D */
+      0 0 18px rgba(3, 201, 136, 0.5);          /* neon glow */
+
+    /* Neon border */
+    border: 2px solid #03C988;
+
     border-radius: 16px;
     padding: 1.5rem;
     color: white;
   }
 }
+
+
+
 
 .btn-form {
   font-weight: 700;
