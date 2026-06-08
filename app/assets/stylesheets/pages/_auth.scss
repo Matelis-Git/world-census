@@ -45,24 +45,35 @@
   position: relative;
   width: 100%;
   max-width: 340px;
-  filter: drop-shadow(2px 12px 9px rgb(3, 201, 136));
+  border-radius: 18px;
+  overflow: hidden;
+  z-index: 0;
 
   &::before {
     content: "";
     position: absolute;
-    top: -8px;
-    left: -8px;
-    width: calc(100% + 16px);
-    height: calc(100% + 16px);
-    background: #2a5298;
-    border-radius: 8px;
+    inset: -2px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--neon-angle),
+      transparent 0%,
+      transparent 60%,
+      #03C988 75%,
+      rgba(3, 201, 136, 0.4) 85%,
+      transparent 100%
+    );
     z-index: 0;
+    animation: neon-spin 2.5s linear infinite;
   }
 
   .auth-card {
     position: relative;
     z-index: 1;
-    background: #19376D;
+    margin: 2px;
+    background: rgba(8, 16, 32, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 16px;
     padding: 1.5rem;
     color: white;

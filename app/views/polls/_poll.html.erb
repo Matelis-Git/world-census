@@ -42,22 +42,27 @@
       <% end %>
     </div>
 
-    <% votes_arr = poll.votes.to_a %>
-    <% total = votes_arr.size %>
-    <% poll.poll_options.each_with_index do |option, i| %>
-      <% count = votes_arr.count { |v| v.poll_option_id == option.id } %>
-      <% pct = total > 0 ? (count.to_f / total * 100).round : 0 %>
-      <% color = option_colors[i % option_colors.length] %>
-      <% selected = user_vote&.poll_option_id == option.id %>
-      <div class="mb-2 position-relative" style="height: 28px; border-radius: 50px; background-color: rgba(255,255,255,0.07); overflow: hidden;">
-        <div style="position: absolute; left: 0; top: 0; height: 100%; width: <%= pct %>%; background-color: <%= color %>;"></div>
-        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
-          <span style="font-size: 0.8rem; color: white; font-weight: <%= selected ? '600' : '400' %>; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78%;">
-            <%= option.text %><% if selected %> <i class="fas fa-check" style="font-size: 9px;"></i><% end %>
-          </span>
-          <span style="font-size: 0.75rem; color: white; font-weight: 600; flex-shrink: 0; margin-left: 8px;"><%= pct %>%</span>
+    <% if user_vote.present? %>
+      <% votes_arr = poll.votes.to_a %>
+      <% total = votes_arr.size %>
+      <% poll.poll_options.each_with_index do |option, i| %>
+        <% count = votes_arr.count { |v| v.poll_option_id == option.id } %>
+        <% pct = total > 0 ? (count.to_f / total * 100).round : 0 %>
+        <% color = option_colors[i % option_colors.length] %>
+        <% selected = user_vote&.poll_option_id == option.id %>
+        <div class="mb-2 position-relative" style="height: 28px; border-radius: 50px; background-color: rgba(255,255,255,0.07); overflow: hidden;">
+          <div class="bar-fill" data-pct="<%= pct %>" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background-color: <%= color %>; overflow: hidden; transition: width 0.7s cubic-bezier(0.4,0,0.2,1);">
+            <div style="position:absolute; top:-6px; right:-18px; width:36px; height:40px; border-radius:40%; background:<%= color %>; opacity:0.5; animation:waveAnim 1.2s infinite linear;"></div>
+            <div style="position:absolute; top:-4px; right:-22px; width:36px; height:36px; border-radius:40%; background:<%= color %>; opacity:0.35; animation:waveAnim 1.8s infinite linear reverse;"></div>
+          </div>
+          <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
+            <span style="font-size: 0.8rem; color: white; font-weight: <%= selected ? '600' : '400' %>; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78%;">
+              <%= option.text %><% if selected %> <i class="fas fa-check" style="font-size: 9px;"></i><% end %>
+            </span>
+            <span style="font-size: 0.75rem; color: white; font-weight: 600; flex-shrink: 0; margin-left: 8px;"><%= pct %>%</span>
+          </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 </div>
