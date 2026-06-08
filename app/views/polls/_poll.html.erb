@@ -9,9 +9,9 @@
       <% end %>
     </div>
 
-    <% category_colors = { "economy" => "#03C988", "politics" => "#FF7A2F", "social" => "#FFEB00" } %>
-    <% country_colors = { "france" => "#0055A4", "global" => "#4635B1" } %>
-    <div class="d-flex gap-2 mb-3">
+      <% category_colors = { "economy" => "#03C988", "politics" => "#FF204E", "social" => "#FFC193", "law" => "#FFA500" } %>
+      <% country_colors = { "FR" => "#0055A4", "global" => "#4635B1", "DE" => "#FFCC00", "BR" => "#009C3B", "AR" => "#74ACDF", "CO" =>
+      "#FCD116" } %>    <div class="d-flex gap-2 mb-3">
       <span class="badge" style="background-color: <%= category_colors[poll.category] %> !important; color: white;">
         <%= poll.category %>
       </span>
