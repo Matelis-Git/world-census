@@ -17,6 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
     <%= javascript_importmap_tags %>
     <%= favicon_link_tag %>
   </head>
@@ -70,20 +71,5 @@
       <% end %>
     </nav>
     <%= yield :scripts %>
-    <script>
-      function animateBars() {
-        document.querySelectorAll('.bar-fill:not([data-animated])').forEach(function(bar) {
-          bar.dataset.animated = 'true';
-          requestAnimationFrame(function() {
-            requestAnimationFrame(function() {
-              bar.style.width = bar.dataset.pct + '%';
-            });
-          });
-        });
-      }
-      document.addEventListener('DOMContentLoaded', animateBars);
-      document.addEventListener('turbo:render', animateBars);
-      document.addEventListener('turbo:load', animateBars);
-    </script>
   </body>
 </html>

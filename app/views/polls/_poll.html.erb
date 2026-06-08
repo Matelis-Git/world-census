@@ -1,4 +1,4 @@
-<div class="card mb-3" id="poll-<%= poll.id %>">
+<div class="card mb-3" id="poll-<%= poll.id %>" data-controller="bar-chart">
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-start mb-2">
       <%= link_to poll.title_question, poll_path(poll), class: "fw-bold mb-0 text-decoration-none text-white" %>
@@ -51,7 +51,7 @@
         <% color = option_colors[i % option_colors.length] %>
         <% selected = user_vote&.poll_option_id == option.id %>
         <div class="mb-2 position-relative" style="height: 28px; border-radius: 50px; background-color: rgba(255,255,255,0.07); overflow: hidden;">
-          <div class="bar-fill" data-pct="<%= pct %>" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background-color: <%= color %>; overflow: hidden; transition: width 0.7s cubic-bezier(0.4,0,0.2,1);">
+          <div class="bar-fill" data-bar-chart-target="bar" data-pct="<%= pct %>" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background-color: <%= color %>; overflow: hidden; transition: width 0.7s cubic-bezier(0.4,0,0.2,1);">
             <div style="position:absolute; top:-6px; right:-18px; width:36px; height:40px; border-radius:40%; background:<%= color %>; opacity:0.5; animation:waveAnim 1.2s infinite linear;"></div>
             <div style="position:absolute; top:-4px; right:-22px; width:36px; height:36px; border-radius:40%; background:<%= color %>; opacity:0.35; animation:waveAnim 1.8s infinite linear reverse;"></div>
           </div>
