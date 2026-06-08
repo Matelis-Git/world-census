@@ -25,17 +25,20 @@ body {
   color: white;
 }
 .card {
+  --bs-card-bg: transparent;
   overflow: hidden;
-  border-radius: 10px;
-  background: $card;
-  box-shadow: 0 4px 15px rgba(255, 32, 78, 0.3);
+  border-radius: 12px;
+  background-color: rgba(9, 18, 44, 0.5) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
   transition: transform 0.2s, box-shadow 0.2s;
-  border: none;
   color: white;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(255, 32, 78, 0.6);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.65) !important;
   }
 }
 
@@ -93,6 +96,11 @@ input, textarea, select {
   &::placeholder {
     color: #aaa !important;
   }
+}
+
+@keyframes waveAnim {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @media(max-width: 576px) {

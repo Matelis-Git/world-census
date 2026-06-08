@@ -47,7 +47,10 @@
           <% selected = @user_vote.poll_option_id == option.id %>
           <% color = option_colors[i % option_colors.length] %>
           <div class="mb-2 position-relative" style="height: 28px; border-radius: 50px; background-color: rgba(255,255,255,0.07); overflow: hidden;">
-            <div style="position: absolute; left: 0; top: 0; height: 100%; width: <%= pct %>%; background-color: <%= color %>;"></div>
+            <div class="bar-fill" data-pct="<%= pct %>" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background-color: <%= color %>; overflow: hidden; transition: width 0.7s cubic-bezier(0.4,0,0.2,1);">
+              <div style="position:absolute; top:-6px; right:-18px; width:36px; height:40px; border-radius:40%; background:<%= color %>; opacity:0.5; animation:waveAnim 1.2s infinite linear;"></div>
+              <div style="position:absolute; top:-4px; right:-22px; width:36px; height:36px; border-radius:40%; background:<%= color %>; opacity:0.35; animation:waveAnim 1.8s infinite linear reverse;"></div>
+            </div>
             <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
               <span style="font-size: 0.85rem; color: white; font-weight: <%= selected ? '600' : '400' %>; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78%;">
                 <%= option.text %><% if selected %> <i class="fas fa-check" style="font-size: 9px;"></i><% end %>
@@ -116,6 +119,7 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
   <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWF0ZWxpcy03NyIsImEiOiJjbXAxMXBwcGgwMGdyMnFxcmhuc2l4ZW5uIn0.AfR4OvHysFYS8qbum0ZWcg';
 
     const map = new mapboxgl.Map({
       container: 'world-map',
