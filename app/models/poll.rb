@@ -6,6 +6,10 @@ class Poll < ApplicationRecord
   accepts_nested_attributes_for :poll_options, reject_if: :all_blank
   validate :law_options_are_valid, if: -> { category == "law" }
 
+  def expired?
+    expires_at.present? && expires_at < Time.current
+  end
+
   private
 
   def law_options_are_valid

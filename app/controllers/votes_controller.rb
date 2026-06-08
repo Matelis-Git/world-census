@@ -4,6 +4,10 @@ class VotesController < ApplicationController
 
   def create
     @poll = Poll.find(params[:poll_id])
+    if @poll.expired?
+      redirect_to polls_path, alert: "This poll is closed."
+      return
+    end
     @vote = Vote.find_or_initialize_by(poll: @poll, user: current_user)
     @vote.poll_option_id = params[:poll_option_id]
     @vote.save
