@@ -29,26 +29,6 @@
     </div>
   </div>
 
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Category</label>
-            <div class="dropdown">
-              <button class="btn w-100 text-start dropdown-toggle" type="button"
-                      data-bs-toggle="dropdown"
-                      style="background-color: #1a1a2e; color: white; border: 1px solid #534AB7;">
-                Economy
-              </button>
-              <ul class="dropdown-menu w-100" style="background-color: #1a1a2e;">
-                <% ["economy", "politics", "social", "law"].each do |cat| %>
-                  <li>
-                    <a class="dropdown-item text-white" href="#"
-                       data-category="<%= cat %>"><%= cat.capitalize %></a>
-                  </li>
-                <% end %>
-              </ul>
-              <input type="hidden" name="poll[category]" id="categoryHiddenInput" value="economy"
-                     data-poll-ai-helper-target="category">
-            </div>
-          </div>
 
           <div class="mb-3">
             <label class="form-label fw-semibold">Country</label>
