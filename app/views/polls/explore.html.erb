@@ -1,0 +1,143 @@
+<%# app/views/polls/explore.html.erb
+    Page Explore — design Polymarket avec donuts Chart.js %>
+
+<style>
+  .explore-page { max-width: 430px; margin: 0 auto; padding: 0 0 100px; }
+
+  /* Header */
+  .explore-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 16px 4px; }
+  .explore-header h1 { font-size: 26px; font-weight: 800; color: #ffffff; margin: 0 0 4px; }
+  .explore-header p { font-size: 12px; color: rgba(207,226,255,0.4); margin: 0; }
+
+  /* Filtres */
+  .filters { display: flex; gap: 6px; padding: 14px 16px 0; overflow-x: auto; scrollbar-width: none; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter-pill { font-size: 11px; font-weight: 600; padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); color: rgba(207,226,255,0.5); white-space: nowrap; text-decoration: none; flex-shrink: 0; }
+  .filter-pill.active { background: #5b5fcf; color: #fff; border-color: #5b5fcf; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 24px; padding: 14px 16px 0; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 16px; }
+  .tab { font-size: 13px; font-weight: 600; color: rgba(207,226,255,0.35); padding-bottom: 10px; text-decoration: none; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab.active { color: #7b7ef8; border-bottom-color: #7b7ef8; }
+
+  /* Cards */
+  .explore-list { padding: 0 16px; }
+  .explore-card { background: rgba(255,255,255,0.05); border-radius: 16px; border: 0.5px solid rgba(255,255,255,0.09); padding: 14px; display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; text-decoration: none; transition: background 0.15s, transform 0.2s ease; }
+  .explore-card:hover { background: rgba(255,255,255,0.08); transform: scale(1.02); }
+
+  /* Avatar emoji */
+  .explore-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.08); }
+
+  /* Corps texte */
+  .explore-body { flex: 1; min-width: 0; }
+  .explore-cat { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.09em; display: block; margin-bottom: 4px; }
+  .explore-question { color: rgba(255,255,255,0.92); font-size: 13px; font-weight: 700; line-height: 1.3; margin: 0 0 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .explore-meta { font-size: 10px; color: rgba(207,226,255,0.28); margin: 0 0 5px; }
+  .explore-voted { font-size: 11px; color: rgba(207,226,255,0.55); }
+  .explore-voted-option { font-weight: 700; color: rgba(130,210,160,0.9); }
+</style>
+
+<div class="explore-page">
+
+  <%# Header %>
+  <div class="explore-header">
+    <div>
+      <h1>Explore Polls</h1>
+      <p>Discover what the world is thinking.</p>
+    </div>
+    <%= link_to "+ Create", new_poll_path, style: "background: transparent; border: 1.5px solid rgba(255,255,255,0.25); border-radius: 20px; color: #fff; font-size: 12px; font-weight: 600; padding: 8px 14px; text-decoration: none;" %>
+  </div>
+
+  <%# Filtres %>
+  <div class="filters">
+    <% [["All", nil], ["Politics", "politics"], ["Environment", "environment"],
+        ["Economy", "economy"], ["Technology", "technology"],
+        ["Social", "social"], ["Law", "law"]].each do |label, value| %>
+      <a href="<%= value ? explore_polls_path(category: value) : explore_polls_path %>"
+         class="filter-pill <%= 'active' if params[:category] == value %>">
+        <%= label %>
+      </a>
+    <% end %>
+  </div>
+
+  <%# Tabs %>
+  <div class="tabs">
+    <a href="#" class="tab active">↗ Trending</a>
+    <a href="#" class="tab">Newest</a>
+    <a href="#" class="tab">Most Voted</a>
+  </div>
+
+  <%# Liste des cards %>
+  <div class="explore-list">
+    <% @polls.each do |poll| %>
+      <%
+        cat = poll.category.to_s.downcase
+        emoji = { "technology" => "🤖", "economy" => "💰", "environment" => "🌍",
+                  "politics" => "🏛️", "social" => "👥", "global" => "🌐", "law" => "⚖️"
+                }.fetch(cat, "💬")
+        color = { "technology" => "#7b8fff", "economy" => "#f0a742",
+                  "environment" => "#4ecb8d", "politics" => "#60a5fa",
+                  "social" => "#c084fc", "global" => "#60cdff", "law" => "#fbbf24"
+                }.fetch(cat, "#6ea8fe")
+        user_vote    = @user_votes&.[](poll.id)
+        total        = poll.votes.size
+        votes_affiche = total >= 1000 ? "#{(total / 1000.0).round(1)}K" : total.to_s
+
+        # Donut anneau extérieur — votes par option
+        donut_values = poll.poll_options.map { |o| poll.votes.count { |v| v.poll_option_id == o.id } }
+        donut_labels = poll.poll_options.map(&:text)
+        # Anneau extérieur — couleur verte de l'app
+        donut_colors = Array.new(poll.poll_options.size, "#03C988")
+
+        # Anneau intérieur — un seul arc orange uniforme
+        country_values = [total > 0 ? total : 1]
+        country_labels = ["Total votes"]
+        country_colors = ["#FF7A2F"]
+      %>
+
+      <a href="<%= poll_path(poll) %>" class="explore-card">
+
+        <%# Avatar emoji %>
+        <div class="explore-avatar"><%= emoji %></div>
+
+        <%# Corps texte %>
+        <div class="explore-body">
+          <span class="explore-cat" style="color: <%= color %>"><%= poll.category %></span>
+          <p class="explore-question"><%= poll.title_question %></p>
+          <p class="explore-meta">
+            <%= votes_affiche %> votes · 🌐 <%= poll.country.presence || "Global" %>
+          </p>
+          <%# Avatar auteur Gravatar %>
+          <% if poll.user %>
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+              <img src="<%= poll.user.avatar_url(20) %>"
+                   style="width: 20px; height: 20px; border-radius: 50%;"
+                   alt="<%= poll.user.email.split('@').first %>">
+              <span style="font-size: 10px; color: rgba(207,226,255,0.45);">
+                Asked by <%= poll.user.email.split("@").first.capitalize %>
+              </span>
+            </div>
+          <% end %>
+          <% if user_vote %>
+            <% option_votee = poll.poll_options.find { |o| o.id == user_vote.poll_option_id }&.text %>
+            <span class="explore-voted">✅ You voted: <span class="explore-voted-option"><%= option_votee %></span></span>
+          <% end %>
+        </div>
+
+        <%# Donut double anneau %>
+        <div style="width: 80px; height: 80px; flex-shrink: 0;">
+          <canvas data-controller="donut"
+                  data-values="<%= donut_values.to_json %>"
+                  data-labels="<%= donut_labels.to_json %>"
+                  data-colors="<%= donut_colors.to_json %>"
+                  data-country-values="<%= country_values.to_json %>"
+                  data-country-labels="<%= country_labels.to_json %>"
+                  data-country-colors="<%= country_colors.to_json %>">
+          </canvas>
+        </div>
+
+      </a>
+    <% end %>
+  </div>
+
+</div>

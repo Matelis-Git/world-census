@@ -130,6 +130,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_08_101024) do
     t.string "city"
     t.string "country"
     t.datetime "created_at", null: false
+    t.string "image_url"
     t.float "lat"
     t.float "lon"
     t.string "title_question"

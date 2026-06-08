@@ -4,9 +4,9 @@ class PollsController < ApplicationController
     @polls = Poll.includes(:poll_options, :votes).order(created_at: :desc)
     @polls = @polls.where(category: params[:category]) if params[:category].present?
     @polls = @polls.where(country: params[:country]) if params[:country].present?
-    if user_signed_in?
-      @user_votes = Vote.where(poll: @polls, user: current_user).index_by(&:poll_id)
-    end
+    return unless user_signed_in?
+
+    @user_votes = Vote.where(poll: @polls, user: current_user).index_by(&:poll_id)
   end
 
   def show
@@ -42,7 +42,21 @@ class PollsController < ApplicationController
   end
 
   def my_votes
-    @votes = current_user.votes.includes(poll: [:poll_options, :votes])
+    @votes = current_user.votes.includes(poll: %i[poll_options votes])
+  end
+
+  def explore
+    # On charge tous les polls avec leurs options et votes
+    @polls = Poll.includes(:poll_options, :votes).all
+    @polls = @polls.where(category: params[:category]) if params[:category].present?
+
+    # On trie par nombre de votes — le plus populaire en premier
+    @polls = @polls.sort_by { |p| -p.votes.size }
+
+    # On récupère les votes de l'utilisateur connecté
+    return unless user_signed_in?
+
+    @user_votes = Vote.where(poll_id: @polls.map(&:id), user: current_user).index_by(&:poll_id)
   end
 
   def country_votes
@@ -64,12 +78,12 @@ class PollsController < ApplicationController
     tallies.each do |(country, option_id), count|
       result[country] ||= { total: 0, winner_count: 0, color: nil }
       result[country][:total] += count
-      if count > result[country][:winner_count]
-        idx = option_ids.index(option_id)
-        if idx
-          result[country][:winner_count] = count
-          result[country][:color] = OPTION_COLORS[idx]
-        end
+      next unless count > result[country][:winner_count]
+
+      idx = option_ids.index(option_id)
+      if idx
+        result[country][:winner_count] = count
+        result[country][:color] = OPTION_COLORS[idx]
       end
     end
 
@@ -77,6 +91,6 @@ class PollsController < ApplicationController
   end
 
   def poll_params
-    params.require(:poll).permit(:title_question, :category, :country, poll_options_attributes: [:id, :text, :_destroy])
+    params.require(:poll).permit(:title_question, :category, :country, poll_options_attributes: %i[id text _destroy])
   end
 end
