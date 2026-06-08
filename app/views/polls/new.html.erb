@@ -5,8 +5,28 @@
       <%= simple_form_for @poll, html: { data: { controller: "poll-ai-helper poll-options" } } do |f| %>
         <%= f.input :title_question, label: "Your question", placeholder: "Should France...?",
             input_html: { data: { "poll-ai-helper-target": "question" } } %>
-        <%= f.input :category, collection: ["economy", "politics", "social", "law"], label: "Category",
-            input_html: { data: { "poll-ai-helper-target": "category" }, onchange: "handleCategoryChange(this.value)" } %>
+          <div class="mb-3">
+    <label class="form-label fw-semibold">Category</label>
+    <div class="dropdown">
+      <button class="btn w-100 text-start dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              style="background-color: #1a1a2e; color: white; border: 1px solid #534AB7;">
+        Economy
+      </button>
+      <ul class="dropdown-menu w-100" style="background-color: #1a1a2e;">
+        <% ["economy", "politics", "social", "law"].each do |cat| %>
+          <li>
+            <a class="dropdown-item text-white" href="#"
+               onclick="selectCategory('<%= cat %>', this)"><%= cat.capitalize %></a>
+          </li>
+        <% end %>
+      </ul>
+      <input type="hidden" name="poll[category]" id="categoryHiddenInput" value="economy"
+             data-poll-ai-helper-target="category">
+    </div>
+  </div>
+
 
         <div class="mb-3">
           <label class="form-label fw-semibold">Country</label>
@@ -74,7 +94,7 @@
   </div>
 </div>
 
-  <script>
+    <script>
     function handleCategoryChange(value) {
       const optionsList = document.querySelector('[data-poll-ai-helper-target="optionsList"]')
       const addBtn = document.getElementById("add-option-btn")
@@ -82,21 +102,24 @@
   
       if (value === "law") {
         optionsList.innerHTML = `
-          <div class="d-flex gap-2 mb-2 poll-option-item">
-            <input type="text" name="poll[poll_options_attributes][0][text]" class="form-control" value="For" readonly style="pointer-events: none; cursor: default;" />
+          <div class="d-flex gap-2 mb-2 poll-option-item">                                                                               
+            <input type="text" name="poll[poll_options_attributes][0][text]" class="form-control" value="For" readonly style="pointer-events: none; cursor:
+  default;" />
           </div>
           <div class="d-flex gap-2 mb-2 poll-option-item">
-            <input type="text" name="poll[poll_options_attributes][1][text]" class="form-control" value="Against" readonly style="pointer-events: none; cursor: default;" />
+            <input type="text" name="poll[poll_options_attributes][1][text]" class="form-control" value="Against" readonly style="pointer-events: none; 
+  cursor: default;" />
           </div>
           <div class="d-flex gap-2 mb-2 poll-option-item">
-            <input type="text" name="poll[poll_options_attributes][2][text]" class="form-control" value="Abstain" readonly style="pointer-events: none; cursor: default;" />
+            <input type="text" name="poll[poll_options_attributes][2][text]" class="form-control" value="Abstain" readonly style="pointer-events: none; 
+  cursor: default;" />
           </div>
-        `   
+        `
         if (addBtn) addBtn.style.display = "none"
       } else {
         optionsList.innerHTML = `
           <div class="d-flex gap-2 mb-2 poll-option-item">
-            <input type="text" name="poll[poll_options_attributes][0][text]" class="form-control" placeholder="Option" maxlength="50" />
+            <input type="text" name="poll[poll_options_attributes][0][text]" class="form-control" placeholder="Option" maxlength="50" /> 
             <button type="button" class="btn btn-outline-danger btn-sm align-self-center" data-action="click->poll-options#remove">✕</button>
           </div>
           <div class="d-flex gap-2 mb-2 poll-option-item">
@@ -106,5 +129,11 @@
         `   
         if (addBtn) addBtn.style.display = ""
       }
+    }
+
+    function selectCategory(value, el) {                                         
+      document.getElementById('categoryHiddenInput').value = value                                                                       
+      el.closest('.dropdown').querySelector('button').textContent = el.textContent
+      handleCategoryChange(value)
     }
   </script>
