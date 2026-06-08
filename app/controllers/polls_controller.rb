@@ -1,7 +1,7 @@
 # app/controllers/polls_controller.rb
 class PollsController < ApplicationController
   def index
-    @polls = Poll.includes(:poll_options, :votes).all
+    @polls = Poll.includes(:poll_options, :votes).order(created_at: :desc)
     @polls = @polls.where(category: params[:category]) if params[:category].present?
     @polls = @polls.where(country: params[:country]) if params[:country].present?
     if user_signed_in?
