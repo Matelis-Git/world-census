@@ -54,17 +54,36 @@
         ">Your global opinion platform</h2>
         <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem;pointer-events:all;">
           <%= link_to new_user_registration_path,
-            style: "background:#03C988;color:#00224D;font-weight:700;border-radius:50px;
+            style: "background:#03C988;color:#00224D;font-weight:700;border-radius:10px;
                     padding:.75rem 2.5rem;font-size:1rem;text-decoration:none;
                     box-shadow:0 0 20px rgba(3,201,136,0.5);
-                    font-family:'Work Sans','Helvetica',sans-serif;
+                    font-family:'Raleway','Helvetica',sans-serif;
                     display:inline-block;" do %>
-            Get Started &rarr;
+            Get started &rarr;
           <% end %>
           <%= link_to new_user_session_path,
             style: "color:rgba(232,237,245,0.5);font-size:.85rem;text-decoration:none;
-                    font-family:'Work Sans','Helvetica',sans-serif;" do %>
-            Already have an account? <u>Login</u>
+                    font-family:'Raleway','Helvetica',sans-serif;" do %>
+            Already have an account? <span style="color: #22c55e; font-weight: bold;">Sign in</span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if user_signed_in? %>
+      <div style="
+        position:absolute;bottom:4rem;left:0;right:0;
+        display:flex;flex-direction:column;align-items:center;
+        padding:2rem 1.5rem 2.5rem;
+        background:linear-gradient(to top, rgba(2,11,24,0.95) 0%, rgba(2,11,24,0.7) 60%, transparent 100%);
+        pointer-events:none;
+      ">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem;pointer-events:all;">
+          <%= link_to polls_path, class: "btn btn-neon" do %>
+            Continue &rarr;
+          <% end %>
+          <%= link_to polls_path, class: "link-skip" do %>
+            <span style="color: #22c55e; font-weight: bold;">Go to polls</span>
           <% end %>
         </div>
       </div>

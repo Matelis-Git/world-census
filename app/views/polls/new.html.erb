@@ -99,7 +99,7 @@
       const optionsList = document.querySelector('[data-poll-ai-helper-target="optionsList"]')
       const addBtn = document.getElementById("add-option-btn")
       if (!optionsList) return
-  
+
       if (value === "law") {
         optionsList.innerHTML = `
           <div class="d-flex gap-2 mb-2 poll-option-item">                                                                               
@@ -126,7 +126,7 @@
             <input type="text" name="poll[poll_options_attributes][1][text]" class="form-control" placeholder="Option" maxlength="50" />
             <button type="button" class="btn btn-outline-danger btn-sm align-self-center" data-action="click->poll-options#remove">✕</button>
           </div>
-        `   
+        `
         if (addBtn) addBtn.style.display = ""
       }
     }
