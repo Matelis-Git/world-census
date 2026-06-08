@@ -31,11 +31,7 @@
 <% option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"] %>
 <% has_voted = user_vote.present? %>
 
-<% if poll.expired? %>
-  <div style="font-size: 0.85rem; color: rgba(255,255,255,0.3); text-align: center; padding: 1rem 0;">
-    Voting is closed for this poll.
-  </div>
-<% elsif user_vote.present? %>
+<% if user_vote.present? || poll.expired? %>
   <% votes_arr = poll.votes.to_a %>
   <% total = votes_arr.size %>
   <% poll.poll_options.each_with_index do |option, i| %>
@@ -56,17 +52,24 @@
       </div>
     </div>
   <% end %>
-<% else %>
+<% end %>
+
+<% unless poll.expired? %>
   <div class="row g-2 mb-3">
     <% poll.poll_options.each_with_index do |option, i| %>
       <div class="col-12">
         <% voted = user_vote&.poll_option_id == option.id %>
-        <% btn_style = "background-color: #1a1a2e; color: white; border: 1px solid #06B6D4; cursor: pointer;" %>
+        <% btn_style = if voted
+             "background-color: #1a1a2e; color: white; border: 2px solid #{option_colors[i % option_colors.length]}; cursor: pointer;"
+           elsif has_voted
+             "background-color: #111120; color: #444; border: 1px solid rgba(6, 182, 212, 0.5); cursor: pointer;"
+           else
+             "background-color: #1a1a2e; color: white; border: 1px solid #06B6D4; cursor: pointer;"
+           end %>
         <%= button_to option.text, poll_votes_path(poll),
             params: { poll_option_id: option.id },
             class: "btn w-100",
-            style: btn_style,
-            disabled: voted %>
+            style: btn_style %>
       </div>
     <% end %>
   </div>
