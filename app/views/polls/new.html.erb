@@ -1,7 +1,7 @@
 <div class="auth-wrapper">
   <div class="auth-card-stack">
     <div class="auth-card">
-      <h2 class="mb-4">Add a Poll</h2>
+      <h2 class="mb-4">Create Poll</h2>
       <%= simple_form_for @poll, html: { data: { controller: "poll-ai-helper poll-options" } } do |f| %>
         <%= f.input :title_question, label: "Your question", placeholder: "Should France...?",
             input_html: { data: { "poll-ai-helper-target": "question" } } %>
@@ -33,7 +33,7 @@
           <div class="mb-3">
             <label class="form-label fw-semibold">Country</label>
             <div class="dropdown">
-              <button class="btn w-100 text-start dropdown-toggle" type="button"                                   
+              <button class="btn w-100 text-start dropdown-toggle" type="button"
                       id="countryBtn"
                       data-bs-toggle="dropdown"
                       style="background-color: #1a1a2e; color: white; border: 1px solid #0055A4;">
@@ -60,7 +60,7 @@
             <div id="optionsList" data-poll-options-target="optionsList" data-poll-ai-helper-target="optionsList">
               <%= f.simple_fields_for :poll_options do |o| %>
                 <div class="d-flex gap-2 mb-2 poll-option-item">
-                  <%= o.input :text, label: false, placeholder: "Option",                                          
+                  <%= o.input :text, label: false, placeholder: "Option",
                       wrapper_html: { class: "flex-grow-1 mb-0" },
                       input_html: { class: "form-control", maxlength: 50 } %>
                   <button type="button" class="btn btn-outline-danger btn-sm align-self-center"
@@ -70,7 +70,7 @@
             </div>
             <button type="button" class="btn btn-outline-secondary btn-sm mt-1"
                     data-action="click->poll-options#add"
-                    data-poll-options-target="addButton"    
+                    data-poll-options-target="addButton"
                     id="add-option-btn">
               + Add option
             </button>
@@ -93,4 +93,3 @@
       </div>
     </div>
   </div>
-

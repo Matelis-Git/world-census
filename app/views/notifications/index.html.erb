@@ -1,0 +1,36 @@
+<div class="container my-4" data-controller="notifications-tabs">
+  <h6 class="fw-bold mb-3" style="color: #03C988;">Notifications</h6>
+
+  <div class="d-flex gap-2 mb-3">
+    <% [["all", "All"], ["mentions", "Mentions"], ["polls", "Polls"]].each do |key, label| %>
+      <button
+        data-notifications-tabs-target="tab"
+        data-tab="<%= key %>"
+        data-action="click->notifications-tabs#switch"
+        class="badge text-decoration-none border-0"
+        style="background-color: <%= key == 'all' ? '#4635B1' : '#1a1a2e' %>; color: white; border: 1px solid #03C988 !important;">
+        <%= label %>
+      </button>
+    <% end %>
+  </div>
+
+  <div data-notifications-tabs-target="panel" data-panel="all">
+    <% if @notifications.empty? %>
+      <%= render "empty_state" %>
+    <% else %>
+      <div class="d-flex flex-column gap-2">
+        <% @notifications.each do |notification| %>
+          <%= render "notification", notification: notification %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div data-notifications-tabs-target="panel" data-panel="mentions" hidden>
+    <%= render "empty_state" %>
+  </div>
+
+  <div data-notifications-tabs-target="panel" data-panel="polls" hidden>
+    <%= render "empty_state" %>
+  </div>
+</div>
