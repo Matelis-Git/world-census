@@ -7,6 +7,9 @@
         <%= f.error_notification %>
 
         <div class="form-inputs">
+            <%= f.input :username, required: true, autofocus: true,
+      placeholder: "Choose a username" %>
+
           <%= f.input :email,
                       required: true,
                       autofocus: true,
@@ -18,7 +21,7 @@
           <%= f.input :password_confirmation,
                       required: true,
                       input_html: { autocomplete: "new-password" } %>
-           <%= f.input :country, collection:  [["Stay anonymous", nil]] + ISO3166::Country.all.map { |c| [c.iso_short_name, c.alpha2] }, label: "Country" %>
+           <%= f.input :country, required: true, collection:  [["Stay anonymous", nil]] + ISO3166::Country.all.map { |c| [c.iso_short_name, c.alpha2] }, label: "Country" %>
         </div>
 
         <div class="form-actions">
