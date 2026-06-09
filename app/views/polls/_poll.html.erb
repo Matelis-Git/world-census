@@ -31,6 +31,27 @@
 <% option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"] %>
 <% has_voted = user_vote.present? %>
 
+<% unless poll.expired? %>
+  <div class="row g-2 mb-3">
+    <% poll.poll_options.each_with_index do |option, i| %>
+      <div class="col-12">
+        <% voted = user_vote&.poll_option_id == option.id %>
+        <% btn_style = if voted
+             "background-color: #1a1a2e; color: white; border: 2px solid #{option_colors[i % option_colors.length]}; cursor: pointer;"
+           elsif has_voted
+             "background-color: #111120; color: #444; border: 1px solid rgba(6, 182, 212, 0.5); cursor: pointer;"
+           else
+             "background-color: #1a1a2e; color: white; border: 1px solid #06B6D4; cursor: pointer;"
+           end %>
+        <%= button_to option.text, poll_votes_path(poll),
+            params: { poll_option_id: option.id },
+            class: "btn w-100",
+            style: btn_style %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
 <% if user_vote.present? || poll.expired? %>
   <% votes_arr = poll.votes.to_a %>
   <% total = votes_arr.size %>
@@ -52,27 +73,6 @@
       </div>
     </div>
   <% end %>
-<% end %>
-
-<% unless poll.expired? %>
-  <div class="row g-2 mb-3">
-    <% poll.poll_options.each_with_index do |option, i| %>
-      <div class="col-12">
-        <% voted = user_vote&.poll_option_id == option.id %>
-        <% btn_style = if voted
-             "background-color: #1a1a2e; color: white; border: 2px solid #{option_colors[i % option_colors.length]}; cursor: pointer;"
-           elsif has_voted
-             "background-color: #111120; color: #444; border: 1px solid rgba(6, 182, 212, 0.5); cursor: pointer;"
-           else
-             "background-color: #1a1a2e; color: white; border: 1px solid #06B6D4; cursor: pointer;"
-           end %>
-        <%= button_to option.text, poll_votes_path(poll),
-            params: { poll_option_id: option.id },
-            class: "btn w-100",
-            style: btn_style %>
-      </div>
-    <% end %>
-  </div>
 <% end %>
     </div>
   </div>
