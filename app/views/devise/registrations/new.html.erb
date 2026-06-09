@@ -21,7 +21,33 @@
           <%= f.input :password_confirmation,
                       required: true,
                       input_html: { autocomplete: "new-password" } %>
-           <%= f.input :country, required: true, collection:  [["Stay anonymous", nil]] + ISO3166::Country.all.map { |c| [c.iso_short_name, c.alpha2] }, label: "Country" %>
+            <div class="mb-3">
+    <label class="form-label">Country</label>
+    <div class="dropdown">
+      <button class="btn w-100 text-start dropdown-toggle" type="button"
+              id="countrySignupBtn"
+              data-bs-toggle="dropdown"
+              style="background-color: #1a1a2e; color: white; border: 1px solid #0055A4;">
+        Stay anonymous
+      </button>
+      <ul class="dropdown-menu w-100" style="max-height: 300px; overflow-y: auto; background-color: #1a1a2e;">
+        <li>
+          <a class="dropdown-item text-white" href="#"
+             data-signup-country="" onclick="selectSignupCountry('', 'Stay anonymous', this); return false;">Stay anonymous</a>
+        </li>
+        <% ISO3166::Country.all.sort_by(&:iso_short_name).each do |c| %>
+          <li>
+            <a class="dropdown-item text-white" href="#"
+                 onclick="selectSignupCountry('<%= c.alpha2 %>', '<%= j(c.iso_short_name) %>', this); return false;">
+              <%= c.iso_short_name %>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+      <input type="hidden" name="user[country]" id="countrySignupInput" value="">
+    </div>
+  </div>
+
         </div>
 
         <div class="form-actions">
@@ -35,3 +61,9 @@
     </div>
   </div>
 </div>
+  <script>
+    function selectSignupCountry(value, label, el) {
+      document.getElementById('countrySignupInput').value = value
+      document.getElementById('countrySignupBtn').textContent = label
+    }
+  </script>
