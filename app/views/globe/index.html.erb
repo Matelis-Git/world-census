@@ -30,13 +30,6 @@
       <span style="font-size:11px;color:rgba(158,234,249,0.5);letter-spacing:2px;font-family:sans-serif;">LOADING…</span>
     </div>
 
-    <%# Label pays %>
-    <div id="country-label" style="
-      display:none;position:absolute;bottom:110px;left:50%;transform:translateX(-50%);
-      background:#032830;color:#9eeaf9;padding:7px 16px;border-radius:8px;
-      font-size:12px;font-family:'Work Sans','Helvetica',sans-serif;
-      white-space:nowrap;border:1px solid #0aa2c0;pointer-events:none;">
-    </div>
 
     <%# ── CTA Auth — visible uniquement aux visiteurs non connectés ── %>
     <% unless user_signed_in? %>
@@ -52,7 +45,7 @@
           text-align:center;margin:0 0 2.5rem;
           font-family:'Work Sans','Helvetica',sans-serif;
         ">Your global opinion platform</h2>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem;pointer-events:all;">
+        <div style="display:flex;flex-direction:column;align-items:center;pointer-events:all;">
           <%= link_to new_user_registration_path,
             style: "background:#03C988;color:#00224D;font-weight:700;border-radius:10px;
                     padding:.75rem 2.5rem;font-size:1rem;text-decoration:none;
