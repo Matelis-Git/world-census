@@ -3,6 +3,7 @@ class Poll < ApplicationRecord
   belongs_to :user, optional: true
   has_many :votes, dependent: :destroy
   has_many :poll_options, dependent: :destroy
+  has_many :poll_comments, dependent: :destroy
   accepts_nested_attributes_for :poll_options, reject_if: :all_blank
   validate :law_options_are_valid, if: -> { category == "law" }
 

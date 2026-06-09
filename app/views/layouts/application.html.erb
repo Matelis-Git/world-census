@@ -21,7 +21,7 @@
     <%= javascript_importmap_tags %>
     <%= favicon_link_tag %>
   </head>
-  <body>
+  <body data-current-user-id="<%= current_user&.id %>">
     <% if !current_page?(root_path) || user_signed_in? %>
     <%= render "shared/topbar" %>
     <% end %>

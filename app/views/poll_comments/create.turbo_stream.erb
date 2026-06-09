@@ -1,0 +1,4 @@
+<%# Reset the form — the model's after_create_commit broadcast adds the comment for all subscribers %>
+<%= turbo_stream.replace "discussion-form" do %>
+  <%= render "poll_comments/form", poll: @poll %>
+<% end %>
