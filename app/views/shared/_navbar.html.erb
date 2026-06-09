@@ -1,0 +1,32 @@
+<nav class="fixed-bottom d-flex px-3" style="height: 55px; background-color: #211951; z-index: 999; border-top: 1px solid rgba(3,201,136,0.2);">
+  <%= link_to polls_path, class: "bottom-nav-link d-flex flex-column align-items-center justify-content-end gap-0 pb-1 text-decoration-none text-white #{current_page?(polls_path) ? 'active' : ''}", style: "width: 20%;" do %>
+    <i class="fa-solid fa-square-poll-vertical" style="font-size: 18.5px; margin-bottom: 4px;"></i>
+    <span style="font-size: 8px; margin-bottom: 1px;">Home</span>
+    <div class="nav-pill"></div>
+  <% end %>
+  <%= link_to "#", class: "bottom-nav-link d-flex flex-column align-items-center justify-content-end gap-0 pb-1 text-decoration-none text-white", style: "width: 20%;" do %>
+    <i class="fa-solid fa-magnifying-glass" style="font-size: 18.5px; margin-bottom: 4px;"></i>
+    <span style="font-size: 8px; margin-bottom: 1px;">Explore</span>
+    <div class="nav-pill"></div>
+  <% end %>
+  <%= link_to new_poll_path, class: "bottom-nav-link d-flex flex-column align-items-center justify-content-end gap-0 pb-1 text-decoration-none text-white position-relative #{current_page?(new_poll_path) ? 'active' : ''}", style: "width: 20%;" do %>
+    <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%);">
+      <div class="rounded-circle d-flex align-items-center justify-content-center"
+        style="width: 42px; height: 42px; background-color: #03C988;">
+        <i class="fa-solid fa-plus text-white" style="font-size: 1.32rem;"></i>
+      </div>
+    </div>
+    <span style="font-size: 8px; margin-bottom: 1px;">Create Poll</span>
+    <div class="nav-pill"></div>
+  <% end %>
+  <%= link_to notifications_path, class: "bottom-nav-link d-flex flex-column align-items-center justify-content-end gap-0 pb-1 text-decoration-none text-white #{current_page?(notifications_path) ? 'active' : ''}", style: "width: 20%;" do %>
+    <i class="fa-regular fa-bell" style="font-size: 18.5px; margin-bottom: 4px;"></i>
+    <span style="font-size: 8px; margin-bottom: 1px;">Notifications</span>
+    <div class="nav-pill"></div>
+  <% end %>
+  <%= link_to profile_path, class: "bottom-nav-link d-flex flex-column align-items-center justify-content-end gap-0 pb-1 text-decoration-none text-white #{current_page?(profile_path) ? 'active' : ''}", style: "width: 20%;" do %>
+    <i class="fas fa-user" style="font-size: 18.5px; margin-bottom: 4px;"></i>
+    <span style="font-size: 8px; margin-bottom: 1px;">Profile</span>
+    <div class="nav-pill"></div>
+  <% end %>
+</nav>
