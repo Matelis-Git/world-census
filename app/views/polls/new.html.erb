@@ -30,69 +30,67 @@
   </div>
 
 
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Country</label>
-          <div class="dropdown">
-            <button class="btn w-100 text-start dropdown-toggle"
-                    type="button"
-                    id="countryDropdown"
-                    data-bs-toggle="dropdown"
-                    data-poll-ai-helper-target="countryButton"
-                    style="background-color: #1a1a2e; color: white; border: 1px solid #0055A4;">
-              Global
-            </button>
-            <ul class="dropdown-menu w-100" style="max-height: 300px; overflow-y: auto; background-color: #1a1a2e;">
-              <li>
-                <a class="dropdown-item text-white" href="#"
-                   data-value="global"
-                   data-action="click->poll-ai-helper#selectCountry">Global</a>
-              </li>
-              <% ISO3166::Country.all.sort_by(&:iso_short_name).each do |c| %>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Country</label>
+            <div class="dropdown">
+              <button class="btn w-100 text-start dropdown-toggle" type="button"                                   
+                      id="countryBtn"
+                      data-bs-toggle="dropdown"
+                      style="background-color: #1a1a2e; color: white; border: 1px solid #0055A4;">
+                Global
+              </button>
+              <ul class="dropdown-menu w-100" style="max-height: 300px; overflow-y: auto; background-color: #1a1a2e;">
                 <li>
-                  <a class="dropdown-item text-white" href="#"
-                     data-value="<%= c.alpha2 %>"
-                     data-action="click->poll-ai-helper#selectCountry"><%= c.iso_short_name %></a>
+                  <a class="dropdown-item text-white" href="#" data-country="global">Global</a>
                 </li>
+                <% ISO3166::Country.all.sort_by(&:iso_short_name).each do |c| %>
+                  <li>
+                    <a class="dropdown-item text-white" href="#"
+                       data-country="<%= c.alpha2 %>"><%= c.iso_short_name %></a>
+                  </li>
+                <% end %>
+              </ul>
+              <input type="hidden" name="poll[country]" id="countryHiddenInput" value="global"
+                     data-poll-ai-helper-target="country">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Answer options</label>
+            <div id="optionsList" data-poll-options-target="optionsList" data-poll-ai-helper-target="optionsList">
+              <%= f.simple_fields_for :poll_options do |o| %>
+                <div class="d-flex gap-2 mb-2 poll-option-item">
+                  <%= o.input :text, label: false, placeholder: "Option",                                          
+                      wrapper_html: { class: "flex-grow-1 mb-0" },
+                      input_html: { class: "form-control", maxlength: 50 } %>
+                  <button type="button" class="btn btn-outline-danger btn-sm align-self-center"
+                          data-action="click->poll-options#remove">✕</button>
+                </div>
               <% end %>
-            </ul>
-            <input type="hidden" name="poll[country]" id="countryHiddenInput" value="global"
-                   data-poll-ai-helper-target="country">
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Answer options</label>
-          <div data-poll-options-target="optionsList" data-poll-ai-helper-target="optionsList">
-            <%= f.simple_fields_for :poll_options do |o| %>
-              <div class="d-flex gap-2 mb-2 poll-option-item">
-                <%= o.input :text, label: false, placeholder: "Option",
-                    wrapper_html: { class: "flex-grow-1 mb-0" },
-                    input_html: { class: "form-control", maxlength: 50 } %>
-                <button type="button" class="btn btn-outline-danger btn-sm align-self-center"
-                        data-action="click->poll-options#remove">✕</button>
-              </div>
-            <% end %>
-          </div>
-          <button type="button" class="btn btn-outline-secondary btn-sm mt-1"
-                  data-action="click->poll-options#add"
-                  data-poll-options-target="addButton"
-                  id="add-option-btn">
-            + Add option
-          </button>
-        </div>
-
-        <div class="row g-2 mt-2">
-          <div class="col-6">
-            <%= f.submit "Publish poll", class: "btn btn-form w-100", style: "background-color: #03C988; color: #000957;" %>
-          </div>
-          <div class="col-6">
-            <button class="btn btn-ai w-100" data-action="click->poll-ai-helper#generateWithAI">
-              <i class="fas fa-robot me-1"></i> AI help
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm mt-1"
+                    data-action="click->poll-options#add"
+                    data-poll-options-target="addButton"    
+                    id="add-option-btn">
+              + Add option
             </button>
           </div>
-        </div>
-      <% end %>
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Close poll on (optional)</label>
+    <input type="date" name="poll[expires_at]" class="form-control"
+           style="background-color: #1a1a2e; color: white; border: 1px solid #534AB7;">
+  </div>          <div class="row g-2 mt-2">
+            <div class="col-6">
+              <%= f.submit "Publish poll", class: "btn btn-form w-100", style: "background-color: #03C988; color: #000957;" %>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-ai w-100" data-action="click->poll-ai-helper#generateWithAI">
+                <i class="fas fa-robot me-1"></i> AI help
+              </button>
+            </div>
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
-</div>
 

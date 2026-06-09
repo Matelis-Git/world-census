@@ -91,6 +91,7 @@ class PollsController < ApplicationController
   end
 
   def poll_params
-    params.require(:poll).permit(:title_question, :category, :country, poll_options_attributes: %i[id text _destroy])
+    params.require(:poll).permit(:title_question, :category, :country, :expires_at,
+                                 poll_options_attributes: %i[id text _destroy])
   end
 end
