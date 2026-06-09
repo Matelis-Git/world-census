@@ -131,6 +131,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_090348) do
     t.string "country"
     t.datetime "created_at", null: false
     t.datetime "expires_at"
+    t.string "image_url"
     t.float "lat"
     t.float "lon"
     t.string "title_question"
