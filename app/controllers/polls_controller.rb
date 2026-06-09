@@ -46,14 +46,26 @@ class PollsController < ApplicationController
   end
 
   def explore
-    # On charge tous les polls avec leurs options et votes
     @polls = Poll.includes(:poll_options, :votes).all
     @polls = @polls.where(category: params[:category]) if params[:category].present?
 
-    # On trie par nombre de votes — le plus populaire en premier
-    @polls = @polls.sort_by { |p| -p.votes.size }
+    # Filtre par recherche — dans le titre ET la catégorie
+    if params[:query].present?
+      query = params[:query].strip.downcase
+      @polls = @polls.select do |p|
+        p.title_question.downcase.include?(query) ||
+          p.category.to_s.downcase.include?(query)
+      end
+    end
 
-    # On récupère les votes de l'utilisateur connecté
+    # Tri selon le tab actif — défaut : newest
+    @tab = params[:tab] || "newest"
+    @polls = case @tab
+             when "most_voted" then @polls.sort_by { |p| -p.votes.size }
+             when "trending"   then @polls.sort_by { |p| -p.votes.where("created_at > ?", 7.days.ago).size }
+             else @polls.sort_by { |p| -p.created_at.to_i }
+             end
+
     return unless user_signed_in?
 
     @user_votes = Vote.where(poll_id: @polls.map(&:id), user: current_user).index_by(&:poll_id)

@@ -4,9 +4,11 @@
   .explore-page { max-width: 430px; margin: 0 auto; padding: 0 0 100px; }
 
   .search-bar { padding: 12px 16px 0; }
-  .search-bar input { width: 100%; background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.09); border-radius: 16px; color: white; font-size: 13px; padding: 10px 14px 10px 38px; outline: none; box-sizing: border-box; }  .search-bar input::placeholder { color: rgba(207,226,255,0.3); }
   .search-wrapper { position: relative; }
-  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(207,226,255,0.3); font-size: 13px; pointer-events: none; }
+  .search-bar input { width: 100%; background: rgba(255,255,255,0.05) !important; border: 0.5px solid rgba(255,255,255,0.09) !important; border-radius: 16px; color: rgba(255,255,255,0.92) !important; font-size: 13px; padding: 10px 14px 10px 38px; outline: none !important; box-sizing: border-box; caret-color: #03C988; -webkit-appearance: none; box-shadow: none !important; }
+  .search-bar input:focus { background: rgba(255,255,255,0.07) !important; border-color: rgba(3,201,136,0.4) !important; outline: none !important; box-shadow: none !important; }
+  .search-bar input::placeholder { color: rgba(207,226,255,0.3) !important; }
+  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(207,226,255,0.3) !important; font-size: 13px; pointer-events: none; z-index: 1; }
 
   .filters { display: flex; gap: 6px; padding: 14px 16px 0; overflow-x: auto; scrollbar-width: none; }
   .filters::-webkit-scrollbar { display: none; }
@@ -37,7 +39,9 @@
     <div class="search-wrapper">
       <i class="fa-solid fa-magnifying-glass search-icon"></i>
       <%= form_tag explore_polls_path, method: :get, style: "margin: 0;" do %>
-        <%= text_field_tag :query, params[:query], placeholder: "Search polls..." %>
+      <%# On conserve le tab et la catégorie actifs pendant la recherche %>
+      <%= hidden_field_tag :tab, params[:tab] %>
+      <%= text_field_tag :query, params[:query], placeholder: "Search polls..." %>
       <% end %>
     </div>
   </div>
@@ -62,20 +66,23 @@
   <%= link_to "Global", explore_polls_path(category: "global"),
       class: "badge text-decoration-none",
       style: "background-color: #{params[:category] == 'global' ? '#4635B1' : '#1a1a2e'}; color: white; border: 1px solid #4635B1;" %>
-  <%= link_to "Environment", explore_polls_path(category: "environment"),
-      class: "badge text-decoration-none",
-      style: "background-color: #{params[:category] == 'environment' ? '#4ecb8d' : '#1a1a2e'}; color: white; border: 1px solid #4ecb8d;" %>
-  <%= link_to "Technology", explore_polls_path(category: "technology"),
-      class: "badge text-decoration-none",
-      style: "background-color: #{params[:category] == 'technology' ? '#7b8fff' : '#1a1a2e'}; color: white; border: 1px solid #7b8fff;" %>
 </div>
 
-  <%# Tabs %>
-    <div class="tabs">
-        <a href="#" class="tab active">✨ Newest</a>
-        <a href="#" class="tab">🔥 Most Voted</a>
-        <a href="#" class="tab">↗ Trending</a>
-    </div>
+  <%# Tabs — fonctionnels via params[:tab] %>
+<div class="tabs">
+  <a href="<%= explore_polls_path(tab: 'newest', category: params[:category]) %>"
+     class="tab <%= @tab == 'newest' || @tab.nil? ? 'active' : '' %>">
+     Newest
+  </a>
+  <a href="<%= explore_polls_path(tab: 'most_voted', category: params[:category]) %>"
+     class="tab <%= @tab == 'most_voted' ? 'active' : '' %>">
+     Most Voted
+  </a>
+  <a href="<%= explore_polls_path(tab: 'trending', category: params[:category]) %>"
+     class="tab <%= @tab == 'trending' ? 'active' : '' %>">
+     Trending
+  </a>
+</div>
 
   <%# Liste des cards %>
   <div class="explore-list">
@@ -147,15 +154,15 @@
         <%# Donut — wrapper fixe 80x80 %>
         <div style="flex-shrink: 0; width: 80px; height: 80px; align-self: center;">
           <canvas data-controller="donut"
-                  data-donut-values="<%= donut_values.to_json %>"
-                  data-donut-labels="<%= donut_labels.to_json %>"
-                  data-donut-colors="<%= donut_colors.to_json %>"
-                  width="80"
-                  height="80"
-                  style="display: block;">
+        data-donut-values="<%= donut_values.to_json %>"
+        data-donut-labels="<%= donut_labels.to_json %>"
+        data-donut-colors="<%= donut_colors.to_json %>"
+        id="donut-<%= poll.id %>"
+        width="80"
+        height="80"
+        style="display: block;">
           </canvas>
         </div>
-
       </a>
     <% end %>
   </div>
