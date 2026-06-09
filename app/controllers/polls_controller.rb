@@ -45,6 +45,32 @@ class PollsController < ApplicationController
     @votes = current_user.votes.includes(poll: %i[poll_options votes])
   end
 
+  def explore
+    @polls = Poll.includes(:poll_options, :votes).all
+    @polls = @polls.where(category: params[:category]) if params[:category].present?
+
+    # Filtre par recherche — dans le titre ET la catégorie
+    if params[:query].present?
+      query = params[:query].strip.downcase
+      @polls = @polls.select do |p|
+        p.title_question.downcase.include?(query) ||
+          p.category.to_s.downcase.include?(query)
+      end
+    end
+
+    # Tri selon le tab actif — défaut : newest
+    @tab = params[:tab] || "newest"
+    @polls = case @tab
+             when "most_voted" then @polls.sort_by { |p| -p.votes.size }
+             when "trending"   then @polls.sort_by { |p| -p.votes.where("created_at > ?", 7.days.ago).size }
+             else @polls.sort_by { |p| -p.created_at.to_i }
+             end
+
+    return unless user_signed_in?
+
+    @user_votes = Vote.where(poll_id: @polls.map(&:id), user: current_user).index_by(&:poll_id)
+  end
+
   def country_votes
     @poll = Poll.includes(:poll_options, :votes).find(params[:id])
     render json: country_vote_data(@poll).transform_values { |v| v[:color] }
@@ -64,12 +90,12 @@ class PollsController < ApplicationController
     tallies.each do |(country, option_id), count|
       result[country] ||= { total: 0, winner_count: 0, color: nil }
       result[country][:total] += count
-      if count > result[country][:winner_count]
-        idx = option_ids.index(option_id)
-        if idx
-          result[country][:winner_count] = count
-          result[country][:color] = OPTION_COLORS[idx]
-        end
+      next unless count > result[country][:winner_count]
+
+      idx = option_ids.index(option_id)
+      if idx
+        result[country][:winner_count] = count
+        result[country][:color] = OPTION_COLORS[idx]
       end
     end
 

@@ -11,7 +11,9 @@ Rails.application.routes.draw do
     collection do
       get :my_polls
       get :my_votes
+      get :explore
     end
+
     resources :votes, only: [:create, :destroy]
   end
 
