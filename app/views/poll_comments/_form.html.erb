@@ -1,0 +1,32 @@
+<div id="discussion-form">
+  <%# Reply banner %>
+  <div data-discussion-target="replyBanner"
+       class="d-none mb-2 d-flex align-items-center justify-content-between"
+       style="padding:6px 10px; background:rgba(6,182,212,0.1); border-radius:6px; border-left:3px solid #06B6D4;">
+    <span style="font-size:0.78rem; color:#06B6D4;" data-discussion-target="replyingTo"></span>
+    <button type="button" class="btn btn-link p-0"
+            style="font-size:0.8rem; color:rgba(255,255,255,0.4);"
+            data-action="click->discussion#cancelReply">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <%= form_with model: [poll, PollComment.new],
+        data: { action: "turbo:submit-end->discussion#afterSubmit" } do |f| %>
+    <%= f.hidden_field :parent_id, value: "", data: { discussion_target: "parentId" } %>
+    <div class="d-flex gap-2 align-items-end">
+      <%= f.text_area :body,
+            placeholder: "Share your thoughts...",
+            rows: 2,
+            maxlength: 500,
+            class: "form-control",
+            style: "background-color:#0d0d1a; color:white; border-color:rgba(255,255,255,0.1);
+                    font-size:0.85rem; resize:none; border-radius:10px;",
+            data: { discussion_target: "textarea" } %>
+      <%= f.submit "Post",
+            class: "btn",
+            style: "background-color:#06B6D4; color:#0d0d1a; font-weight:600;
+                    font-size:0.82rem; border-radius:10px; white-space:nowrap; flex-shrink:0;" %>
+    </div>
+  <% end %>
+</div>

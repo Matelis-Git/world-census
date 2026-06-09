@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_09_090348) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_09_144401) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -115,6 +115,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_090348) do
     t.index ["modalities"], name: "index_models_on_modalities", using: :gin
     t.index ["provider", "model_id"], name: "index_models_on_provider_and_model_id", unique: true
     t.index ["provider"], name: "index_models_on_provider"
+  end
+
+  create_table "poll_comments", force: :cascade do |t|
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.integer "parent_id"
+    t.bigint "poll_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["parent_id"], name: "index_poll_comments_on_parent_id"
+    t.index ["poll_id"], name: "index_poll_comments_on_poll_id"
+    t.index ["user_id"], name: "index_poll_comments_on_user_id"
   end
 
   create_table "poll_options", force: :cascade do |t|
@@ -339,6 +351,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_090348) do
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "models"
   add_foreign_key "messages", "tool_calls"
+  add_foreign_key "poll_comments", "polls"
+  add_foreign_key "poll_comments", "users"
   add_foreign_key "poll_options", "polls"
   add_foreign_key "polls", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

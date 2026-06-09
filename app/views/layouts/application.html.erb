@@ -23,7 +23,7 @@
     <%# Chart.js chargé depuis le CDN — disponible globalement %>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
   </head>
-  <body>
+  <body data-current-user-id="<%= current_user&.id %>">
     <% if !current_page?(root_path) || user_signed_in? %>
     <%= render "shared/topbar" %>
     <% end %>

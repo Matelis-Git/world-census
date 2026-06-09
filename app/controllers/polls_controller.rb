@@ -13,6 +13,10 @@ class PollsController < ApplicationController
     @poll = Poll.includes(:poll_options, :votes).find(params[:id])
     @user_vote = Vote.find_by(poll: @poll, user: current_user) if user_signed_in?
     @votes_by_country = country_vote_data(@poll).filter_map { |k, v| [k, v[:color]] if v[:color] }.to_h
+    @comments = @poll.poll_comments
+                     .includes(:user, replies: :user)
+                     .where(parent_id: nil)
+                     .order(created_at: :desc)
   end
 
   def new

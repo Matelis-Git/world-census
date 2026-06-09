@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     end
 
     resources :votes, only: [:create, :destroy]
+    resources :poll_comments, only: [:create, :destroy]
   end
 
   resource :profile, only: [:show]
