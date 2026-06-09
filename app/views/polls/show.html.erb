@@ -27,7 +27,7 @@
   </div>
 
   <p class="mb-4" style="font-size: 0.8rem; color: rgba(255,255,255,0.4);">
-    Asked by <%= @poll.user&.email&.split("@")&.first || "anonymous" %>
+    Asked by <%= @poll.user&.username || @poll.user&.email&.split("@")&.first || "anonymous" %>
     &middot; <%= time_ago_in_words(@poll.created_at) %> ago
     &middot; <%= @poll.votes.size %> vote<%= @poll.votes.size == 1 ? "" : "s" %>
   </p>
@@ -102,8 +102,44 @@
       </ul>
 
       <div class="tab-content">
-        <div class="tab-pane fade show active" id="tab-discussion">
-          <textarea class="form-control" rows="3" placeholder="Share your thoughts..." style="background-color: #0d0d1a; color: white; border-color: rgba(255,255,255,0.1); font-size: 0.85rem; resize: none;"></textarea>
+        <div class="tab-pane fade show active" id="tab-discussion"
+             data-controller="discussion"
+             style="padding-bottom:70px;">
+
+          <%# Live stream subscription %>
+          <%= turbo_stream_from "poll_#{@poll.id}_comments" %>
+
+          <%# Comment count %>
+          <p class="mb-3" style="font-size:0.78rem; color:rgba(255,255,255,0.35);">
+            <%= @comments.sum { |c| 1 + c.replies.size } %> comment<%= (@comments.sum { |c| 1 + c.replies.size }) == 1 ? "" : "s" %>
+          </p>
+
+          <%# Scrollable comments list %>
+          <div id="comments-poll-<%= @poll.id %>"
+               style="max-height:440px; overflow-y:auto; display:flex; flex-direction:column; gap:16px;
+                      padding-right:4px; margin-bottom:16px;">
+            <% if @comments.empty? %>
+              <p style="font-size:0.83rem; color:rgba(255,255,255,0.25); text-align:center; padding:24px 0;">
+                No comments yet — be the first to share your thoughts.
+              </p>
+            <% else %>
+              <% @comments.each do |comment| %>
+                <%= render "poll_comments/comment", comment: comment %>
+              <% end %>
+            <% end %>
+          </div>
+
+          <%# Divider %>
+          <hr style="border-color:rgba(255,255,255,0.08); margin:0 0 14px;">
+
+          <%# Comment form or sign-in prompt %>
+          <% if user_signed_in? %>
+            <%= render "poll_comments/form", poll: @poll %>
+          <% else %>
+            <p style="font-size:0.82rem; color:rgba(255,255,255,0.35); text-align:center; padding:8px 0;">
+              <%= link_to "Sign in", new_user_session_path, style: "color:#06B6D4;" %> to join the discussion.
+            </p>
+          <% end %>
         </div>
         <div class="tab-pane fade" id="tab-ai">
           <p style="font-size: 0.85rem; color: rgba(255,255,255,0.35);">AI summary coming soon.</p>
