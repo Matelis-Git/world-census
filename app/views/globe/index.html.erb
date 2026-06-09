@@ -11,14 +11,14 @@
 
   <div style="display:flex;flex-direction:column;width:100%;height:calc(100vh - 60px);background:#020B18;overflow:hidden;">
 
-  <div style="position:absolute;top:6rem;left:0;right:0;text-align:center;z-index:10;pointer-events:none;display:flex;align-items:center;justify-content:
+  <div style="position:absolute;top:8.5rem;left:0;right:0;text-align:center;z-index:10;pointer-events:none;display:flex;align-items:center;justify-content:
   center;gap:8px;">
     <%= image_tag 'favicon.ico', alt: 'World Census logo', style: 'height:1.5rem;width:auto;' %>
     <span style="color:#03C988;font-weight:700;font-size:1.5rem;letter-spacing:.25rem;text-transform:uppercase;font-family:'Raleway',sans-serif;">World
   Census</span>
   </div>
   <%# ── Globe ──────────────────────────────────────────────── %>
-  <div id="gc" style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;cursor:grab;user-select:none;overflow:hidden;margin-top:-3.5rem">
+  <div id="gc" style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;cursor:grab;user-select:none;overflow:hidden;margin-top:-5.5rem">
     <svg id="gs"></svg>
     <svg id="pins-svg" style="position:absolute;top:0;left:0;pointer-events:none;overflow:visible;"></svg>
 
@@ -30,13 +30,6 @@
       <span style="font-size:11px;color:rgba(158,234,249,0.5);letter-spacing:2px;font-family:sans-serif;">LOADING…</span>
     </div>
 
-    <%# Label pays %>
-    <div id="country-label" style="
-      display:none;position:absolute;bottom:110px;left:50%;transform:translateX(-50%);
-      background:#032830;color:#9eeaf9;padding:7px 16px;border-radius:8px;
-      font-size:12px;font-family:'Work Sans','Helvetica',sans-serif;
-      white-space:nowrap;border:1px solid #0aa2c0;pointer-events:none;">
-    </div>
 
     <%# ── CTA Auth — visible uniquement aux visiteurs non connectés ── %>
     <% unless user_signed_in? %>
@@ -52,7 +45,7 @@
           text-align:center;margin:0 0 2.5rem;
           font-family:'Work Sans','Helvetica',sans-serif;
         ">Your global opinion platform</h2>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem;pointer-events:all;">
+        <div style="display:flex;flex-direction:column;align-items:center;pointer-events:all;">
           <%= link_to new_user_registration_path,
             style: "background:#03C988;color:#00224D;font-weight:700;border-radius:10px;
                     padding:.75rem 2.5rem;font-size:1rem;text-decoration:none;
@@ -72,18 +65,21 @@
 
     <% if user_signed_in? %>
       <div style="
-        position:absolute;bottom:4rem;left:0;right:0;
+        position:absolute;bottom:6rem;left:0;right:0;
         display:flex;flex-direction:column;align-items:center;
-        padding:2rem 1.5rem 2.5rem;
+        padding:1rem 1.5rem 2.5rem;
         background:linear-gradient(to top, rgba(2,11,24,0.95) 0%, rgba(2,11,24,0.7) 60%, transparent 100%);
-        pointer-events:none;
-      ">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem;pointer-events:all;">
-          <%= link_to polls_path, class: "btn btn-neon" do %>
+        pointer-events:none;">
+
+      <h2 style="
+          font-size:1.5rem;font-weight:700;color:#E8EDF5;
+          text-align:center;margin-bottom:1.5rem;
+          font-family:'Work Sans','Helvetica',sans-serif;
+        ">Your global opinion platform</h2>
+
+        <div style="display:flex;flex-direction:column;align-items:;gap:.75rem;pointer-events:all;">
+          <%= link_to polls_path, class: "btn btn-neon", style: "padding: 0.5rem 2rem !important" do %>
             Continue &rarr;
-          <% end %>
-          <%= link_to polls_path, class: "link-skip" do %>
-            <span style="color: #22c55e; font-weight: bold;">Go to polls</span>
           <% end %>
         </div>
       </div>
