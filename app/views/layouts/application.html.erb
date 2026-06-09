@@ -51,8 +51,7 @@
         <span style="font-size: 9px;">Home</span>
         <div class="nav-pill"></div>
       <% end %>
-      <%= link_to "#", class: "bottom-nav-link d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-1 text-decoration-none text-white", style: "width: 20%;" do %>
-        <i class="fa-solid fa-magnifying-glass" style="font-size: 1.3125rem;"></i>
+      <%= link_to explore_polls_path, class: "bottom-nav-link d-flex flex-column align-items-center justify-content-end gap-1 pt-3 pb-1 text-decoration-none text-white #{current_page?(explore_polls_path) ? 'active' : ''}", style: "width: 20%;" do %>        <i class="fa-solid fa-magnifying-glass" style="font-size: 1.3125rem;"></i>
         <span style="font-size: 9px;">Explore</span>
         <div class="nav-pill"></div>
       <% end %>
