@@ -7,4 +7,6 @@ class User < ApplicationRecord
   has_many :votes, dependent: :destroy
   has_many :conversations, dependent: :destroy
 
+  validates :username, presence: true, uniqueness: { case_sensitive: false },
+                       format: { with: /\A[a-zA-Z0-9_]+\z/, message: "only letters, numbers and underscores" }, length: { minimum: 3, maximum: 20 }
 end
