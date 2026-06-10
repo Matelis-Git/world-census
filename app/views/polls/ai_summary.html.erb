@@ -1,0 +1,20 @@
+<turbo-frame id="ai-summary-frame">
+  <% if @error %>
+    <p style="font-size: 0.83rem; color: rgba(255,120,120,0.8); text-align: center; padding: 20px 0;">
+      <i class="fa-solid fa-triangle-exclamation me-2"></i> Could not generate summary — try again later.
+    </p>
+  <% else %>
+    <p style="font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.82); margin-bottom: 0;">
+      <%= @summary %>
+    </p>
+
+    <hr style="border-color: rgba(255,255,255,0.07); margin: 16px 0 14px;">
+
+    <div style="padding-bottom: 50px;">
+      <%= link_to new_conversation_path,
+          style: "display: inline-flex; align-items: center; gap: 7px; background-color: #4635B1; color: white; padding: 8px 18px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-decoration: none;" do %>
+        <i class="fa-solid fa-robot"></i> Explore with Census AI
+      <% end %>
+    </div>
+  <% end %>
+</turbo-frame>

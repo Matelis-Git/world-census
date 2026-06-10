@@ -7,11 +7,13 @@ Rails.application.routes.draw do
   resources :polls, only: [:index, :new, :create, :destroy, :show] do
     member do
       get :country_votes
+      get :ai_summary
     end
     collection do
       get :my_polls
       get :my_votes
       get :explore
+      post :ai_suggestions
     end
 
     resources :votes, only: [:create, :destroy]
