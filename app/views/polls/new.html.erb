@@ -28,7 +28,7 @@
 <% end %>
       </ul>
       <input type="hidden" name="poll[category]" id="categoryHiddenInput" value="economy"
-            data-poll-ai-helper-target="category">
+             data-poll-ai-helper-target="category">
     </div>
   </div>
 
@@ -86,9 +86,15 @@
           </div>
   <div class="mb-3">
     <label class="form-label fw-semibold">Close poll on (optional)</label>
-    <input type="date" name="poll[expires_at]" class="form-control"
-          style="background-color: #1a1a2e; color: white; border: 1px solid #534AB7;">
-  </div>          <div class="row g-2 mt-2">
+    <input type="text" name="poll[expires_at]"
+       class="btn w-100 text-start"
+       placeholder="Select a date..."
+       data-controller="date-picker"
+       readonly
+       style="background-color: #1a1a2e; color: white; border: 1px solid #534AB7; cursor: pointer;">
+  </div>
+
+  <div class="row g-2 mt-2">
             <div class="col-6">
               <%= f.submit "Publish poll", class: "btn btn-form w-100", style: "background-color: #03C988; color: #000957;" %>
             </div>
