@@ -1,18 +1,26 @@
+<style>
+  .poll-tabs .nav-link { color: rgba(255,255,255,0.45); border: none; border-radius: 0; padding: 8px 14px; font-size: 0.82rem; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; }
+  .poll-tabs .nav-link:hover { color: rgba(255,255,255,0.75); border-bottom-color: rgba(123,126,248,0.4); }
+  .poll-tabs .nav-link.active { color: #fff; border-bottom-color: #7b7ef8; background: none; }
+  .poll-tabs { border-bottom: 1px solid rgba(255,255,255,0.08); }
+</style>
+
 <div class="container my-4" data-controller="notifications-tabs">
   <h6 class="fw-bold mb-3" style="color: #03C988;">Notifications</h6>
 
-  <div class="d-flex gap-2 mb-3">
+  <ul class="nav poll-tabs mb-3">
     <% [["all", "All"], ["mentions", "Mentions"], ["polls", "Polls"]].each do |key, label| %>
-      <button
-        data-notifications-tabs-target="tab"
-        data-tab="<%= key %>"
-        data-action="click->notifications-tabs#switch"
-        class="badge text-decoration-none border-0"
-        style="background-color: <%= key == 'all' ? '#4635B1' : '#1a1a2e' %>; color: white; border: 1px solid #03C988 !important;">
-        <%= label %>
-      </button>
+      <li class="nav-item">
+        <a class="nav-link <%= key == 'all' ? 'active' : '' %>"
+           href="#"
+           data-notifications-tabs-target="tab"
+           data-tab="<%= key %>"
+           data-action="click->notifications-tabs#switch">
+          <%= label %>
+        </a>
+      </li>
     <% end %>
-  </div>
+  </ul>
 
   <div data-notifications-tabs-target="panel" data-panel="all">
     <% if @notifications.empty? %>

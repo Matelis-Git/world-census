@@ -80,31 +80,39 @@
     <div class="card-body">
       <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">How countries voted</p>
       <div data-controller="choropleth-map"
-           data-choropleth-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
-           data-choropleth-map-votes-value="<%= @votes_by_country.to_json %>"
-           style="height: 300px; border-radius: 8px;"></div>
+          data-choropleth-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
+          data-choropleth-map-votes-value="<%= @votes_by_country.to_json %>"
+          style="height: 300px; border-radius: 8px;"></div>
     </div>
   </div>
 
   <%# TABS %>
+  <style>
+    .poll-tabs .nav-link { color: rgba(255,255,255,0.45); border: none; border-radius: 0; padding: 8px 14px; font-size: 0.82rem; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; }
+    .poll-tabs .nav-link:hover { color: rgba(255,255,255,0.75); border-bottom-color: rgba(123,126,248,0.4); }
+    .poll-tabs .nav-link.active { color: #fff; border-bottom-color: #7b7ef8; background: none; }
+    .poll-tabs { border-bottom: 1px solid rgba(255,255,255,0.08); }
+  </style>
   <div class="card">
     <div class="card-body">
-      <ul class="nav nav-tabs mb-3" style="border-bottom-color: rgba(255,255,255,0.1);">
+      <ul class="nav poll-tabs mb-3">
         <li class="nav-item">
-          <a class="nav-link active" data-bs-toggle="tab" href="#tab-discussion" style="font-size: 0.85rem;">Discussion</a>
+          <a class="nav-link active" data-bs-toggle="tab" href="#tab-discussion">Discussion</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="tab" href="#tab-ai" style="font-size: 0.85rem;">AI Summary</a>
+          <a class="nav-link" data-bs-toggle="tab" href="#tab-ai"
+            id="ai-tab-trigger"
+            data-summary-url="<%= ai_summary_poll_path(@poll) %>">AI Summary</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="tab" href="#tab-related" style="font-size: 0.85rem;">Related Polls</a>
+          <a class="nav-link" data-bs-toggle="tab" href="#tab-related">Related Polls</a>
         </li>
       </ul>
 
       <div class="tab-content">
         <div class="tab-pane fade show active" id="tab-discussion"
-             data-controller="discussion"
-             style="padding-bottom:70px;">
+            data-controller="discussion"
+            style="padding-bottom:60px;">
 
           <%# Live stream subscription %>
           <%= turbo_stream_from "poll_#{@poll.id}_comments" %>
@@ -116,7 +124,7 @@
 
           <%# Scrollable comments list %>
           <div id="comments-poll-<%= @poll.id %>"
-               style="max-height:440px; overflow-y:auto; display:flex; flex-direction:column; gap:16px;
+              style="max-height:440px; overflow-y:auto; display:flex; flex-direction:column; gap:16px;
                       padding-right:4px; margin-bottom:16px;">
             <% if @comments.empty? %>
               <p style="font-size:0.83rem; color:rgba(255,255,255,0.25); text-align:center; padding:24px 0;">
@@ -142,10 +150,50 @@
           <% end %>
         </div>
         <div class="tab-pane fade" id="tab-ai">
-          <p style="font-size: 0.85rem; color: rgba(255,255,255,0.35);">AI summary coming soon.</p>
+          <turbo-frame id="ai-summary-frame">
+            <div style="text-align: center; padding: 22px 0; color: rgba(255,255,255,0.28); font-size: 0.82rem;">
+              <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Tap "AI Summary" to generate
+            </div>
+          </turbo-frame>
         </div>
         <div class="tab-pane fade" id="tab-related">
-          <p style="font-size: 0.85rem; color: rgba(255,255,255,0.35);">Related polls coming soon.</p>
+          <% if @related_polls.any? %>
+            <p style="font-size: 0.78rem; font-weight: 700; color: rgba(207,226,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">
+              Hot in <%= @poll.category&.capitalize %>
+            </p>
+            <% option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"] %>
+            <% @related_polls.each do |rp| %>
+              <%
+                cat = rp.category.to_s.downcase
+                emoji = { "economy" => "💰", "politics" => "🏛️", "social" => "👥", "global" => "🌐", "law" => "⚖️", "technology" => "🤖", "environment" => "🌍" }.fetch(cat, "💬")
+                total = rp.votes.size
+                votes_label = total >= 1000 ? "#{(total / 1000.0).round(1)}K" : total.to_s
+                donut_values = rp.poll_options.map { |o| rp.votes.count { |v| v.poll_option_id == o.id } }
+                donut_labels = rp.poll_options.map(&:text)
+                donut_colors = rp.poll_options.each_with_index.map { |_, i| option_colors[i % option_colors.size] }
+              %>
+              <%= link_to poll_path(rp), style: "text-decoration: none;" do %>
+                <div style="background: rgba(255,255,255,0.04); border-radius: 14px; border: 0.5px solid rgba(255,255,255,0.09); padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; transition: background 0.15s;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.08);">
+                    <%= emoji %>
+                  </div>
+                  <div style="flex: 1; min-width: 0;">
+                    <p style="color: rgba(255,255,255,0.92); font-size: 13px; font-weight: 700; line-height: 1.3; margin: 0 0 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><%= rp.title_question %></p>
+                    <p style="font-size: 10px; color: rgba(207,226,255,0.3); margin: 0;"><%= votes_label %> votes</p>
+                  </div>
+                  <div style="flex-shrink: 0; width: 70px; height: 70px;">
+                    <canvas data-controller="donut"
+                            data-donut-values="<%= donut_values.to_json %>"
+                            data-donut-labels="<%= donut_labels.to_json %>"
+                            data-donut-colors="<%= donut_colors.to_json %>"
+                            width="70" height="70" style="display: block;"></canvas>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          <% else %>
+            <p style="font-size: 0.83rem; color: rgba(255,255,255,0.25); text-align: center; padding: 24px 0;">No related polls yet.</p>
+          <% end %>
         </div>
       </div>
     </div>
@@ -153,3 +201,15 @@
 
 </div>
 
+<% content_for :scripts do %>
+  <script>
+    document.getElementById('ai-tab-trigger')?.addEventListener('shown.bs.tab', function() {
+      const frame = document.getElementById('ai-summary-frame');
+      if (frame && !frame.getAttribute('src')) {
+        frame.setAttribute('src', this.dataset.summaryUrl);
+      }
+    });
+  </script>
+<% end %>
+<div style="height:35px;"></div>
+</div>
