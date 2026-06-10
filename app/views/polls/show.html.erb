@@ -159,7 +159,7 @@
         <div class="tab-pane fade" id="tab-related">
           <% if @related_polls.any? %>
             <p style="font-size: 0.78rem; font-weight: 700; color: rgba(207,226,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">
-              🔥 Hot in <%= @poll.category&.capitalize %>
+              Hot in <%= @poll.category&.capitalize %>
             </p>
             <% option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"] %>
             <% @related_polls.each do |rp| %>

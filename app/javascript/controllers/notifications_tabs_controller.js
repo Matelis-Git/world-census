@@ -5,12 +5,13 @@ export default class extends Controller {
   static values = { active: { type: String, default: "all" } }
 
   switch(event) {
+    event.preventDefault()
     this.activeValue = event.currentTarget.dataset.tab
   }
 
   activeValueChanged(value) {
     this.tabTargets.forEach(tab => {
-      tab.style.backgroundColor = tab.dataset.tab === value ? "#534AB7" : "#1a1a2e"
+      tab.classList.toggle("active", tab.dataset.tab === value)
     })
 
     this.panelTargets.forEach(panel => {
