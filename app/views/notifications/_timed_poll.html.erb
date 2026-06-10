@@ -1,0 +1,39 @@
+<% days_posted = ((Time.current - poll.created_at) / 1.day).floor %>
+<% time_left = poll.expires_at - Time.current %>
+<% days_left = (time_left / 1.day).ceil %>
+<% expired = poll.expired? %>
+
+<%= link_to poll_path(poll), style: "text-decoration: none;" do %>
+  <div style="background: #15122a; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+              padding: 12px 14px; transition: border-color 0.15s;"
+       onmouseover="this.style.borderColor='rgba(123,126,248,0.4)'"
+       onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+    <div class="d-flex align-items-start gap-3">
+      <div style="width:36px; height:36px; border-radius:50%; background:rgba(123,126,248,0.15);
+                  border:1px solid rgba(123,126,248,0.35); display:flex; align-items:center;
+                  justify-content:center; flex-shrink:0;">
+        <i class="fa-solid fa-square-poll-vertical" style="color:#7b7ef8; font-size:0.85rem;"></i>
+      </div>
+      <div style="min-width:0; flex:1;">
+        <p class="mb-1" style="font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.9);">
+          <%= poll.title_question %>
+        </p>
+        <div class="d-flex align-items-center gap-3">
+          <span style="font-size:0.73rem; color:rgba(255,255,255,0.35);">
+            <i class="fa-regular fa-clock me-1"></i>Posted <%= days_posted == 0 ? "today" : "#{days_posted} day#{"s" if days_posted != 1} ago" %>
+          </span>
+          <% if expired %>
+            <span style="font-size:0.73rem; color:rgba(255,255,255,0.3);">
+              <i class="fa-solid fa-hourglass-end me-1"></i>Poll ended
+            </span>
+          <% else %>
+            <span style="font-size:0.73rem; color:#03C988; font-weight:600;">
+              <i class="fa-solid fa-hourglass-half me-1"></i><%= days_left %> day<%= "s" if days_left != 1 %> left
+            </span>
+          <% end %>
+        </div>
+      </div>
+      <i class="fa-solid fa-chevron-right" style="color:rgba(255,255,255,0.2); font-size:0.8rem; flex-shrink:0; margin-top:4px;"></i>
+    </div>
+  </div>
+<% end %>

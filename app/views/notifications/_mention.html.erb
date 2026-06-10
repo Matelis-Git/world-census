@@ -1,0 +1,29 @@
+<%= link_to "#{poll_path(comment.poll)}#tab-discussion", style: "text-decoration: none;" do %>
+  <div style="background: #15122a; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+              padding: 12px 14px; transition: border-color 0.15s;"
+       onmouseover="this.style.borderColor='rgba(6,182,212,0.35)'"
+       onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+    <div class="d-flex align-items-start gap-3">
+      <div style="width:36px; height:36px; border-radius:50%; background:<%= avatar_color(comment.user.username) %>;
+                  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+                  font-size:0.75rem; font-weight:700; color:#0d0d1a;">
+        <%= comment.user.username[0].upcase %>
+      </div>
+      <div style="min-width:0; flex:1;">
+        <p class="mb-1" style="font-size:0.82rem; color:rgba(255,255,255,0.85);">
+          <span style="font-weight:700; color:#06B6D4;">@<%= comment.user.username %></span>
+          mentioned you in
+          <span style="font-weight:600; color:rgba(255,255,255,0.9);"><%= comment.poll.title_question %></span>
+        </p>
+        <p class="mb-1" style="font-size:0.8rem; color:rgba(255,255,255,0.45);
+                                white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          <%= comment.body.truncate(120) %>
+        </p>
+        <p class="mb-0" style="font-size:0.73rem; color:rgba(255,255,255,0.3);">
+          <i class="fa-regular fa-clock me-1"></i><%= time_ago_in_words(comment.created_at) %> ago
+        </p>
+      </div>
+      <i class="fa-solid fa-at" style="color:#06B6D4; font-size:0.9rem; flex-shrink:0; margin-top:2px;"></i>
+    </div>
+  </div>
+<% end %>
