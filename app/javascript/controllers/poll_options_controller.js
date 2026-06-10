@@ -14,11 +14,11 @@ export default class extends Controller {
     const index = new Date().getTime()
     const count = this.optionCount + 1
     const html = `
-      <div class="d-flex gap-2 mb-2 poll-option-item">
-        <input type="text" name="poll[poll_options_attributes][${index}][text]"
-               class="form-control" placeholder="Option ${count}" maxlength="50" />
-        <button class="btn btn-outline-danger btn-sm align-self-center"
-                data-action="click->poll-options#remove" type="button">✕</button>
+<div class="input-group gap-2 mb-2 poll-option-item">
+ <input type="text" name="poll[poll_options_attributes][${index}][text]"
+         class="form-control rounded-2" placeholder="Option ${count}" maxlength="50" />
+  <button class="btn btn-outline-danger btn-sm align-self-center" type="button"
+          data-action="click->poll-options#remove">✕</button>
       </div>
     `
     this.optionsListTarget.insertAdjacentHTML("beforeend", html)
