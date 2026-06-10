@@ -1,35 +1,238 @@
-<div class="container my-4">
-  <h2 class="mb-1">Census AI</h2>
+<%# app/views/profiles/show.html.erb %>
 
-  <div class="d-flex flex-column gap-3 mb-4" id="chat-messages">
-    <% if @messages.where(role: ["user", "assistant"]).empty? %>
-      <div class="alert alert-info">Ask me anything about global topics.</div>
+<style>
+  .profile-page { max-width: 430px; margin: 0 auto; padding: 0 0 100px; }
+  .profile-card { background: rgba(9,18,44,0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; margin-bottom: 12px; transition: transform 0.2s; }
+  .profile-card:hover { transform: translateY(-2px); }
+  .profile-section-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 10px; color: white; padding-bottom: 6px; border-bottom: 2px solid #534AB7; display: inline-block; }
+  .stance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stance-card { background: rgba(25,55,109,0.5); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 6px; text-align: center; }
+  .bar-bg { height: 4px; border-radius: 99px; background: rgba(255,255,255,0.07); margin-top: 6px; }
+  .bar-fill { height: 4px; border-radius: 99px; }
+  .trend-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .trend-row:last-child { border-bottom: none; }
+  .explore-card { background: rgba(255,255,255,0.05); border-radius: 16px; border: 0.5px solid rgba(255,255,255,0.09); padding: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; text-decoration: none; transition: background 0.15s, transform 0.2s ease; }
+  .explore-card:hover { background: rgba(255,255,255,0.08); transform: scale(1.02); }
+  .explore-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.08); }
+  .explore-body { flex: 1; min-width: 0; }
+  .explore-question { color: rgba(255,255,255,0.92); font-size: 13px; font-weight: 700; line-height: 1.3; margin: 0 0 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .explore-meta { font-size: 10px; color: rgba(207,226,255,0.28); margin: 0; }
+</style>
+
+<div class="profile-page">
+
+  <%# ===== HEADER ===== %>
+  <div style="padding: 8px 16px 12px;">
+    <div style="font-size: 15px; font-weight: 800; color: white;">Opinion Passport</div>
+    <div style="font-size: 10px; color: rgba(232,237,245,0.35); margin-top: 2px;">Your voice. Your views. Your global perspective.</div>
+  </div>
+
+  <div class="profile-card" style="display: flex; align-items: center; gap: 12px; margin: 0 16px 12px;">
+    <div style="position: relative; flex-shrink: 0;">
+      <img src="<%= current_user.avatar_url(56) %>"
+           style="width: 56px; height: 56px; border-radius: 50%; border: 2px solid #4635B1;"
+           alt="<%= current_user.username %>" />
+      <div style="position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; background: #03C988; border: 2px solid #020B18;"></div>
+    </div>
+    <div style="flex: 1; min-width: 0;">
+      <div style="font-weight: 800; font-size: 15px; color: white;"><%= current_user.username %></div>
+      <div style="font-size: 11px; color: rgba(232,237,245,0.45); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><%= current_user.email %></div>
+    </div>
+    <div style="background: rgba(83,74,183,0.2); border: 1px solid rgba(83,74,183,0.4); border-radius: 10px; padding: 8px 10px; text-align: center; flex-shrink: 0; min-width: 82px;">
+      <div style="font-size: 9px; color: rgba(232,237,245,0.4);"><%= @level[:name] %></div>
+      <div style="font-size: 15px; font-weight: 800; color: #7b7ef8;">Level <%= @level[:number] %></div>
+      <div style="height: 3px; background: rgba(255,255,255,0.08); border-radius: 99px; margin-top: 5px;">
+        <div style="height: 3px; background: #534AB7; border-radius: 99px; width: <%= @xp_percent %>%;"></div>
+      </div>
+      <div style="font-size: 9px; color: rgba(232,237,245,0.3); margin-top: 3px;"><%= @total_votes %>/<%= @level[:xp_max] %> XP</div>
+    </div>
+  </div>
+
+  <%# ===== STATS ===== %>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 16px; margin-bottom: 12px;">
+    <%= link_to my_polls_polls_path, class: "text-decoration-none" do %>
+      <div class="profile-card" style="text-align: center; padding: 14px 8px; margin-bottom: 0;">
+        <div style="font-size: 28px; font-weight: 800; color: #03C988;"><%= @my_polls.size %></div>
+        <div style="font-size: 10px; color: rgba(232,237,245,0.4); margin-top: 2px;">Polls created</div>
+      </div>
     <% end %>
-    <% @messages.where(role: ["user", "assistant"]).each do |message| %>
-      <% if message.role == "user" %>
-        <div class="d-flex justify-content-end">
-          <div class="p-3 rounded-3 text-white" style="background:#4635B1; max-width:80%;">
-            <%= message.content %>
+    <%= link_to my_votes_polls_path, class: "text-decoration-none" do %>
+      <div class="profile-card" style="text-align: center; padding: 14px 8px; margin-bottom: 0;">
+        <div style="font-size: 28px; font-weight: 800; color: #534AB7;"><%= @total_votes %></div>
+        <div style="font-size: 10px; color: rgba(232,237,245,0.4); margin-top: 2px;">Votes cast</div>
+      </div>
+    <% end %>
+  </div>
+
+  <%# ===== GLOBAL STANCE ===== %>
+  <div class="profile-card" style="margin: 0 16px 12px;">
+    <div class="profile-section-title">Your Global Stance</div>
+    <% if @top_categories.empty? %>
+      <div style="text-align: center; color: rgba(232,237,245,0.3); font-size: 12px; padding: 10px 0;">
+        Vote on polls to see your global stance!
+      </div>
+    <% else %>
+      <%
+        cat_emojis = { "economy" => "💰", "politics" => "🏛️", "social" => "👥",
+                       "law" => "⚖️", "environment" => "🌍", "technology" => "🤖" }
+        cat_labels = { "economy" => "Center-Left", "politics" => "Progressive",
+                       "social" => "Moderate", "law" => "Liberal",
+                       "environment" => "Green", "technology" => "Pro-AI" }
+      %>
+      <div class="stance-grid">
+        <% @top_categories.each do |cat, count| %>
+          <% pct = @total_votes > 0 ? (count.to_f / @total_votes * 100).round : 0 %>
+          <% color = @category_colors[cat] || "#534AB7" %>
+          <div class="stance-card">
+            <div style="font-size: 22px;"><%= cat_emojis[cat] || "💬" %></div>
+            <div style="font-size: 10px; color: rgba(232,237,245,0.6); margin-top: 5px; font-weight: 600;"><%= cat.capitalize %></div>
+            <div style="font-size: 9px; color: rgba(232,237,245,0.3);"><%= cat_labels[cat] || "Active" %></div>
+            <div style="font-size: 16px; font-weight: 800; color: <%= color %>; margin-top: 4px;"><%= pct %>%</div>
+            <div class="bar-bg"><div class="bar-fill" style="width: <%= pct %>%; background: <%= color %>;"></div></div>
           </div>
+        <% end %>
+      </div>
+    <% end %>
+    <div style="font-size: 10px; color: rgba(232,237,245,0.2); text-align: center; margin-top: 10px;">Based on your votes vs global average</div>
+  </div>
+
+  <%# ===== OPINION TRENDS ===== %>
+  <div class="profile-card" style="margin: 0 16px 12px; padding: 12px;">
+    <div class="profile-section-title">Opinion Trends</div>
+    <div style="font-size: 10px; color: rgba(232,237,245,0.3); margin-bottom: 8px;">How your views have evolved</div>
+    <div style="display: grid; grid-template-columns: 55% 45%; gap: 12px; align-items: center;">
+      <div>
+        <div style="position: relative; height: 90px;">
+          <canvas id="trendChart"
+                  data-values="<%= @trend_data.values.to_json %>"
+                  data-colors="<%= @trend_data.keys.map { |k| @category_colors[k] }.to_json %>">
+          </canvas>
         </div>
-      <% else %>
-        <div class="d-flex justify-content-start">
-          <div class="p-3 rounded-3 text-white" style="background:#FF3F7F; max-width:80%;">
-            <%= message.content %>
+        <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+          <% ["Jan","Feb","Mar","Apr","May","Jun"].each do |m| %>
+            <span style="font-size: 8px; color: rgba(232,237,245,0.2);"><%= m %></span>
+          <% end %>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 7px;">
+        <% @trend_data.each do |cat, points| %>
+          <% evolution = @trend_evolution[cat] %>
+          <% color = @category_colors[cat] || "#534AB7" %>
+          <div class="trend-row">
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: <%= color %>; flex-shrink: 0;"></div>
+              <span style="font-size: 10px; color: rgba(232,237,245,0.7);"><%= cat.capitalize %></span>
+            </div>
+            <span style="font-size: 10px; font-weight: 700; color: <%= evolution >= 0 ? '#03C988' : '#FF204E' %>;">
+              <%= evolution >= 0 ? "↑" : "↓" %> <%= evolution.abs %>%
+            </span>
           </div>
-        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# ===== AI SUMMARY PLACEHOLDER ===== %>
+  <div style="background: rgba(83,74,183,0.1); border: 1px solid rgba(83,74,183,0.2); border-radius: 12px; padding: 14px; margin: 0 16px 12px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px;">🤖</span>
+      <span class="profile-section-title" style="margin-bottom: 0;">AI Profile Summary</span>
+    </div>
+    <div style="font-size: 11px; color: rgba(232,237,245,0.3); font-style: italic; text-align: center; padding: 8px 0;">
+      Coming soon — Your AI-powered opinion analysis
+    </div>
+  </div>
+
+  <%# ===== MY RECENT POLLS ===== %>
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 16px; margin-bottom: 10px;">
+    <span class="profile-section-title" style="margin-bottom: 0;">My Recent Polls</span>
+    <%= link_to "See all →", my_polls_polls_path, style: "font-size: 11px; color: #534AB7; text-decoration: none;" %>
+  </div>
+
+  <div style="padding: 0 16px;">
+    <% if @my_polls.empty? %>
+      <div class="profile-card" style="text-align: center; padding: 20px; color: rgba(232,237,245,0.3); font-size: 12px;">
+        No polls yet. <%= link_to "Create one", new_poll_path, style: "color: #03C988;" %>
+      </div>
+    <% else %>
+      <%
+        cat_colors = { "economy" => "#03C988", "politics" => "#FF204E", "social" => "#FFC193",
+                       "law" => "#FFA500", "environment" => "#4ecb8d", "technology" => "#7b8fff" }
+        cty_colors = { "FR" => "#0055A4", "global" => "#4635B1", "DE" => "#FFCC00",
+                       "BR" => "#009C3B", "AR" => "#74ACDF", "CO" => "#FCD116" }
+        cat_emojis2 = { "technology" => "🤖", "economy" => "💰", "environment" => "🌍",
+                        "politics" => "🏛️", "social" => "👥", "global" => "🌐", "law" => "⚖️" }
+        option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"]
+      %>
+      <% @my_polls.first(3).each do |poll| %>
+        <% cat = poll.category.to_s.downcase %>
+        <% cat_color = cat_colors[cat] || "#534AB7" %>
+        <% cty_color = cty_colors[poll.country] || "#4635B1" %>
+        <% total = poll.votes.size %>
+        <% votes_affiche = total >= 1000 ? "#{(total / 1000.0).round(1)}K" : total.to_s %>
+        <% donut_values = poll.poll_options.map { |o| poll.votes.count { |v| v.poll_option_id == o.id } } %>
+        <% donut_labels = poll.poll_options.map(&:text) %>
+        <% donut_colors = poll.poll_options.each_with_index.map { |_, i| option_colors[i % option_colors.size] } %>
+        <a href="<%= poll_path(poll) %>" class="explore-card">
+          <div class="explore-avatar"><%= cat_emojis2.fetch(cat, "💬") %></div>
+          <div class="explore-body">
+            <div class="d-flex gap-2 mb-2">
+              <span class="badge" style="background-color: <%= cat_color %> !important; color: white;"><%= poll.category %></span>
+              <span class="badge" style="background-color: <%= cty_color %> !important; color: white;">
+                <%= poll.country == "global" ? "Global" : (ISO3166::Country[poll.country]&.iso_short_name || poll.country) %>
+              </span>
+            </div>
+            <p class="explore-question"><%= poll.title_question %></p>
+            <p class="explore-meta"><%= votes_affiche %> votes</p>
+          </div>
+          <div style="flex-shrink: 0; width: 80px; height: 80px; align-self: center;">
+            <canvas data-controller="donut"
+                    data-donut-values="<%= donut_values.to_json %>"
+                    data-donut-labels="<%= donut_labels.to_json %>"
+                    data-donut-colors="<%= donut_colors.to_json %>"
+                    id="donut-profile-<%= poll.id %>"
+                    width="80" height="80"
+                    style="display: block;">
+            </canvas>
+          </div>
+        </a>
       <% end %>
     <% end %>
   </div>
 
-  <%= form_with model: [@conversation, @new_message],
-        url: conversation_chat_messages_path(@conversation),
-        data: { turbo: false } do |f| %>
-    <div class="d-flex gap-2">
-      <%= f.text_area :content, placeholder: "Or type here...", rows: 2, class: "form-control" %>
-      <%= f.submit "Send", class: "btn btn-neon" %>
-    </div>
-  <% end %>
-
-  <%= link_to "← Back", new_conversation_path, class: "btn btn-link mt-3 text-white" %>
 </div>
+
+<script>
+document.addEventListener("turbo:load", function() {
+  const canvas = document.getElementById('trendChart')
+  if (!canvas) return
+
+  // Récupère le chart existant via Chart.js et le détruit
+  const existing = Chart.getChart(canvas)
+  if (existing) existing.destroy()
+
+  const values = JSON.parse(canvas.dataset.values)
+  const colors = JSON.parse(canvas.dataset.colors)
+  new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+      datasets: values.map((data, i) => ({
+        data: data,
+        borderColor: colors[i],
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.4,
+        fill: false
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: { x: { display: false }, y: { display: false, min: 0, max: 100 } },
+      animation: { duration: 1000 }
+    }
+  })
+})
+</script>
