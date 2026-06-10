@@ -80,9 +80,9 @@
     <div class="card-body">
       <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">How countries voted</p>
       <div data-controller="choropleth-map"
-           data-choropleth-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
-           data-choropleth-map-votes-value="<%= @votes_by_country.to_json %>"
-           style="height: 300px; border-radius: 8px;"></div>
+          data-choropleth-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
+          data-choropleth-map-votes-value="<%= @votes_by_country.to_json %>"
+          style="height: 300px; border-radius: 8px;"></div>
     </div>
   </div>
 
@@ -101,8 +101,8 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="tab" href="#tab-ai"
-             id="ai-tab-trigger"
-             data-summary-url="<%= ai_summary_poll_path(@poll) %>">AI Summary</a>
+            id="ai-tab-trigger"
+            data-summary-url="<%= ai_summary_poll_path(@poll) %>">AI Summary</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="tab" href="#tab-related">Related Polls</a>
@@ -111,8 +111,8 @@
 
       <div class="tab-content">
         <div class="tab-pane fade show active" id="tab-discussion"
-             data-controller="discussion"
-             style="padding-bottom:60px;">
+            data-controller="discussion"
+            style="padding-bottom:60px;">
 
           <%# Live stream subscription %>
           <%= turbo_stream_from "poll_#{@poll.id}_comments" %>
@@ -124,7 +124,7 @@
 
           <%# Scrollable comments list %>
           <div id="comments-poll-<%= @poll.id %>"
-               style="max-height:440px; overflow-y:auto; display:flex; flex-direction:column; gap:16px;
+              style="max-height:440px; overflow-y:auto; display:flex; flex-direction:column; gap:16px;
                       padding-right:4px; margin-bottom:16px;">
             <% if @comments.empty? %>
               <p style="font-size:0.83rem; color:rgba(255,255,255,0.25); text-align:center; padding:24px 0;">
@@ -211,3 +211,5 @@
     });
   </script>
 <% end %>
+<div style="height:35px;"></div>
+</div>

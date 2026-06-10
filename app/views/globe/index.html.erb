@@ -11,7 +11,7 @@
 
   <div style="display:flex;flex-direction:column;width:100%;height:calc(100vh - 60px);background:#020B18;overflow:hidden;">
 
-  <div style="position:absolute;top:8.5rem;left:0;right:0;text-align:center;z-index:10;pointer-events:none;display:flex;align-items:center;justify-content:
+  <div style="position:absolute;top:<%= user_signed_in? ? '7.5rem' : '4.5rem' %>;left:0;right:0;text-align:center;z-index:10;pointer-events:none;display:flex;align-items:center;justify-content:
   center;gap:8px;">
     <%= image_tag 'favicon.ico', alt: 'World Census logo', style: 'height:1.5rem;width:auto;' %>
     <span style="color:#03C988;font-weight:700;font-size:1.5rem;letter-spacing:.25rem;text-transform:uppercase;font-family:'Raleway',sans-serif;">World
@@ -33,8 +33,8 @@
 
     <%# ── CTA Auth — visible uniquement aux visiteurs non connectés ── %>
     <% unless user_signed_in? %>
-      <div style="
-        position:absolute;bottom:1.5rem;left:0;right:0;
+      <div class="globe-cta-guest" style="
+        position:absolute;bottom:4.5rem;left:0;right:0;
         display:flex;flex-direction:column;align-items:center;
         padding:2rem 1.5rem 2.5rem;
         background:linear-gradient(to top, rgba(2,11,24,0.95) 0%, rgba(2,11,24,0.7) 60%, transparent 100%);
@@ -45,7 +45,7 @@
           text-align:center;margin:0 0 2.5rem;
           font-family:'Work Sans','Helvetica',sans-serif;
         ">Your global opinion platform</h2>
-        <div style="display:flex;flex-direction:column;align-items:center;pointer-events:all;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;pointer-events:all;">
           <%= link_to new_user_registration_path,
             style: "background:#03C988;color:#00224D;font-weight:700;border-radius:10px;
                     padding:.75rem 2.5rem;font-size:1rem;text-decoration:none;
@@ -65,7 +65,7 @@
 
     <% if user_signed_in? %>
       <div style="
-        position:absolute;bottom:6rem;left:0;right:0;
+        position:absolute;bottom:5rem;left:0;right:0;
         display:flex;flex-direction:column;align-items:center;
         padding:1rem 1.5rem 2.5rem;
         background:linear-gradient(to top, rgba(2,11,24,0.95) 0%, rgba(2,11,24,0.7) 60%, transparent 100%);
@@ -96,6 +96,9 @@
 
 <style>
   @keyframes globe-spin { to { transform: rotate(360deg); } }
+  @media (min-width: 414px) {
+    .globe-cta-guest { bottom: calc(4.5rem - 40px) !important; }
+  }
 </style>
 <%# start script %>
 <script>
@@ -228,9 +231,9 @@
 
   function init() {
     const gc = document.getElementById('gc');
-    const W  = gc.clientWidth  || 800;
-    const H  = gc.clientHeight || 600;
-    const R  = Math.min(W, H) * 0.45;
+    let W  = gc.clientWidth  || 800;
+    let H  = gc.clientHeight || 600;
+    let R  = Math.min(W, H) * 0.45;
 
     const proj = d3.geoOrthographic()
       .scale(R).translate([W/2, H/2])
@@ -242,13 +245,13 @@
     const svg  = d3.select('#gs').attr('width', W).attr('height', H);
     const defs = svg.append('defs');
 
-    defs.append('clipPath').attr('id', 'globe-clip')
+    const clipCircle = defs.append('clipPath').attr('id', 'globe-clip')
       .append('circle').attr('cx', W/2).attr('cy', H/2).attr('r', R);
 
     const og = defs.append('radialGradient').attr('id', 'ocean-grad').attr('cx','38%').attr('cy','33%');
     og.append('stop').attr('offset','0%').attr('stop-color','#055160');
     og.append('stop').attr('offset','100%').attr('stop-color','#032830');
-    svg.append('circle').attr('cx',W/2).attr('cy',H/2).attr('r',R).attr('fill','url(#ocean-grad)');
+    const oceanCircle = svg.append('circle').attr('cx',W/2).attr('cy',H/2).attr('r',R).attr('fill','url(#ocean-grad)');
 
     const gratPath = svg.append('path').datum(grat)
       .attr('stroke','rgba(13,202,240,0.15)').attr('stroke-width','0.5')
@@ -263,16 +266,16 @@
     const sg = defs.append('radialGradient').attr('id','spec-grad').attr('cx','32%').attr('cy','26%');
     sg.append('stop').attr('offset','0%').attr('stop-color','rgba(158,234,249,0.18)');
     sg.append('stop').attr('offset','55%').attr('stop-color','rgba(158,234,249,0)');
-    svg.append('circle').attr('cx',W/2).attr('cy',H/2).attr('r',R)
+    const specCircle = svg.append('circle').attr('cx',W/2).attr('cy',H/2).attr('r',R)
       .attr('fill','url(#spec-grad)').attr('pointer-events','none');
 
     const ag = defs.append('radialGradient').attr('id','atmo-grad').attr('cx','50%').attr('cy','50%');
     ag.append('stop').attr('offset','85%').attr('stop-color','rgba(13,202,240,0)');
     ag.append('stop').attr('offset','100%').attr('stop-color','rgba(13,202,240,0.25)');
-    svg.append('circle').attr('cx',W/2).attr('cy',H/2).attr('r',R+10)
+    const atmoCircle = svg.append('circle').attr('cx',W/2).attr('cy',H/2).attr('r',R+10)
       .attr('fill','url(#atmo-grad)').attr('pointer-events','none');
 
-    svg.append('circle').attr('cx',W/2).attr('cy',H/2).attr('r',R)
+    const rimCircle = svg.append('circle').attr('cx',W/2).attr('cy',H/2).attr('r',R)
       .attr('fill','none').attr('stroke','rgba(10,162,192,0.65)').attr('stroke-width','1.5')
       .attr('pointer-events','none');
 
@@ -452,11 +455,19 @@
     );
 
     window.addEventListener('resize', () => {
-      const nW = gc.clientWidth, nH = gc.clientHeight;
-      const nR = Math.min(nW, nH) * 0.43;
-      svg.attr('width', nW).attr('height', nH);
-      d3.select('#pins-svg').attr('width', nW).attr('height', nH);
-      proj.translate([nW/2, nH/2]).scale(nR);
+      W = gc.clientWidth; H = gc.clientHeight;
+      R = Math.min(W, H) * 0.45;
+
+      svg.attr('width', W).attr('height', H);
+      d3.select('#pins-svg').attr('width', W).attr('height', H);
+
+      clipCircle.attr('cx', W/2).attr('cy', H/2).attr('r', R);
+      oceanCircle.attr('cx', W/2).attr('cy', H/2).attr('r', R);
+      specCircle.attr('cx', W/2).attr('cy', H/2).attr('r', R);
+      atmoCircle.attr('cx', W/2).attr('cy', H/2).attr('r', R+10);
+      rimCircle.attr('cx', W/2).attr('cy', H/2).attr('r', R);
+
+      proj.translate([W/2, H/2]).scale(R);
       redraw();
     });
   }
