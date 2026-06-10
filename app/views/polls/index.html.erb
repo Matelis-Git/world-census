@@ -61,4 +61,5 @@
   <% @polls.each do |poll| %>
     <%= render "poll", poll: poll, user_vote: @user_votes&.[](poll.id) %>
   <% end %>
+  <div style="height:35px;"></div>
 </div>

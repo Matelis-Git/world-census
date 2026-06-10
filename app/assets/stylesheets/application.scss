@@ -105,6 +105,25 @@ input, textarea, select {
 }
 
 @media(max-width: 576px) {
+  // Kill the hover lift on cards — touch devices leave hover stuck
+  .card:hover {
+    transform: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  // Tighten container padding on small screens
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  // Explore card — no scale on touch, but keep :active feedback
+  .explore-card:hover {
+    transform: none;
+  }
+  .explore-card:active {
+    background: rgba(255,255,255,0.10);
+  }
 }
 
 // <div class="container">
