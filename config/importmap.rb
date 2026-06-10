@@ -10,3 +10,4 @@ pin "@popperjs/core", to: "popper.js", preload: true
 
 # terminal: import map pin mapbox-gl)
 pin "mapbox-gl" # @3.24.0
+pin "flatpickr" # @4.6.13
