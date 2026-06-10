@@ -27,18 +27,38 @@
       <%= render "empty_state" %>
     <% else %>
       <div class="d-flex flex-column gap-2">
-        <% @notifications.each do |notification| %>
-          <%= render "notification", notification: notification %>
+        <% @notifications.each do |item| %>
+          <% if item.is_a?(PollComment) %>
+            <%= render "mention", comment: item %>
+          <% else %>
+            <%= render "timed_poll", poll: item %>
+          <% end %>
         <% end %>
       </div>
     <% end %>
   </div>
 
   <div data-notifications-tabs-target="panel" data-panel="mentions" hidden>
-    <%= render "empty_state" %>
+    <% if @mentions.empty? %>
+      <%= render "empty_state" %>
+    <% else %>
+      <div class="d-flex flex-column gap-2">
+        <% @mentions.each do |comment| %>
+          <%= render "mention", comment: comment %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
   <div data-notifications-tabs-target="panel" data-panel="polls" hidden>
-    <%= render "empty_state" %>
+    <% if @timed_polls.empty? %>
+      <%= render "empty_state" %>
+    <% else %>
+      <div class="d-flex flex-column gap-2">
+        <% @timed_polls.each do |poll| %>
+          <%= render "timed_poll", poll: poll %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 </div>

@@ -127,13 +127,13 @@
                style="max-height:440px; overflow-y:auto; display:flex; flex-direction:column; gap:16px;
                       padding-right:4px; margin-bottom:16px;">
             <% if @comments.empty? %>
-              <p style="font-size:0.83rem; color:rgba(255,255,255,0.25); text-align:center; padding:24px 0;">
+              <p id="empty-comments-poll-<%= @poll.id %>"
+                 style="font-size:0.83rem; color:rgba(255,255,255,0.25); text-align:center; padding:24px 0;">
                 No comments yet — be the first to share your thoughts.
               </p>
-            <% else %>
-              <% @comments.each do |comment| %>
-                <%= render "poll_comments/comment", comment: comment %>
-              <% end %>
+            <% end %>
+            <% @comments.each do |comment| %>
+              <%= render "poll_comments/comment", comment: comment %>
             <% end %>
           </div>
 

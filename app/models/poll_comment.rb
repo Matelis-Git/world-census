@@ -14,6 +14,7 @@ class PollComment < ApplicationRecord
 
   def broadcast_comment
     if parent_id.nil?
+      broadcast_remove_to "poll_#{poll_id}_comments", target: "empty-comments-poll-#{poll_id}"
       broadcast_prepend_to "poll_#{poll_id}_comments",
         target: "comments-poll-#{poll_id}",
         partial: "poll_comments/comment",

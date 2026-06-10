@@ -1,6 +1,7 @@
 # This file should ensure the existence of records required to run the application in every environment (production,
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
+PollComment.destroy_all
 Vote.destroy_all
 PollOption.destroy_all
 Poll.destroy_all
@@ -560,4 +561,109 @@ vote_on(u98,  viktor_poll,           0); vote_on(u98,  nuclear_poll,        0); 
 vote_on(u99,  eu_refugees_poll,      0); vote_on(u99,  reparations_poll,    0); vote_on(u99,  dmitri_poll,         0)
 vote_on(u100, amazon_poll,           1); vote_on(u100, football_poll,       0); vote_on(u100, bob_poll,            0)
 
-p "Seeded #{Poll.count} polls, #{PollOption.count} options, #{User.count} users, and #{Vote.count} votes"
+# =============================================================================
+# TIMED POLLS — from testuser_es (test@test.com)
+# =============================================================================
+ai_jobs_poll = Poll.create!(
+  title_question: "Will AI replace most white-collar jobs within 10 years?",
+  category: "technology",
+  country: "global",
+  user: usertest,
+  created_at: 3.days.ago,
+  expires_at: Time.current + 5.days
+)
+["Yes, most jobs will be automated", "Some jobs will, but new ones will emerge", "No, AI will only assist workers", "No, the hype is overblown"].each { |t| ai_jobs_poll.poll_options.create!(text: t) }
+
+climate_vote_poll = Poll.create!(
+  title_question: "Should voting on climate policy be mandatory in democracies?",
+  category: "politics",
+  country: "global",
+  user: usertest,
+  created_at: 8.days.ago,
+  expires_at: Time.current + 12.days
+)
+["Yes, climate is too urgent to ignore", "Yes, but with an abstain option", "No, voting should always be voluntary", "No, it wouldn't change outcomes"].each { |t| climate_vote_poll.poll_options.create!(text: t) }
+
+# Some votes on the timed polls
+vote_on(alice,    ai_jobs_poll,      1)
+vote_on(bob,      ai_jobs_poll,      0)
+vote_on(carlos,   ai_jobs_poll,      2)
+vote_on(diana,    ai_jobs_poll,      1)
+vote_on(elena,    ai_jobs_poll,      3)
+vote_on(frank,    climate_vote_poll, 0)
+vote_on(grace,    climate_vote_poll, 1)
+vote_on(hans,     climate_vote_poll, 2)
+vote_on(isabella, climate_vote_poll, 0)
+vote_on(jack,     climate_vote_poll, 3)
+
+# =============================================================================
+# COMMENTS WITH @mentions of testuser_es
+# =============================================================================
+
+# alice mentions testuser_es on france_poll
+alice_comment = PollComment.create!(
+  poll: france_poll,
+  user: alice,
+  body: "@testuser_es great point on wages — I think gradual increases are safer for small businesses. What's your take on the unemployment risk?",
+  created_at: 2.days.ago
+)
+
+# testuser_es replies on france_poll
+PollComment.create!(
+  poll: france_poll,
+  user: usertest,
+  body: "Agreed! A sudden hike could backfire. Phased increases tied to inflation make more sense. The data from Germany's 2015 reform backs this up.",
+  parent: alice_comment,
+  created_at: 2.days.ago + 1.hour
+)
+
+# bob mentions testuser_es on nuclear_poll
+bob_comment = PollComment.create!(
+  poll: nuclear_poll,
+  user: bob,
+  body: "Renewables alone can't cover baseload demand yet. @testuser_es — do you think Spain's shift away from nuclear was premature given the current energy crisis?",
+  created_at: 4.days.ago
+)
+
+# testuser_es replies on nuclear_poll
+PollComment.create!(
+  poll: nuclear_poll,
+  user: usertest,
+  body: "Honestly yes. Spain closing plants while importing French nuclear power makes no sense. We traded independence for ideology.",
+  parent: bob_comment,
+  created_at: 4.days.ago + 2.hours
+)
+
+# carlos mentions testuser_es on carlos_poll (remote work)
+carlos_comment = PollComment.create!(
+  poll: carlos_poll,
+  user: carlos,
+  body: "Hybrid is clearly the future. @testuser_es you work remotely right? How has it affected your productivity compared to office?",
+  created_at: 6.days.ago
+)
+
+PollComment.create!(
+  poll: carlos_poll,
+  user: usertest,
+  body: "Night and day difference. No commute, deeper focus blocks. The trick is having a dedicated workspace at home.",
+  parent: carlos_comment,
+  created_at: 6.days.ago + 3.hours
+)
+
+# diana mentions testuser_es on ai_jobs_poll
+diana_comment = PollComment.create!(
+  poll: ai_jobs_poll,
+  user: diana,
+  body: "The creative industries feel most at risk to me. @testuser_es since you voted on this — which sector do you think will be disrupted first?",
+  created_at: 1.day.ago
+)
+
+PollComment.create!(
+  poll: ai_jobs_poll,
+  user: usertest,
+  body: "Legal and accounting for sure — document review and tax prep are already 80% automated. Radiologists are next.",
+  parent: diana_comment,
+  created_at: 1.day.ago + 30.minutes
+)
+
+p "Seeded #{Poll.count} polls, #{PollOption.count} options, #{User.count} users, #{Vote.count} votes, and #{PollComment.count} comments"
