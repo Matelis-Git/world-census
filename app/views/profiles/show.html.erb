@@ -2,11 +2,11 @@
 
 <style>
   .profile-page { max-width: 430px; margin: 0 auto; padding: 0 0 100px; }
-  .profile-card { background: rgba(9,18,44,0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; margin-bottom: 12px; transition: transform 0.2s; }
+  .profile-card { background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 14px; margin-bottom: 12px; transition: transform 0.2s; }
   .profile-card:hover { transform: translateY(-2px); }
   .profile-section-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 10px; color: white; }
   .stance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .stance-card { background: rgba(25,55,109,0.5); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 6px; text-align: center; }
+  .stance-card { background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.09); border-radius: 10px; padding: 10px 6px; text-align: center; }
   .bar-bg { height: 4px; border-radius: 99px; background: rgba(255,255,255,0.07); margin-top: 6px; }
   .bar-fill { height: 4px; border-radius: 99px; }
   .trend-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
@@ -137,12 +137,15 @@
 
   <%# AI Summary %>
   <div style="background: rgba(83,74,183,0.1); border: 1px solid rgba(83,74,183,0.2); border-radius: 12px; padding: 14px; margin: 0 16px 12px;">
-    <div style="margin-bottom: 8px;">
-      <span class="profile-section-title">AI Profile Summary</span>
+    <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 10px;">
+      <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 11px; color: #7b7ef8;"></i>
+      <span class="profile-section-title" style="margin: 0;">AI Profile Summary</span>
     </div>
-    <div style="font-size: 11px; color: rgba(232,237,245,0.3); font-style: italic; text-align: center; padding: 8px 0;">
-      Coming soon — Your AI-powered opinion analysis
-    </div>
+    <turbo-frame id="profile-ai-summary-frame" loading="lazy" src="<%= ai_summary_profile_path %>">
+      <div style="text-align: center; padding: 8px 0; color: rgba(255,255,255,0.28); font-size: 0.82rem;">
+        <i class="fa-solid fa-circle-notch fa-spin me-1"></i> Generating your opinion profile…
+      </div>
+    </turbo-frame>
   </div>
 
   <%# My Recent Polls %>

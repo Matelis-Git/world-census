@@ -58,4 +58,43 @@ class ProfilesController < ApplicationController
 
     @xp_percent = (@total_votes.to_f / @level[:xp_max] * 100).round.clamp(0, 100)
   end
+
+  def ai_summary
+    votes             = current_user.votes.joins(:poll)
+    my_polls          = current_user.polls
+    votes_by_category = votes.group("polls.category").count
+    total_votes       = votes.size
+
+    top_cats = votes_by_category.sort_by { |_, v| -v }.first(4)
+    category_summary = top_cats.map do |cat, count|
+      pct = total_votes > 0 ? (count.to_f / total_votes * 100).round : 0
+      "#{cat} (#{pct}%)"
+    end.join(", ")
+
+    recent_polls = my_polls.order(created_at: :desc).limit(3).pluck(:title_question).join("; ")
+
+    level_name = case total_votes
+                 when 0..9   then "Newcomer"
+                 when 10..24 then "Citizen"
+                 when 25..49 then "Global Voice"
+                 when 50..99 then "World Leader"
+                 else             "Legend"
+                 end
+
+    prompt = <<~PROMPT
+      User profile on World Census, a global political opinion polling platform:
+      - Total votes cast: #{total_votes}
+      - Top topics voted on: #{category_summary.presence || "none yet"}
+      - Polls created: #{my_polls.size}
+      - Level: #{level_name}
+      #{recent_polls.present? ? "- Recent polls created: #{recent_polls}" : ""}
+
+      Write a warm, personal 60-word opinion profile summary. Describe this user's voting patterns and topics of interest based on their data. Be specific, not generic. Do not use bullet points.
+    PROMPT
+
+    response   = RubyLLM.chat.ask(prompt)
+    @summary   = response.content
+  rescue StandardError
+    @error = true
+  end
 end

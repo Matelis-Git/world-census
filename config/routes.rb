@@ -20,7 +20,9 @@ Rails.application.routes.draw do
     resources :poll_comments, only: [:create, :destroy]
   end
 
-  resource :profile, only: [:show]
+  resource :profile, only: [:show] do
+    get :ai_summary
+  end
 
   resources :conversations, only: [:new, :show, :create] do
     resources :chat_messages, only: [:create]
