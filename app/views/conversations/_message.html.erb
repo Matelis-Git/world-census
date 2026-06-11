@@ -1,0 +1,6 @@
+<% return if message.role == "system" %>
+<% if message.role == "user" %>
+  <div id="<%= dom_id(message) %>" class="msg-user"><%= message.content %></div>
+<% else %>
+  <div id="<%= dom_id(message) %>" class="msg-ai"><%= message.content %></div>
+<% end %>
