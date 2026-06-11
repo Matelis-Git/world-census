@@ -1,4 +1,22 @@
-def system_prompt
+class ChatMessagesController < ApplicationController
+  before_action :set_conversation
+  OPTION_COLORS = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"].freeze
+
+  def create
+    user_content = params.require(:chat_message).permit(:content)[:content]
+
+    @conversation
+      .with_instructions(system_prompt, replace: false)
+      .ask(user_content)
+  end
+
+  private
+
+  def set_conversation
+    @conversation = Conversation.find(params[:conversation_id])
+  end
+
+ def system_prompt
     intent = @conversation.intent
     poll   = @conversation.poll
 
@@ -76,3 +94,4 @@ def system_prompt
 
     result.transform_values { |v| { color: v[:color], total: v[:total] } }
   end
+end
