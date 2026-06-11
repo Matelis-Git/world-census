@@ -3,7 +3,6 @@
 // Gère : globe D3, particules canvas, états idle/thinking/speaking
 
 import { Controller } from "@hotwired/stimulus"
-import { animate, stagger, createTimer } from "animejs"
 
 export default class extends Controller {
 
