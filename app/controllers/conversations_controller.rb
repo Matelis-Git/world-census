@@ -69,6 +69,16 @@ class ConversationsController < ApplicationController
     @conversation.ask(initial_message)
     redirect_to conversation_path(@conversation)
   end
+
+  def create_ai_conversation_with_poll_context
+    @poll = Poll.find(params[:poll_id])
+    @conversation = Conversation.create!(intent: "ai_poll_context")
+    @conversation.chat_messages.create!(content: "What do you want to know about: #{@poll.title_question}?",
+                                        role: "assistant")
+    @conversation.update(poll_id: @poll.id)
+    redirect_to conversation_path(@conversation)
+  end
+  
   def create_ai_conversation
       @conversation = Conversation.create!(intent: "ai")
 
