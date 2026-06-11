@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "World Census" %></title>
+    <title><%= content_for(:title) || "World Census – Global Population Data, Demographics & Country Statistics" %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="World Census">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <meta property="og:title"       content="<%= content_for(:og_title)       || "World Census – Global Population Data, Demographics & Country Statistics" %>">
+    <meta property="og:description" content="<%= content_for(:og_description) || "Explore real-time population data, demographic trends, and country statistics for every nation on Earth." %>">
+    <meta property="og:type"        content="<%= content_for(:og_type)        || "website" %>">
+    <meta property="og:url"         content="<%= content_for(:og_url)         || request.original_url %>">
+    <meta property="og:image"       content="<%= content_for(:og_image)       || "https://res.cloudinary.com/dfz8f4vwe/image/upload/v1781168882/World_Census_og-image_j3ntcn.jpg" %>">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
     <%= yield :head %>
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
@@ -19,7 +26,7 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
     <%= javascript_importmap_tags %>
-   <%= favicon_link_tag %>
+    <%= favicon_link_tag %>
     <%# Chart.js chargé depuis le CDN — disponible globalement %>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
     <%# D3.js + TopoJSON — pour le globe Census AI %>

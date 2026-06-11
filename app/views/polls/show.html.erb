@@ -6,7 +6,7 @@
 <div class="container my-4" style="max-width: 600px;">
 
   <%# BACK BUTTON %>
-  <%= link_to polls_path, class: "text-decoration-none d-inline-flex align-items-center gap-1 mb-4", style: "color: rgba(255,255,255,0.5); font-size: 0.85rem;" do %>
+  <%= link_to polls_path, class: "grey text-decoration-none d-inline-flex align-items-center gap-1 mb-4", style: "color: rgba(255,255,255,0.7); font-size: 0.85rem;" do %>
     <i class="fas fa-arrow-left"></i> Back
   <% end %>
 
@@ -26,7 +26,7 @@
     <% end %>
   </div>
 
-  <p class="mb-4" style="font-size: 0.8rem; color: rgba(255,255,255,0.4);">
+  <p class="mb-4" style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">
     Asked by <%= @poll.user&.username || @poll.user&.email&.split("@")&.first || "anonymous" %>
     &middot; <%= time_ago_in_words(@poll.created_at) %> ago
     &middot; <%= @poll.votes.size %> vote<%= @poll.votes.size == 1 ? "" : "s" %>
@@ -39,7 +39,7 @@
 
   <div class="card mb-3" data-controller="bar-chart">
     <div class="card-body">
-      <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">Overall Results</p>
+      <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.05em;">Overall Results</p>
 
       <% if has_voted %>
         <% @poll.poll_options.each_with_index do |option, i| %>
@@ -75,10 +75,63 @@
     </div>
   </div>
 
+  <%# COUNTRY CAROUSEL %>
+  <% if @top_countries.any? %>
+    <%
+      per_page       = 3
+      real_pages     = @top_countries.each_slice(per_page).to_a
+      loopable       = real_pages.size > 1
+      carousel_pages = loopable ? ([real_pages.last] + real_pages + [real_pages.first]) : real_pages
+      start_index    = loopable ? 1 : 0
+    %>
+    <div class="card mb-3">
+      <div class="card-body" style="padding: 14px 14px 12px;">
+        <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.05em;">Top Countries</p>
+        <div style="position: relative;">
+          <% if loopable %>
+            <button id="carousel-prev" style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);z-index:2;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.14);color:white;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;padding:0;line-height:1;">&#8249;</button>
+            <button id="carousel-next" style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);z-index:2;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.14);color:white;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;padding:0;line-height:1;">&#8250;</button>
+          <% end %>
+          <div style="overflow:hidden;border-radius:8px;margin:0 4px;">
+            <div id="countryCarouselTrack"
+                 data-current="<%= start_index %>"
+                 data-total="<%= carousel_pages.size %>"
+                 data-loopable="<%= loopable %>"
+                 data-real-pages="<%= real_pages.size %>"
+                 style="display:flex;will-change:transform;">
+              <% carousel_pages.each do |page| %>
+                <div style="min-width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+                  <% page.each do |c| %>
+                    <% cname = ISO3166::Country[c[:code]]&.iso_short_name || c[:code] %>
+                    <div style="background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.09);border-radius:10px;padding:10px 6px;text-align:center;">
+                      <span class="fi fi-<%= c[:code].downcase %>" style="font-size:22px;"></span>
+                      <div style="font-size:9px;color:rgba(232,237,245,0.5);margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="<%= cname %>"><%= cname %></div>
+                      <div style="font-size:15px;font-weight:800;color:white;margin-top:2px;"><%= c[:pct] %>%</div>
+                    </div>
+                  <% end %>
+                  <% (per_page - page.size).times do %>
+                    <div></div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <% if real_pages.size > 1 %>
+            <div id="carouselDots" style="display:flex;justify-content:center;gap:5px;margin-top:10px;">
+              <% real_pages.size.times do |i| %>
+                <div class="c-dot" style="width:5px;height:5px;border-radius:50%;background:<%= i == 0 ? '#7b7ef8' : 'rgba(255,255,255,0.2)' %>;transition:background 0.2s;"></div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <%# MAP CARD %>
   <div class="card mb-3">
     <div class="card-body">
-      <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">How countries voted</p>
+      <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.05em;">How countries voted</p>
       <div data-controller="choropleth-map"
           data-choropleth-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
           data-choropleth-map-votes-value="<%= @votes_by_country.to_json %>"
@@ -118,7 +171,7 @@
           <%= turbo_stream_from "poll_#{@poll.id}_comments" %>
 
           <%# Comment count %>
-          <p class="mb-3" style="font-size:0.78rem; color:rgba(255,255,255,0.35);">
+          <p class="mb-3" style="font-size:0.78rem; color:rgba(255,255,255,0.7);">
             <%= @comments.sum { |c| 1 + c.replies.size } %> comment<%= (@comments.sum { |c| 1 + c.replies.size }) == 1 ? "" : "s" %>
           </p>
 
@@ -128,7 +181,7 @@
                       padding-right:4px; margin-bottom:16px;">
             <% if @comments.empty? %>
               <p id="empty-comments-poll-<%= @poll.id %>"
-                 style="font-size:0.83rem; color:rgba(255,255,255,0.25); text-align:center; padding:24px 0;">
+                 style="font-size:0.83rem; color:rgba(255,255,255,0.5); text-align:center; padding:24px 0;">
                 No comments yet — be the first to share your thoughts.
               </p>
             <% end %>
@@ -151,14 +204,14 @@
         </div>
         <div class="tab-pane fade" id="tab-ai">
           <turbo-frame id="ai-summary-frame">
-            <div style="text-align: center; padding: 22px 0; color: rgba(255,255,255,0.28); font-size: 0.82rem;">
+            <div style="text-align: center; padding: 22px 0; color: rgba(255,255,255,0.5); font-size: 0.82rem;">
               <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Tap "AI Summary" to generate
             </div>
           </turbo-frame>
         </div>
         <div class="tab-pane fade" id="tab-related">
           <% if @related_polls.any? %>
-            <p style="font-size: 0.78rem; font-weight: 700; color: rgba(207,226,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">
+            <p style="font-size: 0.78rem; font-weight: 700; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">
               Hot in <%= @poll.category&.capitalize %>
             </p>
             <% option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"] %>
@@ -209,6 +262,64 @@
         frame.setAttribute('src', this.dataset.summaryUrl);
       }
     });
+
+    // Country carousel
+    (function() {
+      const track = document.getElementById('countryCarouselTrack');
+      if (!track) return;
+
+      let current      = parseInt(track.dataset.current);
+      const total      = parseInt(track.dataset.total);
+      const loopable   = track.dataset.loopable === 'true';
+      const realPages  = parseInt(track.dataset.realPages);
+      const dots       = Array.from(document.querySelectorAll('.c-dot'));
+      let animating    = false;
+
+      function updateDots(idx) {
+        if (!dots.length) return;
+        const real = loopable ? (idx - 1 + realPages) % realPages : idx;
+        dots.forEach((d, i) => {
+          d.style.background = i === real ? '#7b7ef8' : 'rgba(255,255,255,0.2)';
+        });
+      }
+
+      function goTo(idx, animate) {
+        track.style.transition = animate ? 'transform 0.38s cubic-bezier(0.4,0,0.2,1)' : 'none';
+        track.style.transform  = `translateX(-${idx * 100}%)`;
+        if (!animate) track.getBoundingClientRect(); // force reflow
+        current = idx;
+        updateDots(idx);
+      }
+
+      goTo(current, false);
+
+      function step(dir) {
+        if (animating) return;
+        const next = current + dir;
+        if (!loopable && (next < 0 || next >= total)) return;
+        animating = true;
+        goTo(next, true);
+
+        setTimeout(() => {
+          if (loopable) {
+            if (next >= total - 1) goTo(1, false);       // ghost end → real start
+            else if (next <= 0)    goTo(total - 2, false); // ghost start → real end
+          }
+          animating = false;
+        }, 400);
+      }
+
+      document.getElementById('carousel-prev')?.addEventListener('click', () => step(-1));
+      document.getElementById('carousel-next')?.addEventListener('click', () => step(1));
+
+      // Touch / swipe
+      let tx = 0;
+      track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', e => {
+        const dx = tx - e.changedTouches[0].clientX;
+        if (Math.abs(dx) > 40) step(dx > 0 ? 1 : -1);
+      }, { passive: true });
+    })();
   </script>
 <% end %>
 <div style="height:35px;"></div>

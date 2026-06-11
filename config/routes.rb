@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   get "/globe", to: "globe#index"
 
   get "up" => "rails/health#show", as: :rails_health_check
+
+  match "/404", to: "errors#not_found",              via: :all
+  match "/500", to: "errors#internal_server_error",  via: :all
   resources :polls, only: [:index, :new, :create, :destroy, :show] do
     member do
       get :country_votes
@@ -20,7 +23,9 @@ Rails.application.routes.draw do
     resources :poll_comments, only: [:create, :destroy]
   end
 
-  resource :profile, only: [:show]
+  resource :profile, only: [:show] do
+    get :ai_summary
+  end
 
   resources :conversations, only: [:new, :show, :create] do
     resources :chat_messages, only: [:create]

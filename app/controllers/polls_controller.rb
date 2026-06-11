@@ -12,7 +12,19 @@ class PollsController < ApplicationController
   def show
     @poll = Poll.includes(:poll_options, :votes).find(params[:id])
     @user_vote = Vote.find_by(poll: @poll, user: current_user) if user_signed_in?
-    @votes_by_country = country_vote_data(@poll).filter_map { |k, v| [k, v[:color]] if v[:color] }.to_h
+
+    country_data      = country_vote_data(@poll)
+    @votes_by_country = country_data.filter_map { |k, v| [k, v[:color]] if v[:color] }.to_h
+
+    poll_total = @poll.votes.size
+    @top_countries = country_data
+      .sort_by { |_, v| -v[:total] }
+      .first(9)
+      .map do |code, data|
+        pct = poll_total > 0 ? (data[:total].to_f / poll_total * 100).round(1) : 0
+        { code: code, total: data[:total], pct: pct }
+      end
+
     @comments = @poll.poll_comments
                      .includes(:user, replies: :user)
                      .where(parent_id: nil)
