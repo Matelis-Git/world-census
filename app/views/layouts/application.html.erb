@@ -21,8 +21,10 @@
     <link rel="apple-touch-icon" href="/icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="manifest" href="<%= asset_path 'manifest.json' %>">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+    <%= render 'shared/ios_pwa_links' %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
     <%= javascript_importmap_tags %>
@@ -54,5 +56,10 @@
 
     <%= render "shared/navbar" %>
     <%= yield :scripts %>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+      }
+    </script>
   </body>
 </html>
