@@ -37,7 +37,7 @@
           <% end %>
         </li>
         <li>
-          <%= link_to new_conversation_path, class: "dropdown-item", style: "color: white; font-size: 13px;" do %>
+          <%= link_to create_ai_conversation_path, data: {turbo_method: :post}, class: "dropdown-item", style: "color: white; font-size: 13px;" do %>
             <i class="fa-solid fa-robot me-2" style="color: #03C988;"></i> Census AI
           <% end %>
         </li>

@@ -66,8 +66,14 @@ class ConversationsController < ApplicationController
         "Generate 3 poll question suggestions for the category '#{category}' focused on #{country}. Give me only 3 numbered questions, nothing else."
       end
     end
-
     @conversation.ask(initial_message)
     redirect_to conversation_path(@conversation)
   end
+  def create_ai_conversation
+      @conversation = Conversation.create!(intent: "ai")
+
+      @conversation.chat_messages.create!(content: "Hello! How are you doing today? How can I assist you?",
+                                          role: "assistant")
+      redirect_to conversation_path(@conversation)
+    end
 end
