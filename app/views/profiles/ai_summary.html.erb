@@ -1,0 +1,11 @@
+<turbo-frame id="profile-ai-summary-frame">
+  <% if @error %>
+    <p style="font-size: 0.83rem; color: rgba(255,120,120,0.8); text-align: center; padding: 8px 0;">
+      <i class="fa-solid fa-triangle-exclamation me-2"></i> Could not generate summary — try again later.
+    </p>
+  <% else %>
+    <p style="font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.82); margin: 0;">
+      <%= @summary %>
+    </p>
+  <% end %>
+</turbo-frame>

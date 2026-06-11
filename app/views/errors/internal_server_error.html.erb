@@ -1,0 +1,53 @@
+<% content_for :title, "500 – Something Went Wrong | World Census" %>
+
+<div class="error-page d-flex flex-column align-items-center justify-content-center text-center px-3" style="min-height: calc(100vh - 120px);">
+  <div class="error-code mb-2">500</div>
+  <h1 class="error-title mb-3">Something Went Wrong</h1>
+  <p class="error-message mb-4">
+    We're experiencing an unexpected issue on our end.<br>
+    Our team has been notified. Please try again in a moment.
+  </p>
+  <%= link_to "Back to Home", root_path, class: "btn btn-accent px-4 py-2" %>
+</div>
+
+<style>
+  .error-code {
+    font-family: 'Raleway', sans-serif;
+    font-size: clamp(6rem, 20vw, 12rem);
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, #FF204E, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .error-title {
+    font-family: 'Raleway', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .error-message {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 480px;
+    line-height: 1.7;
+  }
+
+  .btn-accent {
+    background-color: #FF204E;
+    border-color: #FF204E;
+    color: #ffffff;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: opacity 0.2s;
+  }
+
+  .btn-accent:hover {
+    opacity: 0.85;
+    color: #ffffff;
+  }
+</style>
