@@ -6,7 +6,7 @@
 <div class="container my-4" style="max-width: 600px;">
 
   <%# BACK BUTTON %>
-  <%= link_to polls_path, class: "text-decoration-none d-inline-flex align-items-center gap-1 mb-4", style: "color: rgba(255,255,255,0.5); font-size: 0.85rem;" do %>
+  <%= link_to polls_path, class: "grey text-decoration-none d-inline-flex align-items-center gap-1 mb-4", style: "color: rgba(255,255,255,0.7); font-size: 0.85rem;" do %>
     <i class="fas fa-arrow-left"></i> Back
   <% end %>
 
@@ -26,7 +26,7 @@
     <% end %>
   </div>
 
-  <p class="mb-4" style="font-size: 0.8rem; color: rgba(255,255,255,0.4);">
+  <p class="mb-4" style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">
     Asked by <%= @poll.user&.username || @poll.user&.email&.split("@")&.first || "anonymous" %>
     &middot; <%= time_ago_in_words(@poll.created_at) %> ago
     &middot; <%= @poll.votes.size %> vote<%= @poll.votes.size == 1 ? "" : "s" %>
@@ -39,7 +39,7 @@
 
   <div class="card mb-3" data-controller="bar-chart">
     <div class="card-body">
-      <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">Overall Results</p>
+      <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.05em;">Overall Results</p>
 
       <% if has_voted %>
         <% @poll.poll_options.each_with_index do |option, i| %>
@@ -131,7 +131,7 @@
   <%# MAP CARD %>
   <div class="card mb-3">
     <div class="card-body">
-      <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em;">How countries voted</p>
+      <p class="fw-semibold mb-3" style="font-size: 0.85rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.05em;">How countries voted</p>
       <div data-controller="choropleth-map"
           data-choropleth-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
           data-choropleth-map-votes-value="<%= @votes_by_country.to_json %>"
@@ -171,7 +171,7 @@
           <%= turbo_stream_from "poll_#{@poll.id}_comments" %>
 
           <%# Comment count %>
-          <p class="mb-3" style="font-size:0.78rem; color:rgba(255,255,255,0.35);">
+          <p class="mb-3" style="font-size:0.78rem; color:rgba(255,255,255,0.7);">
             <%= @comments.sum { |c| 1 + c.replies.size } %> comment<%= (@comments.sum { |c| 1 + c.replies.size }) == 1 ? "" : "s" %>
           </p>
 
@@ -181,7 +181,7 @@
                       padding-right:4px; margin-bottom:16px;">
             <% if @comments.empty? %>
               <p id="empty-comments-poll-<%= @poll.id %>"
-                 style="font-size:0.83rem; color:rgba(255,255,255,0.25); text-align:center; padding:24px 0;">
+                 style="font-size:0.83rem; color:rgba(255,255,255,0.5); text-align:center; padding:24px 0;">
                 No comments yet — be the first to share your thoughts.
               </p>
             <% end %>
@@ -204,14 +204,14 @@
         </div>
         <div class="tab-pane fade" id="tab-ai">
           <turbo-frame id="ai-summary-frame">
-            <div style="text-align: center; padding: 22px 0; color: rgba(255,255,255,0.28); font-size: 0.82rem;">
+            <div style="text-align: center; padding: 22px 0; color: rgba(255,255,255,0.5); font-size: 0.82rem;">
               <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Tap "AI Summary" to generate
             </div>
           </turbo-frame>
         </div>
         <div class="tab-pane fade" id="tab-related">
           <% if @related_polls.any? %>
-            <p style="font-size: 0.78rem; font-weight: 700; color: rgba(207,226,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">
+            <p style="font-size: 0.78rem; font-weight: 700; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">
               Hot in <%= @poll.category&.capitalize %>
             </p>
             <% option_colors = ["#03C988", "#FF7A2F", "#06B6D4", "#FFEB00"] %>
